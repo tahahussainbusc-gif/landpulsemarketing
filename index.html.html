@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Land Pulse Marketing | VIP Luxury & Smart Real Estate</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#0a0d0f',
+                            card: '#12181b',
+                            cardHover: '#1a2226',
+                            neon: '#00ff66',
+                            emerald: '#10b981',
+                            accent: '#052e16',
+                            light: '#f8fafc',
+                            muted: '#94a3b8'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'neon-glow': '0 0 25px rgba(0, 255, 102, 0.25)',
+                        'neon-glow-lg': '0 0 40px rgba(0, 255, 102, 0.4)',
+                        'emerald-glow': '0 0 20px rgba(16, 185, 129, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0a0d0f;
+            color: #ffffff;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism utility */
+        .glass-panel {
+            background: rgba(18, 24, 27, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card {
+            background: rgba(18, 24, 27, 0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(0, 255, 102, 0.4);
+            box-shadow: 0 10px 30px -10px rgba(0, 255, 102, 0.25);
+            transform: translateY(-4px);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0d0f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #12181b;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 255, 102, 0.2);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00ff66;
+        }
+
+        /* Neon gradient text */
+        .text-neon-gradient {
+            background: linear-gradient(135deg, #ffffff 30%, #00ff66 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Range Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: #1a2226;
+            border-radius: 8px;
+            height: 8px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 22px;
+            width: 22px;
+            border-radius: 50%;
+            background: #00ff66;
+            cursor: pointer;
+            box-shadow: 0 0 12px #00ff66;
+            transition: transform 0.1s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .team-video::-webkit-media-controls {
+            display: none !important;
+        }
+
+        .team-card.is-video-playing .team-video {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="selection:bg-brand-neon selection:text-black">
+
+    <!-- Header / Navbar -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/10 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="#" class="flex items-center space-x-3 group">
+                <img src="images/LOGO/logo.png" alt="Land Pulse Marketing" onerror="this.onerror=null; this.src='https://placehold.co/180x50/12181b/00ff66?text=Land+Pulse';" class="brand-logo h-12 w-auto max-w-[180px] object-contain group-hover:scale-105 transition-transform duration-300">
+            </a>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex items-center space-x-7">
+                <a href="#hero" class="text-sm font-medium text-white hover:text-brand-neon transition-colors">Home</a>
+                <a href="#premium-projects" class="text-sm font-medium text-brand-muted hover:text-brand-neon transition-colors">Premium Projects</a>
+                <a href="#properties" class="text-sm font-medium text-brand-muted hover:text-brand-neon transition-colors">VIP Properties</a>
+                <a href="#calculator" class="text-sm font-medium text-brand-muted hover:text-brand-neon transition-colors">ROI Calculator</a>
+                <a href="#advantages" class="text-sm font-medium text-brand-muted hover:text-brand-neon transition-colors">Why Choose Us</a>
+                <a href="#team" class="text-sm font-medium text-brand-muted hover:text-brand-neon transition-colors">Our Team</a>
+            </nav>
+
+            <!-- Call To Action -->
+            <div class="hidden md:flex items-center space-x-4">
+                <a href="#team" class="relative group px-6 py-2.5 rounded-xl font-bold text-sm overflow-hidden border border-brand-neon/40 text-brand-neon hover:text-black transition-all duration-300 shadow-neon-glow hover:shadow-neon-glow-lg">
+                    <span class="absolute inset-0 w-full h-full bg-brand-neon transition-all duration-300 transform -translate-x-full group-hover:translate-x-0 ease-out"></span>
+                    <span class="relative flex items-center gap-2">
+                        <i class="fa-solid fa-crown text-xs"></i> Book Consultation
+                    </span>
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button id="mobileMenuBtn" class="md:hidden text-white hover:text-brand-neon text-2xl focus:outline-none">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <div id="mobileMenu" class="hidden md:hidden glass-panel border-b border-white/10 px-6 py-6 space-y-4">
+            <a href="#hero" class="mobile-link block text-base font-medium text-white hover:text-brand-neon">Home</a>
+            <a href="#premium-projects" class="mobile-link block text-base font-medium text-brand-muted hover:text-brand-neon">Premium Projects</a>
+            <a href="#properties" class="mobile-link block text-base font-medium text-brand-muted hover:text-brand-neon">VIP Properties</a>
+            <a href="#calculator" class="mobile-link block text-base font-medium text-brand-muted hover:text-brand-neon">ROI Calculator</a>
+            <a href="#advantages" class="mobile-link block text-base font-medium text-brand-muted hover:text-brand-neon">Why Choose Us</a>
+            <a href="#team" class="mobile-link block text-base font-medium text-brand-muted hover:text-brand-neon">Our Team</a>
+            <a href="#team" class="mobile-link inline-block w-full text-center py-3 bg-brand-neon text-black font-bold rounded-xl shadow-neon-glow">Meet the Team</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        <!-- Hero Section -->
+        <section id="hero" class="relative min-h-[90vh] flex items-center justify-center pt-12 pb-20 overflow-hidden">
+            <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-neon/10 rounded-full blur-[140px] pointer-events-none"></div>
+            <div class="absolute bottom-10 left-10 w-72 h-72 bg-brand-emerald/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full text-center">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border-brand-neon/30 text-brand-neon text-xs sm:text-sm font-semibold tracking-wide uppercase mb-6 animate-pulse">
+                    <span class="w-2 h-2 rounded-full bg-brand-neon"></span>
+                    Pakistan & International Prime Real Estate
+                </div>
+
+                <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+                    Redefining <span class="text-neon-gradient">Luxury & Smart</span><br>Real Estate Investment
+                </h1>
+                <p class="max-w-3xl mx-auto text-base sm:text-lg text-brand-muted mb-10 leading-relaxed">
+                    Exclusive access to ultra-premium residential estates, high-yield commercial projects, and trusted land portfolio management tailored for visionary investors.
+                </p>
+
+                <!-- Search Bar -->
+                <div class="max-w-5xl mx-auto glass-panel p-4 sm:p-6 rounded-2xl border border-white/10 shadow-2xl mb-16">
+                    <form id="heroSearchForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left">
+                        <div>
+                            <label class="block text-xs font-semibold text-brand-muted uppercase mb-1.5"><i class="fa-solid fa-location-dot text-brand-neon me-1"></i> Project / Location</label>
+                            <select id="searchLocation" class="w-full bg-brand-dark/90 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-brand-neon focus:outline-none transition-colors">
+                                <option value="all">All Locations</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-brand-muted uppercase mb-1.5"><i class="fa-solid fa-building text-brand-neon me-1"></i> Property Type</label>
+                            <select id="searchType" class="w-full bg-brand-dark/90 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-brand-neon focus:outline-none transition-colors">
+                                <option value="all">All Types</option>
+                                <option value="residential">Residential Villa & Apt</option>
+                                <option value="commercial">Commercial Tower & Shops</option>
+                                <option value="plots">Investment Plots</option>
+                                <option value="villas">Luxury VIP Mansions</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-brand-muted uppercase mb-1.5"><i class="fa-solid fa-wallet text-brand-neon me-1"></i> Budget Range</label>
+                            <select id="searchPrice" class="w-full bg-brand-dark/90 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-brand-neon focus:outline-none transition-colors">
+                                <option value="all">Any Budget</option>
+                                <option value="low">Under 50 Million PKR</option>
+                                <option value="mid">50M - 150M PKR</option>
+                                <option value="high">150M+ PKR / Luxury</option>
+                            </select>
+                        </div>
+                        <div class="flex items-end">
+                            <button type="button" onclick="filterPropertiesFromHero()" class="w-full bg-gradient-to-r from-brand-emerald to-brand-neon text-black font-extrabold py-3 px-6 rounded-xl hover:shadow-neon-glow transition-all duration-300 flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-magnifying-glass"></i> Search VIP Deals
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Our Premium Projects Section -->
+        <section id="premium-projects" class="py-20 relative bg-brand-dark/80 border-t border-white/5">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+                    <div>
+                        <span class="text-brand-neon text-xs font-bold tracking-widest uppercase"><i class="fa-solid fa-gem me-1"></i> Master Planned Developments</span>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-1">Our Premium Projects</h2>
+                    </div>
+                    <p class="text-brand-muted text-sm max-w-md mt-4 md:mt-0">
+                        Explore iconic mega developments, high-rise luxury towers, and high-yield master planned communities in prime zones.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="premiumProjectsContainer">
+                    <!-- Dynamic rendering via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured VIP Properties Section -->
+        <section id="properties" class="py-20 relative bg-brand-dark/50 border-t border-white/5">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Section Header -->
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-12">
+                    <div>
+                        <span class="text-brand-neon text-xs font-bold tracking-widest uppercase">Curated Portfolio</span>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-1">Featured VIP Properties</h2>
+                    </div>
+                    
+                    <!-- Clean Organized Filter Controls Container -->
+                    <div class="flex flex-col gap-3 glass-panel p-3 rounded-2xl border border-white/10 max-w-full">
+                        <!-- Deal Type Group -->
+                        <div class="flex items-center gap-2 bg-brand-dark/80 p-1.5 rounded-xl border border-white/10 overflow-x-auto" id="listingTypeTabs" aria-label="Filter by listing type">
+                            <button type="button" onclick="filterListingType('all', this)" class="listing-type-tab px-4 py-2 rounded-lg text-xs font-bold bg-brand-neon text-black border border-brand-neon shadow-neon-glow transition-all whitespace-nowrap">All Listings</button>
+                            <button type="button" onclick="filterListingType('sale', this)" class="listing-type-tab px-4 py-2 rounded-lg text-xs font-bold text-brand-muted hover:text-white transition-all whitespace-nowrap">For Sale</button>
+                            <button type="button" onclick="filterListingType('rent', this)" class="listing-type-tab px-4 py-2 rounded-lg text-xs font-bold text-brand-muted hover:text-white transition-all whitespace-nowrap">For Rent</button>
+                        </div>
+
+                        <!-- Category Group -->
+                        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0" id="propertyTabs" aria-label="Filter by property category">
+                            <button onclick="filterCategory('all', this)" class="tab-btn category-tab px-3.5 py-2 rounded-lg text-xs font-semibold bg-brand-neon text-black border border-brand-neon shadow-neon-glow transition-all whitespace-nowrap">All</button>
+                            <button onclick="filterCategory('residential', this)" class="tab-btn category-tab px-3.5 py-2 rounded-lg text-xs font-semibold text-brand-muted hover:text-white hover:bg-brand-card/80 transition-all whitespace-nowrap">Residential</button>
+                            <button onclick="filterCategory('commercial', this)" class="tab-btn category-tab px-3.5 py-2 rounded-lg text-xs font-semibold text-brand-muted hover:text-white hover:bg-brand-card/80 transition-all whitespace-nowrap">Commercial</button>
+                            <button onclick="filterCategory('plots', this)" class="tab-btn category-tab px-3.5 py-2 rounded-lg text-xs font-semibold text-brand-muted hover:text-white hover:bg-brand-card/80 transition-all whitespace-nowrap">Plots</button>
+                            <button onclick="filterCategory('villas', this)" class="tab-btn category-tab px-3.5 py-2 rounded-lg text-xs font-semibold text-brand-muted hover:text-white hover:bg-brand-card/80 transition-all whitespace-nowrap">Luxury Villas</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Properties Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="propertiesContainer">
+                    <!-- Dynamic rendering via JS -->
+                </div>
+                <div id="propertiesPagination" class="hidden mt-8 flex items-center justify-center gap-4" aria-label="Property listing pages"></div>
+                <p id="propertyLoadMessage" class="hidden text-center text-sm text-brand-muted mt-6" role="status"></p>
+            </div>
+        </section>
+
+        <!-- Interactive ROI / Investment Calculator -->
+        <section id="calculator" class="py-20 relative overflow-hidden">
+            <div class="absolute right-0 top-1/2 -translate-y-1/2 w-96 h-96 bg-brand-neon/10 rounded-full blur-[150px] pointer-events-none"></div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="glass-panel p-8 sm:p-12 rounded-3xl border border-brand-neon/20 shadow-2xl">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                        <div class="lg:col-span-5">
+                            <span class="text-brand-neon text-xs font-bold tracking-widest uppercase">Smart Investor Tool</span>
+                            <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2 mb-4">Calculate Your VIP Property ROI</h2>
+                            <p class="text-brand-muted text-sm leading-relaxed mb-6">
+                                Leverage real data projections to analyze expected capital appreciation, rental yield, and long-term net income across premium real estate markets.
+                            </p>
+                            <div class="space-y-4">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-brand-neon/10 flex items-center justify-center text-brand-neon shrink-0"><i class="fa-solid fa-chart-line text-sm"></i></div>
+                                    <div>
+                                        <h4 class="text-white text-sm font-bold">Estimated Appreciation</h4>
+                                        <p class="text-brand-muted text-xs">Based on prime zone historical growth patterns.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-brand-neon/10 flex items-center justify-center text-brand-neon shrink-0"><i class="fa-solid fa-coins text-sm"></i></div>
+                                    <div>
+                                        <h4 class="text-white text-sm font-bold">Passive Rental Income</h4>
+                                        <p class="text-brand-muted text-xs">Average monthly yield generated from prime tenants.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-7 bg-brand-card/90 p-6 sm:p-8 rounded-2xl border border-white/10 space-y-6">
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <label class="text-xs font-bold uppercase text-brand-muted">Initial Property Value (PKR)</label>
+                                    <span id="investmentValueDisplay" class="text-brand-neon font-extrabold text-lg">50,000,000 PKR</span>
+                                </div>
+                                <input type="range" id="investmentInput" min="10000000" max="500000000" step="5000000" value="50000000" class="w-full">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <label class="text-xs font-bold uppercase text-brand-muted">Holding Period (Years)</label>
+                                    <span id="yearsValueDisplay" class="text-brand-neon font-extrabold text-lg">5 Years</span>
+                                </div>
+                                <input type="range" id="yearsInput" min="1" max="15" step="1" value="5" class="w-full">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <label class="text-xs font-bold uppercase text-brand-muted">Expected Annual Growth (%)</label>
+                                    <span id="growthValueDisplay" class="text-brand-neon font-extrabold text-lg">12 %</span>
+                                </div>
+                                <input type="range" id="growthInput" min="5" max="25" step="1" value="12" class="w-full">
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-white/10">
+                                <div class="bg-brand-dark p-4 rounded-xl border border-brand-neon/20">
+                                    <span class="text-brand-muted text-xs block mb-1">Projected Total Value</span>
+                                    <span id="totalValueOutput" class="text-2xl font-extrabold text-white">88,117,000 PKR</span>
+                                </div>
+                                <div class="bg-brand-dark p-4 rounded-xl border border-brand-neon/40 shadow-neon-glow">
+                                    <span class="text-brand-muted text-xs block mb-1">Estimated Net Return (Gain)</span>
+                                    <span id="netGainOutput" class="text-2xl font-extrabold text-brand-neon">+38,117,000 PKR</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Land Pulse Marketing (VIP Advantages) -->
+        <section id="advantages" class="py-20 bg-brand-dark/60 relative border-t border-white/5">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <span class="text-brand-neon text-xs font-bold tracking-widest uppercase">Excellence In Execution</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2">Why Land Pulse Marketing?</h2>
+                    <p class="text-brand-muted text-sm mt-3">We bridge the gap between discerning investors and high-yield, premium real estate opportunities with complete transparency.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="glass-card p-8 rounded-2xl text-left relative overflow-hidden group">
+                        <div class="w-14 h-14 rounded-2xl bg-brand-neon/10 border border-brand-neon/30 flex items-center justify-center text-brand-neon text-2xl mb-6 shadow-neon-glow group-hover:bg-brand-neon group-hover:text-black transition-all duration-300">
+                            <i class="fa-solid fa-chart-pie"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Smart Valuation</h3>
+                        <p class="text-brand-muted text-sm leading-relaxed">
+                            Algorithmic market trend analysis ensuring optimal pricing and future growth forecast for every property.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-8 rounded-2xl text-left relative overflow-hidden group">
+                        <div class="w-14 h-14 rounded-2xl bg-brand-neon/10 border border-brand-neon/30 flex items-center justify-center text-brand-neon text-2xl mb-6 shadow-neon-glow group-hover:bg-brand-neon group-hover:text-black transition-all duration-300">
+                            <i class="fa-solid fa-briefcase"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Portfolio Management</h3>
+                        <p class="text-brand-muted text-sm leading-relaxed">
+                            Dedicated wealth advisors managing buy, sell, and rental portfolios for maximum profitability.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-8 rounded-2xl text-left relative overflow-hidden group">
+                        <div class="w-14 h-14 rounded-2xl bg-brand-neon/10 border border-brand-neon/30 flex items-center justify-center text-brand-neon text-2xl mb-6 shadow-neon-glow group-hover:bg-brand-neon group-hover:text-black transition-all duration-300">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Legal & Title Assurance</h3>
+                        <p class="text-brand-muted text-sm leading-relaxed">
+                            100% verified documentation, NOC compliance, and seamless title transfer guarantee without hassle.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-8 rounded-2xl text-left relative overflow-hidden group">
+                        <div class="w-14 h-14 rounded-2xl bg-brand-neon/10 border border-brand-neon/30 flex items-center justify-center text-brand-neon text-2xl mb-6 shadow-neon-glow group-hover:bg-brand-neon group-hover:text-black transition-all duration-300">
+                            <i class="fa-solid fa-key"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Exclusive Pre-Launch</h3>
+                        <p class="text-brand-muted text-sm leading-relaxed">
+                            Get early investor rates in mega commercial towers and high-end gated communities before public release.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team -->
+        <section id="team" class="py-20 bg-brand-dark/60 border-t border-white/5">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <span class="text-brand-neon text-xs font-bold tracking-widest uppercase">People Behind The Pulse</span>
+                    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white mt-2">The Experts Behind Your Journey</h2>
+                    <p class="text-brand-muted text-sm mt-3">Get to know the specialists guiding your property journey.</p>
+                </div>
+                <div id="teamContainer" class="grid grid-cols-1 md:grid-cols-3 gap-8" aria-live="polite">
+                    <p class="col-span-full text-center text-brand-muted text-sm">Loading team profiles…</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Virtual Tour Banner -->
+        <section class="py-20 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="relative rounded-3xl overflow-hidden border border-white/10 group h-[450px]">
+                    <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80" alt="Virtual Tour Cover" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 brightness-50">
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/40 to-transparent"></div>
+                    
+                    <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
+                        <button onclick="openVideoLightbox()" class="w-20 h-20 rounded-full bg-brand-neon text-black flex items-center justify-center text-2xl shadow-neon-glow-lg hover:scale-110 transition-transform duration-300 mb-6 group-hover:animate-bounce">
+                            <i class="fa-solid fa-play ml-1"></i>
+                        </button>
+                        <span class="text-brand-neon text-xs font-bold tracking-widest uppercase mb-2">Immersive Experience</span>
+                        <h2 class="text-3xl sm:text-5xl font-extrabold text-white max-w-2xl">Experience Ultra-Modern Living In 4K Virtual Tour</h2>
+                        <p class="text-brand-muted text-sm sm:text-base mt-3 max-w-xl">Take an interactive walkthrough of our signature luxury properties from anywhere in the world.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Client Testimonials & Reviews -->
+        <section id="testimonials" class="py-20 bg-brand-dark/50 border-t border-white/5">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <span class="text-brand-neon text-xs font-bold tracking-widest uppercase">Trusted By High-Net-Worth Investors</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2">VIP Client Testimonials</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="glass-card p-8 rounded-2xl relative">
+                        <div class="flex text-brand-neon mb-4 gap-1">
+                            <i class="fa-solid fa-star text-sm"></i>
+                            <i class="fa-solid fa-star text-sm"></i>
+                            <i class="fa-solid fa-star text-sm"></i>
+                            <i class="fa-solid fa-star text-sm"></i>
+                            <i class="fa-solid fa-star text-sm"></i>
+                        </div>
+                        <p class="text-brand-muted text-sm italic mb-6 leading-relaxed">
+                            "Land Pulse Marketing secured two prime commercial plots in DHA Phase 6 for my venture. Their ROI analysis was spot on, and title transfer took less than a week."
+                        </p>
+                        <div class="flex items-center gap-4">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" class="w-12 h-12 rounded-full object-cover border border-brand-neon" alt="Client">
+                            <div>
+                                <h4 class="text-white font-bold text-sm">Chaudhry Hammad</h4>
+                                <span class="text-brand-muted text-xs">Overseas Investor, UK</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-8 rounded-2xl relative border-brand-neon/30">
+                        <div class="flex text-brand-neon mb-4 gap-1">
+                            <i class="fa-solid fa-star text-sm"></i>
+                            <i class="fa-solid fa-star text-sm"></i>
+                            <i class="fa-solid fa-star text-sm"></i>
+                            <i class="fa-solid fa-star text-sm"></i>
+                            <i class="fa-solid fa-star text-sm"></i>
+                        </div>
+                        <p class="text-brand-muted text-sm italic mb-6 leading-relaxed">
+                            "The team provided end-to-end guidance for my Dubai luxury apartment purchase. Transparent dealings and VIP treatment throughout the process!"
+                        </p>
+                        <div class="flex items-center gap-4">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80" class="w-12 h-12 rounded-full object-cover border border-brand-neon" alt="Client">
+                            <div>
+                                <h4 class="text-white font-bold text-sm">Sheikh Farhan Al-Maktoum</h4>
+                                <span class="text-brand-muted text-xs">Business Executive, Lahore</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-8 rounded-2xl relative">
+                        <div class="flex text-brand-neon mb-4 gap-1">
+                            <i class="fa-solid fa-star text-sm"></i>
+                            <i class="fa-solid fa-star text-sm"></i>
+                            <i class="fa-solid fa-star text-sm"></i>
+                            <i class="fa-solid fa-star text-sm"></i>
+                            <i class="fa-solid fa-star text-sm"></i>
+                        </div>
+                        <p class="text-brand-muted text-sm italic mb-6 leading-relaxed">
+                            "Finding a genuine 2 Kanal luxury mansion in Islamabad was seamless with Land Pulse. Highly recommend their VIP pre-launch access!"
+                        </p>
+                        <div class="flex items-center gap-4">
+                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80" class="w-12 h-12 rounded-full object-cover border border-brand-neon" alt="Client">
+                            <div>
+                                <h4 class="text-white font-bold text-sm">Dr. Ayesha Malik</h4>
+                                <span class="text-brand-muted text-xs">Property Owner, Islamabad</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Quick Floating Action Buttons -->
+    <div class="fixed bottom-6 right-6 z-40 flex flex-col gap-3">
+        <a href="https://wa.me/923001234567" target="_blank" class="w-14 h-14 rounded-full bg-emerald-500 text-white flex items-center justify-center text-2xl shadow-emerald-glow hover:scale-110 transition-transform duration-300 relative group">
+            <i class="fa-brands fa-whatsapp"></i>
+            <span class="absolute right-16 top-1/2 -translate-y-1/2 glass-card px-3 py-1.5 rounded-lg text-xs font-semibold text-white whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">Chat on WhatsApp</span>
+        </a>
+    </div>
+
+    <!-- Responsive Footer -->
+    <footer class="bg-brand-card border-t border-white/10 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
+                <div class="lg:col-span-2">
+                    <a href="#" class="flex items-center space-x-3 mb-4">
+                        <img src="images/LOGO/logo.png" alt="Land Pulse Marketing" onerror="this.onerror=null; this.src='https://placehold.co/180x50/12181b/00ff66?text=Land+Pulse';" class="brand-logo h-12 w-auto max-w-[180px] object-contain">
+                    </a>
+                    <p class="text-brand-muted text-sm leading-relaxed max-w-sm mb-6">
+                        Pakistan’s premiere real estate marketing agency specializing in high-yielding plots, luxury villas, commercial towers, and global property investments.
+                    </p>
+                    <div id="footerSocialLinks" class="flex space-x-4" aria-label="Social media links"></div>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4">Quick Links</h4>
+                    <ul class="space-y-2.5 text-sm text-brand-muted">
+                        <li><a href="#hero" class="hover:text-brand-neon transition-colors">Home Page</a></li>
+                        <li><a href="#premium-projects" class="hover:text-brand-neon transition-colors">Our Premium Projects</a></li>
+                        <li><a href="#properties" class="hover:text-brand-neon transition-colors">Featured VIP Properties</a></li>
+                        <li><a href="#calculator" class="hover:text-brand-neon transition-colors">Investment Calculator</a></li>
+                        <li><a href="#advantages" class="hover:text-brand-neon transition-colors">Our Advantages</a></li>
+                        <li><a href="#team" class="hover:text-brand-neon transition-colors">Our Team</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4">Hot Locations</h4>
+                    <ul class="space-y-2.5 text-sm text-brand-muted">
+                        <li><a href="#" class="hover:text-brand-neon transition-colors">DHA Lahore Phase 6-9</a></li>
+                        <li><a href="#" class="hover:text-brand-neon transition-colors">Gulberg Executive Towers</a></li>
+                        <li><a href="#" class="hover:text-brand-neon transition-colors">Bahria Town Islamabad</a></li>
+                        <li><a href="#" class="hover:text-brand-neon transition-colors">Emaar Oceanfront Karachi</a></li>
+                        <li><a href="#" class="hover:text-brand-neon transition-colors">Dubai Marina Luxury Apts</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4">VIP Insider Club</h4>
+                    <p class="text-brand-muted text-xs mb-4">Receive confidential off-market pre-launch price lists directly in your inbox.</p>
+                    <form onsubmit="handleNewsletter(event)" class="space-y-2">
+                        <input type="email" id="newsletterEmail" required placeholder="Enter your email" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:border-brand-neon focus:outline-none">
+                        <button type="submit" class="w-full bg-brand-neon text-black font-bold py-2.5 rounded-xl text-xs hover:shadow-neon-glow transition-all">Subscribe Now</button>
+                    </form>
+                    <div id="newsletterSuccess" class="hidden text-brand-neon text-xs mt-2">✓ Successfully Subscribed to VIP List</div>
+                </div>
+            </div>
+
+            <div class="border-t border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-brand-muted gap-4">
+                <p>&copy; 2026 Land Pulse Marketing. All Rights Reserved. Developed by Ashal.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="hover:text-white">Privacy Policy</a>
+                    <a href="#" class="hover:text-white">Terms of Service</a>
+                    <a href="#" class="hover:text-white">NOC Disclaimers</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Property Details Modal Popup -->
+    <div id="propertyModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div class="glass-panel max-w-3xl w-full rounded-3xl overflow-hidden border border-brand-neon/30 relative max-h-[90vh] flex flex-col">
+            <button onclick="closeModal()" class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-brand-dark/80 text-white hover:text-brand-neon flex items-center justify-center border border-white/10">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="overflow-y-auto p-6 sm:p-8 space-y-6">
+                <div class="relative h-64 sm:h-80 rounded-2xl overflow-hidden group cursor-pointer" onclick="openGalleryFromModal()">
+                    <img id="modalImage" src="" alt="Property detail" class="w-full h-full object-cover">
+                    <span id="modalTag" class="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-extrabold bg-brand-neon text-black uppercase"></span>
+                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white font-bold text-sm">
+                        <i class="fa-solid fa-images text-brand-neon"></i> Click to launch full slideshow
+                    </div>
+                </div>
+                <div id="modalGallery" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
+
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h3 id="modalTitle" class="text-2xl font-bold text-white"></h3>
+                        <p id="modalLocation" class="text-brand-muted text-sm mt-1"><i class="fa-solid fa-location-dot text-brand-neon me-1"></i> </p>
+                    </div>
+                    <div class="text-left sm:text-right">
+                        <span class="text-xs text-brand-muted block">Asking Price</span>
+                        <span id="modalPrice" class="text-2xl font-extrabold text-brand-neon"></span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-4 py-4 border-y border-white/10 text-center">
+                    <div class="bg-brand-dark/60 p-3 rounded-xl">
+                        <i class="fa-solid fa-bed text-brand-neon block mb-1"></i>
+                        <span id="modalBeds" class="text-xs text-brand-muted"></span>
+                    </div>
+                    <div class="bg-brand-dark/60 p-3 rounded-xl">
+                        <i class="fa-solid fa-bath text-brand-neon block mb-1"></i>
+                        <span id="modalBaths" class="text-xs text-brand-muted"></span>
+                    </div>
+                    <div class="bg-brand-dark/60 p-3 rounded-xl">
+                        <i class="fa-solid fa-ruler-combined text-brand-neon block mb-1"></i>
+                        <span id="modalArea" class="text-xs text-brand-muted"></span>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-2">Property Highlights & Features</h4>
+                    <p id="modalDescription" class="text-brand-muted text-sm leading-relaxed"></p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4 pt-2">
+                    <a href="#team" onclick="closeModal()" class="flex-1 text-center py-3.5 bg-brand-neon text-black font-extrabold rounded-xl shadow-neon-glow hover:brightness-110 transition-all">
+                        Meet Our Team
+                    </a>
+                    <a id="modalWhatsapp" href="#" target="_blank" class="flex-1 text-center py-3.5 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-500 transition-all flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-whatsapp text-lg"></i> Direct WhatsApp Inquiry
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fullscreen Interactive Photo Gallery Slideshow Modal -->
+    <div id="galleryModal" class="fixed inset-0 z-50 hidden flex flex-col justify-between bg-black/95 backdrop-blur-xl p-4 sm:p-6 transition-all duration-300">
+        <!-- Gallery Top Bar -->
+        <div class="flex items-center justify-between text-white z-10 pb-2 border-b border-white/10">
+            <div>
+                <h3 id="galleryTitle" class="text-lg font-bold text-white"></h3>
+                <p id="gallerySubtitle" class="text-xs text-brand-muted"></p>
+            </div>
+            <div class="flex items-center gap-4">
+                <!-- Slideshow Controls -->
+                <button type="button" id="slideshowToggleBtn" onclick="toggleSlideshow()" class="px-4 py-2 rounded-xl bg-brand-neon/10 border border-brand-neon/30 text-brand-neon hover:bg-brand-neon hover:text-black font-bold text-xs flex items-center gap-2 transition-all">
+                    <i id="slideshowIcon" class="fa-solid fa-play"></i> <span id="slideshowStatusText">Play Slideshow</span>
+                </button>
+                <span id="galleryCounter" class="text-xs font-mono px-3 py-1.5 rounded-lg bg-brand-card border border-white/10 text-brand-neon"></span>
+                <button type="button" onclick="closeGalleryModal()" class="w-10 h-10 rounded-full bg-brand-card border border-white/10 text-white hover:text-brand-neon hover:border-brand-neon flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Display Slide Container -->
+        <div class="relative flex-1 flex items-center justify-center my-4 overflow-hidden group">
+            <!-- Previous Button -->
+            <button type="button" onclick="prevGalleryImage()" class="absolute left-2 sm:left-6 z-20 w-12 h-12 rounded-full bg-black/70 border border-white/20 text-white hover:text-brand-neon hover:border-brand-neon flex items-center justify-center text-lg transition-transform hover:scale-110">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+
+            <!-- Slide Image -->
+            <div class="relative max-w-5xl max-h-[70vh] w-full h-full flex items-center justify-center">
+                <img id="galleryMainImage" src="" alt="Gallery Preview" class="max-w-full max-h-[70vh] object-contain rounded-2xl border border-white/10 shadow-2xl transition-all duration-500">
+            </div>
+
+            <!-- Next Button -->
+            <button type="button" onclick="nextGalleryImage()" class="absolute right-2 sm:right-6 z-20 w-12 h-12 rounded-full bg-black/70 border border-white/20 text-white hover:text-brand-neon hover:border-brand-neon flex items-center justify-center text-lg transition-transform hover:scale-110">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- Gallery Thumbnails Carousel Strip -->
+        <div class="pt-2 border-t border-white/10">
+            <div id="galleryThumbnailsContainer" class="flex items-center justify-center gap-3 overflow-x-auto py-2 px-4 max-w-4xl mx-auto">
+                <!-- Dynamic thumbnails via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Lightbox Modal -->
+    <div id="videoModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+        <div class="relative max-w-4xl w-full aspect-video rounded-2xl overflow-hidden glass-panel border border-brand-neon/40">
+            <button onclick="closeVideoModal()" class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-brand-dark/80 text-white hover:text-brand-neon flex items-center justify-center border border-white/10">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="w-full h-full flex flex-col items-center justify-center p-8 text-center bg-brand-card">
+                <i class="fa-solid fa-circle-play text-brand-neon text-6xl mb-4 animate-pulse"></i>
+                <h3 class="text-2xl font-bold text-white mb-2">4K Virtual Walkthrough Preview</h3>
+                <p class="text-brand-muted text-sm max-w-md">Contact our VIP desk to access full private drone walkthrough footage and interactive 3D blueprint plans.</p>
+                <a href="#team" onclick="closeVideoModal()" class="mt-6 px-6 py-3 bg-brand-neon text-black font-bold rounded-xl shadow-neon-glow">Meet Our Team</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        const propertiesData = [];
+        const premiumProjectsData = [];
+        let activeListingType = "all";
+        let activePropertyCategory = "all";
+        let currentPropertyItems = [];
+        let currentPropertyPage = 1;
+        const propertyPageSize = 12;
+
+        /* Interactive Gallery & Slideshow State Variables */
+        let currentGalleryImages = [];
+        let currentGalleryIndex = 0;
+        let gallerySlideshowInterval = null;
+        let isSlideshowPlaying = false;
+        let currentActivePropertyId = null;
+
+        const defaultFallbackProjects = [
+            {
+                id: 'p1',
+                title: 'DHA Raya Commercial Square',
+                location: 'DHA Phase 6, Lahore',
+                priceRange: 'PKR 85M - 250M',
+                badge: 'Exclusive Master Plan',
+                image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
+                description: 'Luxury commercial towers and corporate suites located in the heart of Raya Golf & Country Club.'
+            },
+            {
+                id: 'p2',
+                title: 'Gulberg Executive Enclave',
+                location: 'Main Boulevard, Gulberg Lahore',
+                priceRange: 'PKR 45M - 180M',
+                badge: 'Pre-Launch Phase',
+                image: 'https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=800&q=80',
+                description: 'Ultra-modern high-rise residential apartments with sky gardens and infinity swimming pool.'
+            },
+            {
+                id: 'p3',
+                title: 'Bahria Town VIP Golf Mansions',
+                location: 'Bahria Town, Islamabad',
+                priceRange: 'PKR 120M - 450M',
+                badge: 'Ready Possession',
+                image: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80',
+                description: 'Designer smart mansions overlooking private championship golf course with 24/7 security.'
+            }
+        ];
+
+        const socialPlatforms = {
+            youtube: { label: "YouTube", icon: "fa-youtube" },
+            instagram: { label: "Instagram", icon: "fa-instagram" },
+            tiktok: { label: "TikTok", icon: "fa-tiktok" },
+            facebook: { label: "Facebook", icon: "fa-facebook-f" }
+        };
+
+        function escapeHTML(value) {
+            return String(value ?? "").replace(/[&<>"']/g, character => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;"
+            })[character]);
+        }
+
+        async function fetchJSON(path) {
+            const response = await fetch(new URL(path, document.baseURI));
+            if (!response.ok) {
+                throw new Error(`Request for ${path} failed (${response.status})`);
+            }
+            return response.json();
+        }
+
+        /* Premium Projects Loading */
+        async function loadPremiumProjects() {
+            try {
+                const projectsData = await fetchJSON("PremiumProjects/inventory.json");
+                if (projectsData && Array.isArray(projectsData.projects) && projectsData.projects.length > 0) {
+                    renderPremiumProjects(projectsData.projects);
+                    return;
+                }
+            } catch (error) {
+                console.warn("Using fallback default projects:", error.message);
+            }
+            renderPremiumProjects(defaultFallbackProjects);
+        }
+
+        function renderPremiumProjects(projects) {
+            const container = document.getElementById("premiumProjectsContainer");
+            if (!projects || projects.length === 0) {
+                container.innerHTML = `<p class="col-span-full text-center text-brand-muted text-sm">No premium projects featured at the moment.</p>`;
+                return;
+            }
+
+            container.innerHTML = projects.map(proj => `
+                <div class="glass-card rounded-2xl overflow-hidden flex flex-col group border border-white/5 hover:border-brand-neon/40">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="${escapeHTML(proj.image)}" alt="${escapeHTML(proj.title)}" onerror="this.src='https://placehold.co/800x500/12181b/00ff66?text=Land+Pulse+Project';" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <span class="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-extrabold bg-brand-neon text-black shadow-md uppercase tracking-wider">${escapeHTML(proj.badge || 'VIP Project')}</span>
+                        <div class="absolute bottom-3 right-3 bg-brand-dark/90 px-3 py-1 rounded-lg text-brand-neon text-xs font-extrabold border border-brand-neon/30">
+                            ${escapeHTML(proj.priceRange || 'Price On Request')}
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs text-brand-muted block mb-1"><i class="fa-solid fa-location-dot text-brand-neon me-1"></i> ${escapeHTML(proj.location)}</span>
+                            <h3 class="text-xl font-bold text-white group-hover:text-brand-neon transition-colors mb-2">${escapeHTML(proj.title)}</h3>
+                            <p class="text-brand-muted text-xs leading-relaxed mb-4 line-clamp-2">${escapeHTML(proj.description || '')}</p>
+                        </div>
+
+                        <a href="https://wa.me/923001234567?text=${encodeURIComponent('Inquiry about Premium Project: ' + proj.title)}" target="_blank" class="w-full py-3 rounded-xl bg-brand-card hover:bg-brand-neon hover:text-black border border-white/10 text-white text-xs font-bold transition-all duration-300 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i> Express Interest
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /* Auto-Detection for Team Profiles */
+        async function loadSiteAssets() {
+            try {
+                const assets = await fetchJSON("assets-manifest.json");
+                if (!assets || !Array.isArray(assets.teams)) {
+                    throw new Error("assets-manifest.json must contain a teams array");
+                }
+                if (assets.logo) {
+                    document.querySelectorAll(".brand-logo").forEach(image => {
+                        image.src = assets.logo;
+                    });
+                }
+
+                const teamProfiles = await Promise.all(assets.teams.map(async (member) => {
+                    let detailsData = {};
+                    if (member.details) {
+                        try {
+                            detailsData = await fetchJSON(member.details);
+                        } catch (e) {
+                            console.warn(`Could not fetch details JSON for ${member.folder}`);
+                        }
+                    }
+
+                    const candidatePhotos = [
+                        member.photo,
+                        `${member.folder}/photo.jpg`,
+                        `${member.folder}/profile.jpg`,
+                        `${member.folder}/photo.png`,
+                        `${member.folder}/avatar.jpg`
+                    ].filter(Boolean);
+
+                    const candidateVideos = [
+                        member.introVideo,
+                        `${member.folder}/intro.mp4`,
+                        `${member.folder}/video.mp4`
+                    ].filter(Boolean);
+
+                    return {
+                        ...member,
+                        ...detailsData,
+                        photosToTry: candidatePhotos,
+                        videosToTry: candidateVideos
+                    };
+                }));
+
+                renderTeamMembers(teamProfiles);
+            } catch (error) {
+                console.warn("Using fallback team structure:", error.message);
+                renderFallbackTeam();
+            }
+        }
+
+        function renderTeamMembers(profiles) {
+            const container = document.getElementById("teamContainer");
+            container.innerHTML = profiles.map((member, index) => {
+                const name = escapeHTML(member.name || member.role || member.folder || 'Property Specialist');
+                const role = escapeHTML(member.role || 'Executive Consultant');
+                const bio = escapeHTML(member.bio || 'Delivering high-yield investment advisory for luxury real estate clients across Pakistan.');
+                const initials = escapeHTML(member.initials || name.split(' ').map(n=>n[0]).join('').substring(0,2));
+                const videoId = `teamVideo${index}`;
+
+                const phone = member.phone || '+923001234567';
+                const whatsapp = member.whatsapp || phone.replace(/[^0-9]/g, '');
+                const email = member.email || 'info@landpulsemarketing.com';
+                const facebook = member.facebook || 'https://facebook.com';
+                const instagram = member.instagram || 'https://instagram.com';
+                const linkedin = member.linkedin || 'https://linkedin.com';
+
+                const primaryPhoto = member.photosToTry && member.photosToTry[0] ? member.photosToTry[0] : '';
+                const primaryVideo = member.videosToTry && member.videosToTry[0] ? member.videosToTry[0] : '';
+
+                return `
+                    <article class="team-card glass-card rounded-2xl overflow-hidden group relative flex flex-col justify-between">
+                        <div>
+                            <div class="relative h-72 bg-brand-card overflow-hidden flex items-center justify-center">
+                                <div class="team-avatar-fallback flex items-center justify-center w-full h-full bg-brand-dark text-brand-neon text-5xl font-extrabold border-b border-brand-neon/20">
+                                    ${initials}
+                                </div>
+
+                                ${primaryPhoto ? `
+                                    <img src="${escapeHTML(primaryPhoto)}" alt="${name}" 
+                                         class="team-photo absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                                         onerror="this.style.display='none';">
+                                ` : ''}
+
+                                ${primaryVideo ? `
+                                    <video id="${videoId}" class="team-video absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-300" 
+                                           src="${escapeHTML(primaryVideo)}" muted loop playsinline preload="none"></video>
+                                    <div class="absolute inset-x-0 bottom-0 flex items-center justify-between p-3 bg-gradient-to-t from-black/90 to-transparent z-10">
+                                        <button type="button" onclick="toggleTeamPlayback(event, '${videoId}', this)" class="w-10 h-10 rounded-full bg-brand-neon text-black flex items-center justify-center shadow-neon-glow" aria-label="Play/Pause intro">
+                                            <i class="fa-solid fa-play text-xs"></i>
+                                        </button>
+                                        <button type="button" onclick="toggleTeamMute(event, '${videoId}', this)" class="px-3 py-1.5 rounded-lg bg-black/70 text-white text-xs font-bold border border-white/20 hover:border-brand-neon">
+                                            <i class="fa-solid fa-volume-xmark me-1"></i><span>Unmute</span>
+                                        </button>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            <div class="p-6">
+                                <span class="text-brand-neon text-xs font-bold tracking-widest uppercase">${role}</span>
+                                <h3 class="text-xl font-bold text-white mt-1">${name}</h3>
+                                <p class="text-brand-muted text-xs leading-relaxed mt-3">${bio}</p>
+                            </div>
+                        </div>
+
+                        <div class="px-6 pb-6 pt-2 mt-auto border-t border-white/10 flex items-center justify-between gap-2">
+                            <a href="https://wa.me/${escapeHTML(whatsapp)}?text=${encodeURIComponent('Hello ' + name + ', I would like to consult regarding property investments.')}" 
+                               target="_blank" 
+                               title="Chat on WhatsApp" 
+                               class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500 hover:text-white flex items-center justify-center transition-all duration-300 text-lg shadow-sm hover:scale-110">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </a>
+                            <a href="tel:${escapeHTML(phone)}" 
+                               title="Direct Call" 
+                               class="w-10 h-10 rounded-xl bg-brand-neon/10 border border-brand-neon/30 text-brand-neon hover:bg-brand-neon hover:text-black flex items-center justify-center transition-all duration-300 text-sm shadow-sm hover:scale-110">
+                                <i class="fa-solid fa-phone"></i>
+                            </a>
+                            <a href="${escapeHTML(instagram)}" 
+                               target="_blank" 
+                               title="Instagram Profile" 
+                               class="w-10 h-10 rounded-xl bg-brand-card border border-white/10 text-brand-muted hover:text-pink-400 hover:border-pink-400/40 hover:bg-pink-500/10 flex items-center justify-center transition-all duration-300 text-base hover:scale-110">
+                                <i class="fa-brands fa-instagram"></i>
+                            </a>
+                            <a href="${escapeHTML(facebook)}" 
+                               target="_blank" 
+                               title="Facebook Profile" 
+                               class="w-10 h-10 rounded-xl bg-brand-card border border-white/10 text-brand-muted hover:text-blue-400 hover:border-blue-400/40 hover:bg-blue-500/10 flex items-center justify-center transition-all duration-300 text-base hover:scale-110">
+                                <i class="fa-brands fa-facebook-f"></i>
+                            </a>
+                            <a href="${escapeHTML(linkedin)}" 
+                               target="_blank" 
+                               title="LinkedIn Profile" 
+                               class="w-10 h-10 rounded-xl bg-brand-card border border-white/10 text-brand-muted hover:text-sky-400 hover:border-sky-400/40 hover:bg-sky-500/10 flex items-center justify-center transition-all duration-300 text-base hover:scale-110">
+                                <i class="fa-brands fa-linkedin-in"></i>
+                            </a>
+                            <a href="mailto:${escapeHTML(email)}" 
+                               title="Send Email" 
+                               class="w-10 h-10 rounded-xl bg-brand-card border border-white/10 text-brand-muted hover:text-brand-neon hover:border-brand-neon hover:bg-brand-neon/10 flex items-center justify-center transition-all duration-300 text-base hover:scale-110">
+                                <i class="fa-solid fa-envelope"></i>
+                            </a>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+
+            attachTeamHoverListeners();
+        }
+
+        function renderFallbackTeam() {
+            const fallbackTeam = [
+                { 
+                    name: "Chaudhry Malik", 
+                    role: "Managing Director", 
+                    initials: "CM", 
+                    bio: "Over 15 years leading mega real estate acquisition and portfolio strategy across Pakistan.",
+                    phone: "+923001234567",
+                    whatsapp: "923001234567",
+                    email: "malik@landpulsemarketing.com",
+                    facebook: "https://facebook.com",
+                    instagram: "https://instagram.com",
+                    linkedin: "https://linkedin.com"
+                },
+                { 
+                    name: "Ayan Saif", 
+                    role: "Senior Investment Advisor", 
+                    initials: "AS", 
+                    bio: "Specializes in commercial plot yields and pre-launch VIP project allocations in DHA & Bahria.",
+                    phone: "+923001234568",
+                    whatsapp: "923001234568",
+                    email: "ayan@landpulsemarketing.com",
+                    facebook: "https://facebook.com",
+                    instagram: "https://instagram.com",
+                    linkedin: "https://linkedin.com"
+                },
+                { 
+                    name: "Zainab Shah", 
+                    role: "Client Relations Manager", 
+                    initials: "ZS", 
+                    bio: "Ensuring seamless title transfers, legal NOC assurance, and VIP client onboarding.",
+                    phone: "+923001234569",
+                    whatsapp: "923001234569",
+                    email: "zainab@landpulsemarketing.com",
+                    facebook: "https://facebook.com",
+                    instagram: "https://instagram.com",
+                    linkedin: "https://linkedin.com"
+                }
+            ];
+            renderTeamMembers(fallbackTeam);
+        }
+
+        function attachTeamHoverListeners() {
+            document.querySelectorAll("video.team-video").forEach(video => {
+                const card = video.closest(".team-card");
+                card.addEventListener("mouseenter", () => {
+                    card.classList.add("is-video-playing");
+                    video.play().catch(e => console.warn("Auto video play restricted:", e));
+                });
+                card.addEventListener("mouseleave", () => {
+                    video.pause();
+                    card.classList.remove("is-video-playing");
+                });
+            });
+        }
+
+        function toggleTeamPlayback(event, videoId, button) {
+            event.stopPropagation();
+            const video = document.getElementById(videoId);
+            if (!video) return;
+            const card = video.closest(".team-card");
+            if (video.paused) {
+                card.classList.add("is-video-playing");
+                button.querySelector("i").className = "fa-solid fa-pause text-xs";
+                video.play();
+            } else {
+                video.pause();
+                card.classList.remove("is-video-playing");
+                button.querySelector("i").className = "fa-solid fa-play text-xs";
+            }
+        }
+
+        function toggleTeamMute(event, videoId, button) {
+            event.stopPropagation();
+            const video = document.getElementById(videoId);
+            if (!video) return;
+            video.muted = !video.muted;
+            const label = video.muted ? "Unmute" : "Mute";
+            button.querySelector("span").textContent = label;
+            button.querySelector("i").className = `fa-solid ${video.muted ? "fa-volume-xmark" : "fa-volume-high"} me-1`;
+        }
+
+        /* Property Inventory Loading */
+        async function loadPropertyInventory() {
+            try {
+                const inventory = await fetchJSON("Towns/inventory.json");
+                if (inventory && Array.isArray(inventory.listings)) {
+                    const loaded = await Promise.all(inventory.listings.map(async (listing, idx) => {
+                        try {
+                            const details = await fetchJSON(listing.manifestPath);
+                            const photos = (listing.photos || []).length > 0 ? listing.photos : [
+                                'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+                                'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80',
+                                'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80'
+                            ];
+                            return {
+                                id: idx + 1,
+                                title: details.title || listing.propertyTitle,
+                                description: details.description || '',
+                                price: details.price || 'Price On Request',
+                                beds: details.beds || 'N/A',
+                                baths: details.baths || 'N/A',
+                                area: details.size || 'N/A',
+                                category: (details.category || 'residential').toLowerCase(),
+                                type: (details.category || 'residential').toLowerCase(),
+                                projectTitle: listing.projectTitle || 'DHA Lahore',
+                                listingType: listing.listingType || 'sale',
+                                tag: listing.listingType === 'rent' ? 'For Rent' : 'For Sale',
+                                tagBg: listing.listingType === 'rent' ? 'bg-brand-emerald text-white' : 'bg-brand-neon text-black',
+                                image: photos[0],
+                                images: photos,
+                                rawPrice: getNumericPrice(details.price || '0')
+                            };
+                        } catch (e) {
+                            return null;
+                        }
+                    }));
+
+                    const valid = loaded.filter(Boolean);
+                    if (valid.length > 0) {
+                        propertiesData.push(...valid);
+                        populateLocationFilter();
+                        renderProperties(propertiesData);
+                        return;
+                    }
+                }
+            } catch (error) {
+                console.warn("Using sample property inventory:", error.message);
+            }
+
+            // Fallback Properties Sample Data with Multi-Photo Arrays
+            propertiesData.push(
+                {
+                    id: 1,
+                    title: "1 Kanal Ultra Modern VIP Mansion",
+                    projectTitle: "DHA Phase 6, Lahore",
+                    price: "125,000,000 PKR",
+                    rawPrice: 125000000,
+                    category: "villas",
+                    type: "villas",
+                    listingType: "sale",
+                    tag: "For Sale",
+                    tagBg: "bg-brand-neon text-black",
+                    beds: "5 Beds",
+                    baths: "6 Baths",
+                    area: "1 Kanal",
+                    image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80",
+                    images: [
+                        "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80",
+                        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+                        "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80",
+                        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80"
+                    ],
+                    description: "Brand new full smart automation villa featuring imported Spanish tiles, private pool, and solar system."
+                },
+                {
+                    id: 2,
+                    title: "Prime Commercial Corner Plaza Plot",
+                    projectTitle: "Gulberg III, Lahore",
+                    price: "240,000,000 PKR",
+                    rawPrice: 240000000,
+                    category: "commercial",
+                    type: "commercial",
+                    listingType: "sale",
+                    tag: "For Sale",
+                    tagBg: "bg-brand-neon text-black",
+                    beds: "Commercial",
+                    baths: "N/A",
+                    area: "8 Marla",
+                    image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80",
+                    images: [
+                        "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80",
+                        "https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=800&q=80",
+                        "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80"
+                    ],
+                    description: "Main Boulevard facing commercial site with high rental potential and pre-approved LDA floor plans."
+                },
+                {
+                    id: 3,
+                    title: "Luxury Golf View Penthouse Suite",
+                    projectTitle: "Bahria Town, Islamabad",
+                    price: "450,000 PKR/mo",
+                    rawPrice: 450000,
+                    category: "residential",
+                    type: "residential",
+                    listingType: "rent",
+                    tag: "For Rent",
+                    tagBg: "bg-brand-emerald text-white",
+                    beds: "3 Beds",
+                    baths: "4 Baths",
+                    area: "3,200 Sq Ft",
+                    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
+                    images: [
+                        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
+                        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+                        "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80"
+                    ],
+                    description: "Fully furnished designer penthouse overlooking championship golf course with dedicated concierge."
+                }
+            );
+
+            populateLocationFilter();
+            renderProperties(propertiesData);
+        }
+
+        function getNumericPrice(price) {
+            const match = String(price).match(/[\d,.]+/);
+            if (!match) return 0;
+            const amount = Number(match[0].replace(/,/g, ""));
+            if (!Number.isFinite(amount)) return 0;
+            if (/\b(crore|cr)\b/i.test(price)) return amount * 10000000;
+            if (/\b(lakh|lac)\b/i.test(price)) return amount * 100000;
+            return amount;
+        }
+
+        function populateLocationFilter() {
+            const select = document.getElementById("searchLocation");
+            const projects = [...new Set(propertiesData.map(p => p.projectTitle).filter(Boolean))];
+            select.innerHTML = `<option value="all">All Locations</option>${projects.map(proj =>
+                `<option value="${escapeHTML(proj)}">${escapeHTML(proj)}</option>`
+            ).join("")}`;
+        }
+
+        function renderProperties(items, keepCurrentPage = false) {
+            const container = document.getElementById('propertiesContainer');
+            const pagination = document.getElementById("propertiesPagination");
+            currentPropertyItems = items;
+            if (!keepCurrentPage) currentPropertyPage = 1;
+
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-12 glass-card rounded-2xl">
+                        <i class="fa-solid fa-building-circle-xmark text-brand-muted text-4xl mb-3"></i>
+                        <p class="text-white font-bold">No properties matched your search filter.</p>
+                        <button onclick="resetPropertyFilters()" class="mt-4 px-4 py-2 bg-brand-neon text-black font-bold rounded-xl text-xs">Reset Filters</button>
+                    </div>`;
+                pagination.classList.add("hidden");
+                return;
+            }
+
+            const pageCount = Math.ceil(items.length / propertyPageSize);
+            currentPropertyPage = Math.min(currentPropertyPage, pageCount);
+            const startIndex = (currentPropertyPage - 1) * propertyPageSize;
+            const visibleItems = items.slice(startIndex, startIndex + propertyPageSize);
+
+            pagination.classList.toggle("hidden", pageCount <= 1);
+            pagination.innerHTML = `
+                <button type="button" onclick="changePropertyPage(-1)" ${currentPropertyPage === 1 ? "disabled" : ""} class="px-4 py-2 rounded-xl border border-white/10 text-sm font-semibold text-white disabled:opacity-40 hover:border-brand-neon">Previous</button>
+                <span class="text-sm text-brand-muted">Page ${currentPropertyPage} of ${pageCount}</span>
+                <button type="button" onclick="changePropertyPage(1)" ${currentPropertyPage === pageCount ? "disabled" : ""} class="px-4 py-2 rounded-xl border border-white/10 text-sm font-semibold text-white disabled:opacity-40 hover:border-brand-neon">Next</button>
+            `;
+
+            container.innerHTML = visibleItems.map(p => `
+                <div class="glass-card rounded-2xl overflow-hidden flex flex-col group border border-white/5 hover:border-brand-neon/40">
+                    <!-- Clickable Image Container to Launch Gallery Modal -->
+                    <div class="relative h-60 overflow-hidden cursor-pointer" onclick="openGalleryModal(${p.id})">
+                        <img src="${escapeHTML(p.image)}" alt="${escapeHTML(p.title)}" onerror="this.src='https://placehold.co/800x500/12181b/00ff66?text=VIP+Property';" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <span class="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-extrabold ${escapeHTML(p.tagBg)} uppercase tracking-wider shadow-md">${escapeHTML(p.tag)}</span>
+                        
+                        <div class="absolute top-4 right-4 bg-brand-dark/90 px-2.5 py-1 rounded-full text-white text-xs font-bold border border-white/20 flex items-center gap-1 shadow-md hover:border-brand-neon">
+                            <i class="fa-solid fa-images text-brand-neon"></i> ${(p.images || []).length || 1}
+                        </div>
+
+                        <div class="absolute bottom-3 right-3 bg-brand-dark/90 px-3 py-1 rounded-lg text-brand-neon text-xs font-extrabold border border-brand-neon/30">
+                            ${escapeHTML(p.price)}
+                        </div>
+
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white font-bold text-xs pointer-events-none">
+                            <i class="fa-solid fa-expand text-brand-neon text-base"></i> Open Photo Gallery
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs text-brand-muted block mb-1"><i class="fa-solid fa-location-dot text-brand-neon me-1"></i> ${escapeHTML(p.projectTitle)}</span>
+                            <h3 class="text-lg font-bold text-white group-hover:text-brand-neon transition-colors mb-3">${escapeHTML(p.title)}</h3>
+                        </div>
+
+                        <div>
+                            <div class="grid grid-cols-3 gap-2 py-3 border-y border-white/10 text-xs text-brand-muted mb-4">
+                                <span><i class="fa-solid fa-bed text-brand-neon me-1"></i> ${escapeHTML(p.beds)}</span>
+                                <span><i class="fa-solid fa-bath text-brand-neon me-1"></i> ${escapeHTML(p.baths)}</span>
+                                <span><i class="fa-solid fa-ruler-combined text-brand-neon me-1"></i> ${escapeHTML(p.area)}</span>
+                            </div>
+
+                            <button onclick="openModal(${p.id})" class="w-full py-3 rounded-xl bg-brand-card hover:bg-brand-neon hover:text-black border border-white/10 text-white text-xs font-bold transition-all duration-300 flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-circle-info"></i> View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /* Gallery Modal & Slideshow Controller Logic */
+        function openGalleryModal(propertyId) {
+            const item = propertiesData.find(p => p.id === propertyId);
+            if (!item) return;
+
+            currentActivePropertyId = propertyId;
+            currentGalleryImages = (item.images && item.images.length > 0) ? item.images : [item.image];
+            currentGalleryIndex = 0;
+
+            document.getElementById('galleryTitle').innerText = item.title;
+            document.getElementById('gallerySubtitle').innerText = `${item.projectTitle} • ${item.price}`;
+
+            renderGalleryMainSlide();
+            renderGalleryThumbnails();
+
+            document.getElementById('galleryModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function openGalleryFromModal() {
+            if (currentActivePropertyId) {
+                closeModal();
+                openGalleryModal(currentActivePropertyId);
+            }
+        }
+
+        function closeGalleryModal() {
+            stopSlideshow();
+            document.getElementById('galleryModal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function renderGalleryMainSlide() {
+            const imgEl = document.getElementById('galleryMainImage');
+            const counterEl = document.getElementById('galleryCounter');
+
+            imgEl.style.opacity = '0.4';
+            setTimeout(() => {
+                imgEl.src = currentGalleryImages[currentGalleryIndex];
+                imgEl.style.opacity = '1';
+            }, 100);
+
+            counterEl.innerText = `${currentGalleryIndex + 1} / ${currentGalleryImages.length}`;
+
+            // Highlight Active Thumbnail
+            document.querySelectorAll('.gallery-thumb-btn').forEach((btn, idx) => {
+                if (idx === currentGalleryIndex) {
+                    btn.classList.add('border-brand-neon', 'ring-2', 'ring-brand-neon/50', 'scale-105');
+                    btn.classList.remove('border-white/10', 'opacity-60');
+                } else {
+                    btn.classList.remove('border-brand-neon', 'ring-2', 'ring-brand-neon/50', 'scale-105');
+                    btn.classList.add('border-white/10', 'opacity-60');
+                }
+            });
+        }
+
+        function renderGalleryThumbnails() {
+            const container = document.getElementById('galleryThumbnailsContainer');
+            container.innerHTML = currentGalleryImages.map((img, idx) => `
+                <button type="button" onclick="selectGalleryImage(${idx})" class="gallery-thumb-btn w-16 h-12 rounded-lg overflow-hidden border transition-all duration-300 shrink-0">
+                    <img src="${escapeHTML(img)}" alt="Thumbnail ${idx + 1}" class="w-full h-full object-cover">
+                </button>
+            `).join('');
+        }
+
+        function selectGalleryImage(index) {
+            currentGalleryIndex = index;
+            renderGalleryMainSlide();
+        }
+
+        function nextGalleryImage() {
+            currentGalleryIndex = (currentGalleryIndex + 1) % currentGalleryImages.length;
+            renderGalleryMainSlide();
+        }
+
+        function prevGalleryImage() {
+            currentGalleryIndex = (currentGalleryIndex - 1 + currentGalleryImages.length) % currentGalleryImages.length;
+            renderGalleryMainSlide();
+        }
+
+        function toggleSlideshow() {
+            if (isSlideshowPlaying) {
+                stopSlideshow();
+            } else {
+                startSlideshow();
+            }
+        }
+
+        function startSlideshow() {
+            isSlideshowPlaying = true;
+            document.getElementById('slideshowIcon').className = 'fa-solid fa-pause';
+            document.getElementById('slideshowStatusText').innerText = 'Pause Slideshow';
+            document.getElementById('slideshowToggleBtn').classList.add('bg-brand-neon', 'text-black');
+
+            gallerySlideshowInterval = setInterval(() => {
+                nextGalleryImage();
+            }, 3000);
+        }
+
+        function stopSlideshow() {
+            isSlideshowPlaying = false;
+            if (gallerySlideshowInterval) {
+                clearInterval(gallerySlideshowInterval);
+                gallerySlideshowInterval = null;
+            }
+            document.getElementById('slideshowIcon').className = 'fa-solid fa-play';
+            document.getElementById('slideshowStatusText').innerText = 'Play Slideshow';
+            document.getElementById('slideshowToggleBtn').classList.remove('bg-brand-neon', 'text-black');
+        }
+
+        // Keyboard Shortcut Navigation for Gallery
+        document.addEventListener('keydown', (e) => {
+            const modal = document.getElementById('galleryModal');
+            if (modal && !modal.classList.contains('hidden')) {
+                if (e.key === 'ArrowRight') nextGalleryImage();
+                if (e.key === 'ArrowLeft') prevGalleryImage();
+                if (e.key === 'Escape') closeGalleryModal();
+                if (e.key === ' ') {
+                    e.preventDefault();
+                    toggleSlideshow();
+                }
+            }
+        });
+
+        function filterCategory(cat, selectedButton) {
+            activePropertyCategory = cat;
+            setActiveTab(".category-tab", selectedButton);
+            applyPropertyFilters();
+        }
+
+        function filterListingType(type, selectedButton) {
+            activeListingType = type;
+            setActiveTab(".listing-type-tab", selectedButton);
+            applyPropertyFilters();
+        }
+
+        function setActiveTab(selector, selectedButton) {
+            document.querySelectorAll(selector).forEach(btn => {
+                btn.classList.remove("bg-brand-neon", "text-black", "shadow-neon-glow");
+                btn.classList.add("bg-brand-card", "text-brand-muted");
+            });
+            if (selectedButton) {
+                selectedButton.classList.remove("bg-brand-card", "text-brand-muted");
+                selectedButton.classList.add("bg-brand-neon", "text-black", "shadow-neon-glow");
+            }
+        }
+
+        function applyPropertyFilters() {
+            const filtered = propertiesData.filter(property =>
+                (activeListingType === "all" || property.listingType === activeListingType) &&
+                (activePropertyCategory === "all" || property.category === activePropertyCategory)
+            );
+            renderProperties(filtered);
+        }
+
+        function resetPropertyFilters() {
+            activeListingType = "all";
+            activePropertyCategory = "all";
+            setActiveTab(".listing-type-tab");
+            setActiveTab(".category-tab");
+            applyPropertyFilters();
+        }
+
+        function filterPropertiesFromHero() {
+            const loc = document.getElementById('searchLocation').value;
+            const type = document.getElementById('searchType').value;
+            const price = document.getElementById('searchPrice').value;
+
+            let result = propertiesData;
+            if (loc !== 'all') result = result.filter(p => p.projectTitle.toLowerCase().includes(loc.toLowerCase()));
+            if (type !== 'all') result = result.filter(p => p.type.toLowerCase() === type.toLowerCase() || p.category.toLowerCase() === type.toLowerCase());
+
+            if (price !== 'all') {
+                if (price === 'low') result = result.filter(p => p.rawPrice > 0 && p.rawPrice < 50000000);
+                if (price === 'mid') result = result.filter(p => p.rawPrice >= 50000000 && p.rawPrice <= 150000000);
+                if (price === 'high') result = result.filter(p => p.rawPrice > 150000000);
+            }
+
+            renderProperties(result);
+            document.getElementById('properties').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        /* Details Modal Functions */
+        function openModal(id) {
+            const item = propertiesData.find(p => p.id === id);
+            if (!item) return;
+
+            currentActivePropertyId = id;
+            document.getElementById('modalImage').src = item.image;
+            document.getElementById('modalTag').innerText = item.tag;
+            document.getElementById('modalTitle').innerText = item.title;
+            document.getElementById('modalLocation').innerHTML = `<i class="fa-solid fa-location-dot text-brand-neon me-1"></i> ${escapeHTML(item.projectTitle)}`;
+            document.getElementById('modalPrice').innerText = item.price;
+            document.getElementById('modalBeds').innerText = item.beds;
+            document.getElementById('modalBaths').innerText = item.baths;
+            document.getElementById('modalArea').innerText = item.area;
+            document.getElementById('modalDescription').innerText = item.description;
+
+            const modalGalleryContainer = document.getElementById('modalGallery');
+            if (item.images && item.images.length > 0) {
+                modalGalleryContainer.innerHTML = item.images.slice(0, 3).map((img, idx) => `
+                    <div class="h-24 rounded-xl overflow-hidden cursor-pointer border border-white/10 hover:border-brand-neon" onclick="openGalleryFromModal()">
+                        <img src="${escapeHTML(img)}" alt="Property Image ${idx + 1}" class="w-full h-full object-cover">
+                    </div>
+                `).join('');
+            } else {
+                modalGalleryContainer.innerHTML = '';
+            }
+
+            const msg = encodeURIComponent(`Hello Land Pulse Team, I am interested in property details for "${item.title}" priced at ${item.price}.`);
+            document.getElementById('modalWhatsapp').href = `https://wa.me/923001234567?text=${msg}`;
+
+            document.getElementById('propertyModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('propertyModal').classList.add('hidden');
+        }
+
+        function openVideoLightbox() {
+            document.getElementById('videoModal').classList.remove('hidden');
+        }
+
+        function closeVideoModal() {
+            document.getElementById('videoModal').classList.add('hidden');
+        }
+
+        /* Calculator Logic */
+        function updateROI() {
+            const inv = parseFloat(document.getElementById('investmentInput').value);
+            const yrs = parseInt(document.getElementById('yearsInput').value);
+            const rate = parseFloat(document.getElementById('growthInput').value) / 100;
+
+            document.getElementById('investmentValueDisplay').innerText = inv.toLocaleString() + " PKR";
+            document.getElementById('yearsValueDisplay').innerText = yrs + (yrs === 1 ? " Year" : " Years");
+            document.getElementById('growthValueDisplay').innerText = (rate * 100) + " %";
+
+            const futureValue = inv * Math.pow((1 + rate), yrs);
+            const netGain = futureValue - inv;
+
+            document.getElementById('totalValueOutput').innerText = Math.round(futureValue).toLocaleString() + " PKR";
+            document.getElementById('netGainOutput').innerText = "+" + Math.round(netGain).toLocaleString() + " PKR";
+        }
+
+        document.getElementById('investmentInput').addEventListener('input', updateROI);
+        document.getElementById('yearsInput').addEventListener('input', updateROI);
+        document.getElementById('growthInput').addEventListener('input', updateROI);
+
+        /* Mobile Menu */
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        });
+
+        function handleNewsletter(e) {
+            e.preventDefault();
+            document.getElementById('newsletterSuccess').classList.remove('hidden');
+            document.getElementById('newsletterEmail').value = '';
+            setTimeout(() => document.getElementById('newsletterSuccess').classList.add('hidden'), 5000);
+        }
+
+        async function loadFooterSocialLinks() {
+            const container = document.getElementById("footerSocialLinks");
+            try {
+                const links = await fetchJSON("manifest.json");
+                container.innerHTML = Object.entries(socialPlatforms)
+                    .filter(([platform]) => typeof links[platform] === "string")
+                    .map(([platform, details]) => `
+                        <a href="${escapeHTML(links[platform])}" target="_blank" class="w-10 h-10 rounded-xl bg-brand-dark border border-white/10 flex items-center justify-center text-brand-muted hover:text-brand-neon hover:border-brand-neon transition-all">
+                            <i class="fa-brands ${details.icon}"></i>
+                        </a>`).join("");
+            } catch (e) {}
+        }
+
+        window.addEventListener('load', () => {
+            loadPremiumProjects();
+            loadSiteAssets();
+            loadPropertyInventory();
+            loadFooterSocialLinks();
+            updateROI();
+        });
+    </script>
+</body>
+</html>

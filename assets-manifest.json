@@ -1,0 +1,26 @@
+{
+    "logo":  "images/LOGO/logo.png",
+    "teams":  [
+                  {
+                      "folder":  "CEO",
+                      "details":  "images/TEAM/CEO/details.json",
+                      "initials":  "CEO",
+                      "photo":  "images/TEAM/CEO/CEO.jpg",
+                      "introVideo":  "images/TEAM/CEO/VIDEOS/gemini_generated_video_07e4f9e5.mp4"
+                  },
+                  {
+                      "folder":  "MANAGER",
+                      "details":  "images/TEAM/MANAGER/details.json",
+                      "initials":  "MAN",
+                      "photo":  "images/TEAM/MANAGER/MANAGER.jpg",
+                      "introVideo":  "images/TEAM/MANAGER/VIDEOS/gemini_generated_video_07e4f9e5.mp4"
+                  },
+                  {
+                      "folder":  "SALES",
+                      "details":  "images/TEAM/SALES/details.json",
+                      "initials":  "SAL",
+                      "photo":  "images/TEAM/SALES/SALES.jpg",
+                      "introVideo":  "images/TEAM/SALES/VIDEOS/gemini_generated_video_07e4f9e5.mp4"
+                  }
+              ]
+}
