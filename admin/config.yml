@@ -1,5 +1,5 @@
 backend:
-  name: gitgateway
-sitedomain: landpulsemarketing.netlify.app
+  name: git-gateway
+  site_domain: landpulsemarketing.netlify.app
 media_folder: "public/images"
 public_folder: "/images"
