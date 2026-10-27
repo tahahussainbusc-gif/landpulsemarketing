@@ -1,5 +1,34 @@
 backend:
   name: git-gateway
-  site_domain: landpulsemarketing.netlify.app
-media_folder: "public/images"
-public_folder: "/images"
+  branch: main
+
+site_url: https://landpulsemarketing.netlify.app
+display_url: https://landpulsemarketing.netlify.app
+logo_url: https://landpulsemarketing.netlify.app/favicon.ico
+
+media_folder: "assets/images"
+public_folder: "/assets/images"
+
+collections:
+  - name: "properties"
+    label: "Properties"
+    folder: "content/properties"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Publish Date", name: "date", widget: "datetime" }
+      - { label: "Price", name: "price", widget: "string" }
+      - { label: "Location / Sector", name: "location", widget: "string" }
+      - { label: "Featured Image", name: "image", widget: "image" }
+      - { label: "Description", name: "body", widget: "markdown" }
+
+  - name: "pages"
+    label: "Pages"
+    files:
+      - label: "Home Page"
+        name: "home"
+        file: "content/pages/home.json"
+        fields:
+          - { label: "Hero Title", name: "hero_title", widget: "string" }
+          - { label: "Hero Subtitle", name: "hero_subtitle", widget: "string" }
