@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
@@ -47,6 +48,10 @@
             color: #ffffff;
             font-family: 'Plus Jakarta Sans', sans-serif;
             overflow-x: hidden;
+        }
+
+        body.intro-active {
+            overflow: hidden;
         }
 
         /* Glassmorphism utility */
@@ -125,34 +130,226 @@
         .team-card.is-video-playing .team-video {
             opacity: 1;
         }
+
+        #welcomeIntro {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 800ms ease, visibility 800ms ease;
+            font-family: 'Inter', sans-serif;
+            background: #fff;
+            color: #0f172a;
+        }
+
+        #welcomeIntro.is-leaving {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .welcome-gradient-text {
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .anim-element {
+            opacity: 0;
+        }
+
+        .welcome-text {
+            animation: welcome-fade-in-down 1s ease-out 0.5s forwards;
+        }
+
+        .to-text {
+            animation: welcome-fade-in 0.8s ease-out 1.5s forwards;
+        }
+
+        .brand-text {
+            animation: welcome-pop-in 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) 2.2s forwards;
+        }
+
+        @keyframes welcome-fade-in-down {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes welcome-fade-in {
+            to { opacity: 1; }
+        }
+
+        @keyframes welcome-pop-in {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .master-card {
+            width: 100%;
+            margin: 0 auto;
+            padding: 0.75rem 0;
+            color: #fff;
+            text-align: center;
+        }
+
+        .master-title {
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff 30%, #00ff66 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stats-container {
+            display: flex;
+            width: 100%;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .stat-card {
+            display: flex;
+            width: 140px;
+            padding: 0.5rem;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .master-card.visible .stat-card {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .master-card.visible .stat-card:nth-child(1) { transition-delay: 0.1s; }
+        .master-card.visible .stat-card:nth-child(2) { transition-delay: 0.2s; }
+        .master-card.visible .stat-card:nth-child(3) { transition-delay: 0.3s; }
+        .master-card.visible .stat-card:nth-child(4) { transition-delay: 0.4s; }
+
+        .circle-wrapper {
+            position: relative;
+            width: 68px;
+            height: 68px;
+            margin-bottom: 0.5rem;
+        }
+
+        .circular-chart {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .circle-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.12);
+            stroke-width: 2.5;
+        }
+
+        .circle {
+            fill: none;
+            stroke: url(#blueGreenGradient);
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-dasharray: 0, 100;
+        }
+
+        .counter-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            transform: translate(-50%, -50%);
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 640px) {
+            .master-card {
+                padding: 0.5rem 0;
+            }
+
+            .stats-container {
+                gap: 0.75rem;
+            }
+
+            .stat-card {
+                box-sizing: border-box;
+                width: calc(50% - 0.375rem);
+                min-width: 110px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            #welcomeIntro {
+                transition: none;
+            }
+
+            .anim-element {
+                animation: none;
+                opacity: 1;
+            }
+
+            .stat-card {
+                opacity: 1;
+                transform: none;
+            }
+        }
     </style>
 </head>
-<body class="selection:bg-brand-neon selection:text-black">
+<body class="intro-active selection:bg-brand-neon selection:text-black">
+    <div id="welcomeIntro" class="fixed inset-0 z-[100] flex items-center justify-center bg-brand-dark" role="status" aria-label="Welcome to Land Pulse Marketing" data-cms-aria-label="welcomeIntro.ariaLabel">
+        <div class="relative z-10 flex flex-col items-center justify-center space-y-3 px-4 text-center md:space-y-4">
+            <h2 class="anim-element welcome-text welcome-gradient-text text-3xl font-bold uppercase tracking-[0.2em] md:text-5xl" data-cms-text="welcomeIntro.welcome">Welcome</h2>
+            <span class="anim-element to-text text-lg font-medium italic text-slate-500 md:text-2xl" data-cms-text="welcomeIntro.to">to</span>
+            <h1 class="anim-element brand-text welcome-gradient-text pb-2 text-5xl font-extrabold md:text-7xl lg:text-8xl" data-cms-text="welcomeIntro.brand">Land Pulse Marketing</h1>
+        </div>
+    </div>
+    <svg class="absolute h-0 w-0" aria-hidden="true" focusable="false">
+        <defs>
+            <linearGradient id="blueGreenGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#3b82f6"></stop>
+                <stop offset="100%" stop-color="#10b981"></stop>
+            </linearGradient>
+        </defs>
+    </svg>
 
     <!-- Header / Navbar -->
     <header class="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/10 transition-all duration-300" id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             <!-- Logo -->
-            <a href="#" class="flex items-center space-x-3 group">
-                <img src="images/LOGO/logo.png" alt="Land Pulse Marketing" onerror="this.onerror=null; this.src='https://placehold.co/180x50/12181b/00ff66?text=Land+Pulse';" class="brand-logo h-12 w-auto max-w-[180px] object-contain group-hover:scale-105 transition-transform duration-300">
+            <a href="#hero" data-cms-href="navigation.logoHref" class="brand-home-link flex items-center space-x-3 group">
+                <img src="images/LOGO/logo.png" alt="Land Pulse Marketing" data-cms-alt="navigation.logoAlt" onerror="this.onerror=null; this.src='https://placehold.co/180x50/12181b/00ff66?text=Land+Pulse';" class="brand-logo h-12 w-auto max-w-[180px] object-contain group-hover:scale-105 transition-transform duration-300">
             </a>
 
             <!-- Desktop Navigation -->
             <nav class="hidden md:flex items-center space-x-7">
-                <a href="#hero" class="text-sm font-medium text-white hover:text-brand-neon transition-colors">Home</a>
-                <a href="#premium-projects" class="text-sm font-medium text-brand-muted hover:text-brand-neon transition-colors">Premium Projects</a>
-                <a href="#properties" class="text-sm font-medium text-brand-muted hover:text-brand-neon transition-colors">VIP Properties</a>
-                <a href="#calculator" class="text-sm font-medium text-brand-muted hover:text-brand-neon transition-colors">ROI Calculator</a>
-                <a href="#advantages" class="text-sm font-medium text-brand-muted hover:text-brand-neon transition-colors">Why Choose Us</a>
-                <a href="#team" class="text-sm font-medium text-brand-muted hover:text-brand-neon transition-colors">Our Team</a>
+                <a href="#hero" data-cms-href="navigation.homeHref" data-cms-text="navigation.home" class="text-sm font-medium text-white hover:text-brand-neon transition-colors">Home</a>
+                <a href="#premium-projects" data-cms-href="navigation.premiumProjectsHref" data-cms-text="navigation.premiumProjects" class="text-sm font-medium text-brand-muted hover:text-brand-neon transition-colors">Premium Projects</a>
+                <a href="#properties" data-cms-href="navigation.propertiesHref" data-cms-text="navigation.properties" class="text-sm font-medium text-brand-muted hover:text-brand-neon transition-colors">VIP Properties</a>
+                <a href="#calculator" data-cms-href="navigation.calculatorHref" data-cms-text="navigation.calculator" class="text-sm font-medium text-brand-muted hover:text-brand-neon transition-colors">ROI Calculator</a>
+                <a href="#advantages" data-cms-href="navigation.advantagesHref" data-cms-text="navigation.advantages" class="text-sm font-medium text-brand-muted hover:text-brand-neon transition-colors">Why Choose Us</a>
+                <a href="#team" data-cms-href="navigation.teamHref" data-cms-text="navigation.team" class="text-sm font-medium text-brand-muted hover:text-brand-neon transition-colors">Our Team</a>
             </nav>
 
             <!-- Call To Action -->
             <div class="hidden md:flex items-center space-x-4">
-                <a href="#team" class="relative group px-6 py-2.5 rounded-xl font-bold text-sm overflow-hidden border border-brand-neon/40 text-brand-neon hover:text-black transition-all duration-300 shadow-neon-glow hover:shadow-neon-glow-lg">
+                <a href="#team" data-cms-href="navigation.consultationHref" class="relative group px-6 py-2.5 rounded-xl font-bold text-sm overflow-hidden border border-brand-neon/40 text-brand-neon hover:text-black transition-all duration-300 shadow-neon-glow hover:shadow-neon-glow-lg">
                     <span class="absolute inset-0 w-full h-full bg-brand-neon transition-all duration-300 transform -translate-x-full group-hover:translate-x-0 ease-out"></span>
                     <span class="relative flex items-center gap-2">
-                        <i class="fa-solid fa-crown text-xs"></i> Book Consultation
+                        <i class="fa-solid fa-crown text-xs"></i> <span data-cms-text="navigation.consultation">Book Consultation</span>
                     </span>
                 </a>
             </div>
@@ -165,67 +362,67 @@
 
         <!-- Mobile Navigation Drawer -->
         <div id="mobileMenu" class="hidden md:hidden glass-panel border-b border-white/10 px-6 py-6 space-y-4">
-            <a href="#hero" class="mobile-link block text-base font-medium text-white hover:text-brand-neon">Home</a>
-            <a href="#premium-projects" class="mobile-link block text-base font-medium text-brand-muted hover:text-brand-neon">Premium Projects</a>
-            <a href="#properties" class="mobile-link block text-base font-medium text-brand-muted hover:text-brand-neon">VIP Properties</a>
-            <a href="#calculator" class="mobile-link block text-base font-medium text-brand-muted hover:text-brand-neon">ROI Calculator</a>
-            <a href="#advantages" class="mobile-link block text-base font-medium text-brand-muted hover:text-brand-neon">Why Choose Us</a>
-            <a href="#team" class="mobile-link block text-base font-medium text-brand-muted hover:text-brand-neon">Our Team</a>
-            <a href="#team" class="mobile-link inline-block w-full text-center py-3 bg-brand-neon text-black font-bold rounded-xl shadow-neon-glow">Meet the Team</a>
+            <a href="#hero" data-cms-href="navigation.homeHref" data-cms-text="navigation.home" class="mobile-link block text-base font-medium text-white hover:text-brand-neon">Home</a>
+            <a href="#premium-projects" data-cms-href="navigation.premiumProjectsHref" data-cms-text="navigation.premiumProjects" class="mobile-link block text-base font-medium text-brand-muted hover:text-brand-neon">Premium Projects</a>
+            <a href="#properties" data-cms-href="navigation.propertiesHref" data-cms-text="navigation.properties" class="mobile-link block text-base font-medium text-brand-muted hover:text-brand-neon">VIP Properties</a>
+            <a href="#calculator" data-cms-href="navigation.calculatorHref" data-cms-text="navigation.calculator" class="mobile-link block text-base font-medium text-brand-muted hover:text-brand-neon">ROI Calculator</a>
+            <a href="#advantages" data-cms-href="navigation.advantagesHref" data-cms-text="navigation.advantages" class="mobile-link block text-base font-medium text-brand-muted hover:text-brand-neon">Why Choose Us</a>
+            <a href="#team" data-cms-href="navigation.teamHref" data-cms-text="navigation.team" class="mobile-link block text-base font-medium text-brand-muted hover:text-brand-neon">Our Team</a>
+            <a href="#team" data-cms-href="navigation.consultationHref" data-cms-text="navigation.consultation" class="mobile-link inline-block w-full text-center py-3 bg-brand-neon text-black font-bold rounded-xl shadow-neon-glow">Book Consultation</a>
         </div>
     </header>
 
     <!-- Main Content -->
     <main class="pt-20">
         <!-- Hero Section -->
-        <section id="hero" class="relative min-h-[90vh] flex items-center justify-center pt-12 pb-20 overflow-hidden">
+        <section id="hero" class="relative min-h-[78vh] flex items-center justify-center pt-12 pb-6 overflow-hidden">
             <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-neon/10 rounded-full blur-[140px] pointer-events-none"></div>
             <div class="absolute bottom-10 left-10 w-72 h-72 bg-brand-emerald/10 rounded-full blur-[100px] pointer-events-none"></div>
 
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full text-center">
                 <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border-brand-neon/30 text-brand-neon text-xs sm:text-sm font-semibold tracking-wide uppercase mb-6 animate-pulse">
                     <span class="w-2 h-2 rounded-full bg-brand-neon"></span>
-                    Pakistan & International Prime Real Estate
+                    <span data-cms-text="hero.badge">Pakistan & International Prime Real Estate</span>
                 </div>
 
                 <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white mb-6 leading-tight">
-                    Redefining <span class="text-neon-gradient">Luxury & Smart</span><br>Real Estate Investment
+                    <span data-cms-text="hero.titleStart">Redefining</span> <span class="text-neon-gradient" data-cms-text="hero.titleHighlight">Luxury &amp; Smart</span><br><span data-cms-text="hero.titleEnd">Real Estate Investment</span>
                 </h1>
                 <p class="max-w-3xl mx-auto text-base sm:text-lg text-brand-muted mb-10 leading-relaxed">
-                    Exclusive access to ultra-premium residential estates, high-yield commercial projects, and trusted land portfolio management tailored for visionary investors.
+                    <span data-cms-text="hero.description">Exclusive access to ultra-premium residential estates, high-yield commercial projects, and trusted land portfolio management tailored for visionary investors.</span>
                 </p>
 
                 <!-- Search Bar -->
-                <div class="max-w-5xl mx-auto glass-panel p-4 sm:p-6 rounded-2xl border border-white/10 shadow-2xl mb-16">
+                <div class="max-w-5xl mx-auto glass-panel p-4 sm:p-6 rounded-2xl border border-white/10 shadow-2xl mb-2">
                     <form id="heroSearchForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left">
                         <div>
-                            <label class="block text-xs font-semibold text-brand-muted uppercase mb-1.5"><i class="fa-solid fa-location-dot text-brand-neon me-1"></i> Project / Location</label>
+                            <label class="block text-xs font-semibold text-brand-muted uppercase mb-1.5"><i class="fa-solid fa-location-dot text-brand-neon me-1"></i> <span data-cms-text="hero.locationLabel">Project / Location</span></label>
                             <select id="searchLocation" class="w-full bg-brand-dark/90 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-brand-neon focus:outline-none transition-colors">
-                                <option value="all">All Locations</option>
+                                <option value="all" data-cms-text="hero.locationAll">All Locations</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-brand-muted uppercase mb-1.5"><i class="fa-solid fa-building text-brand-neon me-1"></i> Property Type</label>
+                            <label class="block text-xs font-semibold text-brand-muted uppercase mb-1.5"><i class="fa-solid fa-building text-brand-neon me-1"></i> <span data-cms-text="hero.typeLabel">Property Type</span></label>
                             <select id="searchType" class="w-full bg-brand-dark/90 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-brand-neon focus:outline-none transition-colors">
-                                <option value="all">All Types</option>
-                                <option value="residential">Residential Villa & Apt</option>
-                                <option value="commercial">Commercial Tower & Shops</option>
-                                <option value="plots">Investment Plots</option>
-                                <option value="villas">Luxury VIP Mansions</option>
+                                <option value="all" data-cms-text="hero.typeAll">All Types</option>
+                                <option value="residential" data-cms-text="hero.typeResidential">Residential Villa & Apt</option>
+                                <option value="commercial" data-cms-text="hero.typeCommercial">Commercial Tower & Shops</option>
+                                <option value="plots" data-cms-text="hero.typePlots">Investment Plots</option>
+                                <option value="villas" data-cms-text="hero.typeVillas">Luxury VIP Mansions</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-brand-muted uppercase mb-1.5"><i class="fa-solid fa-wallet text-brand-neon me-1"></i> Budget Range</label>
+                            <label class="block text-xs font-semibold text-brand-muted uppercase mb-1.5"><i class="fa-solid fa-wallet text-brand-neon me-1"></i> <span data-cms-text="hero.budgetLabel">Budget Range</span></label>
                             <select id="searchPrice" class="w-full bg-brand-dark/90 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:border-brand-neon focus:outline-none transition-colors">
-                                <option value="all">Any Budget</option>
-                                <option value="low">Under 50 Million PKR</option>
-                                <option value="mid">50M - 150M PKR</option>
-                                <option value="high">150M+ PKR / Luxury</option>
+                                <option value="all" data-cms-text="hero.budgetAll">Any Budget</option>
+                                <option value="low" data-cms-text="hero.budgetLow">Under 50 Million PKR</option>
+                                <option value="mid" data-cms-text="hero.budgetMid">50M - 150M PKR</option>
+                                <option value="high" data-cms-text="hero.budgetHigh">150M+ PKR / Luxury</option>
                             </select>
                         </div>
                         <div class="flex items-end">
                             <button type="button" onclick="filterPropertiesFromHero()" class="w-full bg-gradient-to-r from-brand-emerald to-brand-neon text-black font-extrabold py-3 px-6 rounded-xl hover:shadow-neon-glow transition-all duration-300 flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-magnifying-glass"></i> Search VIP Deals
+                                <i class="fa-solid fa-magnifying-glass"></i> <span data-cms-text="hero.searchButton">Search VIP Deals</span>
                             </button>
                         </div>
                     </form>
@@ -234,16 +431,27 @@
             </div>
         </section>
 
+        <section id="company-stats" class="py-4 relative" aria-labelledby="companyStatsTitle">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="master-card" id="mainStatsCard">
+                    <span class="text-xs font-bold tracking-widest uppercase text-brand-neon" data-cms-text="companyStats.eyebrow">Our Track Record</span>
+                    <h2 id="companyStatsTitle" class="master-title mt-2" data-cms-text="companyStats.title">Our Impact Overview</h2>
+                    <p class="mx-auto mb-4 max-w-2xl text-sm text-brand-muted" data-cms-text="companyStats.description">A snapshot of the experience, trust, and results behind Land Pulse Marketing.</p>
+                    <div id="companyStatsContainer" class="stats-container"></div>
+                </div>
+            </div>
+        </section>
+
         <!-- Our Premium Projects Section -->
         <section id="premium-projects" class="py-20 relative bg-brand-dark/80 border-t border-white/5">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
                     <div>
-                        <span class="text-brand-neon text-xs font-bold tracking-widest uppercase"><i class="fa-solid fa-gem me-1"></i> Master Planned Developments</span>
-                        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-1">Our Premium Projects</h2>
+                        <span class="text-brand-neon text-xs font-bold tracking-widest uppercase"><i class="fa-solid fa-gem me-1"></i> <span data-cms-text="projectsSection.eyebrow">Master Planned Developments</span></span>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-1" data-cms-text="projectsSection.title">Our Premium Projects</h2>
                     </div>
                     <p class="text-brand-muted text-sm max-w-md mt-4 md:mt-0">
-                        Explore iconic mega developments, high-rise luxury towers, and high-yield master planned communities in prime zones.
+                        <span data-cms-text="projectsSection.description">Explore iconic mega developments, high-rise luxury towers, and high-yield master planned communities in prime zones.</span>
                     </p>
                 </div>
 
@@ -259,26 +467,26 @@
                 <!-- Section Header -->
                 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-12">
                     <div>
-                        <span class="text-brand-neon text-xs font-bold tracking-widest uppercase">Curated Portfolio</span>
-                        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-1">Featured VIP Properties</h2>
+                        <span class="text-brand-neon text-xs font-bold tracking-widest uppercase" data-cms-text="propertiesSection.eyebrow">Curated Portfolio</span>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-1" data-cms-text="propertiesSection.title">Featured VIP Properties</h2>
                     </div>
                     
                     <!-- Clean Organized Filter Controls Container -->
                     <div class="flex flex-col gap-3 glass-panel p-3 rounded-2xl border border-white/10 max-w-full">
                         <!-- Deal Type Group -->
                         <div class="flex items-center gap-2 bg-brand-dark/80 p-1.5 rounded-xl border border-white/10 overflow-x-auto" id="listingTypeTabs" aria-label="Filter by listing type">
-                            <button type="button" onclick="filterListingType('all', this)" class="listing-type-tab px-4 py-2 rounded-lg text-xs font-bold bg-brand-neon text-black border border-brand-neon shadow-neon-glow transition-all whitespace-nowrap">All Listings</button>
-                            <button type="button" onclick="filterListingType('sale', this)" class="listing-type-tab px-4 py-2 rounded-lg text-xs font-bold text-brand-muted hover:text-white transition-all whitespace-nowrap">For Sale</button>
-                            <button type="button" onclick="filterListingType('rent', this)" class="listing-type-tab px-4 py-2 rounded-lg text-xs font-bold text-brand-muted hover:text-white transition-all whitespace-nowrap">For Rent</button>
+                            <button type="button" onclick="filterListingType('all', this)" data-cms-text="propertiesSection.listingAll" class="listing-type-tab px-4 py-2 rounded-lg text-xs font-bold bg-brand-neon text-black border border-brand-neon shadow-neon-glow transition-all whitespace-nowrap">All Listings</button>
+                            <button type="button" onclick="filterListingType('sale', this)" data-cms-text="propertiesSection.listingSale" class="listing-type-tab px-4 py-2 rounded-lg text-xs font-bold text-brand-muted hover:text-white transition-all whitespace-nowrap">For Sale</button>
+                            <button type="button" onclick="filterListingType('rent', this)" data-cms-text="propertiesSection.listingRent" class="listing-type-tab px-4 py-2 rounded-lg text-xs font-bold text-brand-muted hover:text-white transition-all whitespace-nowrap">For Rent</button>
                         </div>
 
                         <!-- Category Group -->
                         <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0" id="propertyTabs" aria-label="Filter by property category">
-                            <button onclick="filterCategory('all', this)" class="tab-btn category-tab px-3.5 py-2 rounded-lg text-xs font-semibold bg-brand-neon text-black border border-brand-neon shadow-neon-glow transition-all whitespace-nowrap">All</button>
-                            <button onclick="filterCategory('residential', this)" class="tab-btn category-tab px-3.5 py-2 rounded-lg text-xs font-semibold text-brand-muted hover:text-white hover:bg-brand-card/80 transition-all whitespace-nowrap">Residential</button>
-                            <button onclick="filterCategory('commercial', this)" class="tab-btn category-tab px-3.5 py-2 rounded-lg text-xs font-semibold text-brand-muted hover:text-white hover:bg-brand-card/80 transition-all whitespace-nowrap">Commercial</button>
-                            <button onclick="filterCategory('plots', this)" class="tab-btn category-tab px-3.5 py-2 rounded-lg text-xs font-semibold text-brand-muted hover:text-white hover:bg-brand-card/80 transition-all whitespace-nowrap">Plots</button>
-                            <button onclick="filterCategory('villas', this)" class="tab-btn category-tab px-3.5 py-2 rounded-lg text-xs font-semibold text-brand-muted hover:text-white hover:bg-brand-card/80 transition-all whitespace-nowrap">Luxury Villas</button>
+                            <button onclick="filterCategory('all', this)" data-cms-text="propertiesSection.categoryAll" class="tab-btn category-tab px-3.5 py-2 rounded-lg text-xs font-semibold bg-brand-neon text-black border border-brand-neon shadow-neon-glow transition-all whitespace-nowrap">All</button>
+                            <button onclick="filterCategory('residential', this)" data-cms-text="propertiesSection.categoryResidential" class="tab-btn category-tab px-3.5 py-2 rounded-lg text-xs font-semibold text-brand-muted hover:text-white hover:bg-brand-card/80 transition-all whitespace-nowrap">Residential</button>
+                            <button onclick="filterCategory('commercial', this)" data-cms-text="propertiesSection.categoryCommercial" class="tab-btn category-tab px-3.5 py-2 rounded-lg text-xs font-semibold text-brand-muted hover:text-white hover:bg-brand-card/80 transition-all whitespace-nowrap">Commercial</button>
+                            <button onclick="filterCategory('plots', this)" data-cms-text="propertiesSection.categoryPlots" class="tab-btn category-tab px-3.5 py-2 rounded-lg text-xs font-semibold text-brand-muted hover:text-white hover:bg-brand-card/80 transition-all whitespace-nowrap">Plots</button>
+                            <button onclick="filterCategory('villas', this)" data-cms-text="propertiesSection.categoryVillas" class="tab-btn category-tab px-3.5 py-2 rounded-lg text-xs font-semibold text-brand-muted hover:text-white hover:bg-brand-card/80 transition-all whitespace-nowrap">Luxury Villas</button>
                         </div>
                     </div>
                 </div>
@@ -300,24 +508,24 @@
                 <div class="glass-panel p-8 sm:p-12 rounded-3xl border border-brand-neon/20 shadow-2xl">
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
                         <div class="lg:col-span-5">
-                            <span class="text-brand-neon text-xs font-bold tracking-widest uppercase">Smart Investor Tool</span>
-                            <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2 mb-4">Calculate Your VIP Property ROI</h2>
+                            <span class="text-brand-neon text-xs font-bold tracking-widest uppercase" data-cms-text="calculator.eyebrow">Smart Investor Tool</span>
+                            <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2 mb-4" data-cms-text="calculator.title">Calculate Your VIP Property ROI</h2>
                             <p class="text-brand-muted text-sm leading-relaxed mb-6">
-                                Leverage real data projections to analyze expected capital appreciation, rental yield, and long-term net income across premium real estate markets.
+                                <span data-cms-text="calculator.description">Leverage real data projections to analyze expected capital appreciation, rental yield, and long-term net income across premium real estate markets.</span>
                             </p>
                             <div class="space-y-4">
                                 <div class="flex items-start gap-3">
                                     <div class="w-8 h-8 rounded-lg bg-brand-neon/10 flex items-center justify-center text-brand-neon shrink-0"><i class="fa-solid fa-chart-line text-sm"></i></div>
                                     <div>
-                                        <h4 class="text-white text-sm font-bold">Estimated Appreciation</h4>
-                                        <p class="text-brand-muted text-xs">Based on prime zone historical growth patterns.</p>
+                                        <h4 class="text-white text-sm font-bold" data-cms-text="calculator.appreciationTitle">Estimated Appreciation</h4>
+                                        <p class="text-brand-muted text-xs" data-cms-text="calculator.appreciationDescription">Based on prime zone historical growth patterns.</p>
                                     </div>
                                 </div>
                                 <div class="flex items-start gap-3">
                                     <div class="w-8 h-8 rounded-lg bg-brand-neon/10 flex items-center justify-center text-brand-neon shrink-0"><i class="fa-solid fa-coins text-sm"></i></div>
                                     <div>
-                                        <h4 class="text-white text-sm font-bold">Passive Rental Income</h4>
-                                        <p class="text-brand-muted text-xs">Average monthly yield generated from prime tenants.</p>
+                                        <h4 class="text-white text-sm font-bold" data-cms-text="calculator.rentalTitle">Passive Rental Income</h4>
+                                        <p class="text-brand-muted text-xs" data-cms-text="calculator.rentalDescription">Average monthly yield generated from prime tenants.</p>
                                     </div>
                                 </div>
                             </div>
@@ -326,7 +534,7 @@
                         <div class="lg:col-span-7 bg-brand-card/90 p-6 sm:p-8 rounded-2xl border border-white/10 space-y-6">
                             <div>
                                 <div class="flex justify-between items-center mb-2">
-                                    <label class="text-xs font-bold uppercase text-brand-muted">Initial Property Value (PKR)</label>
+                                    <label class="text-xs font-bold uppercase text-brand-muted" data-cms-text="calculator.valueLabel">Initial Property Value (PKR)</label>
                                     <span id="investmentValueDisplay" class="text-brand-neon font-extrabold text-lg">50,000,000 PKR</span>
                                 </div>
                                 <input type="range" id="investmentInput" min="10000000" max="500000000" step="5000000" value="50000000" class="w-full">
@@ -334,7 +542,7 @@
 
                             <div>
                                 <div class="flex justify-between items-center mb-2">
-                                    <label class="text-xs font-bold uppercase text-brand-muted">Holding Period (Years)</label>
+                                    <label class="text-xs font-bold uppercase text-brand-muted" data-cms-text="calculator.yearsLabel">Holding Period (Years)</label>
                                     <span id="yearsValueDisplay" class="text-brand-neon font-extrabold text-lg">5 Years</span>
                                 </div>
                                 <input type="range" id="yearsInput" min="1" max="15" step="1" value="5" class="w-full">
@@ -342,7 +550,7 @@
 
                             <div>
                                 <div class="flex justify-between items-center mb-2">
-                                    <label class="text-xs font-bold uppercase text-brand-muted">Expected Annual Growth (%)</label>
+                                    <label class="text-xs font-bold uppercase text-brand-muted" data-cms-text="calculator.growthLabel">Expected Annual Growth (%)</label>
                                     <span id="growthValueDisplay" class="text-brand-neon font-extrabold text-lg">12 %</span>
                                 </div>
                                 <input type="range" id="growthInput" min="5" max="25" step="1" value="12" class="w-full">
@@ -350,11 +558,11 @@
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-white/10">
                                 <div class="bg-brand-dark p-4 rounded-xl border border-brand-neon/20">
-                                    <span class="text-brand-muted text-xs block mb-1">Projected Total Value</span>
+                                    <span class="text-brand-muted text-xs block mb-1" data-cms-text="calculator.totalValueLabel">Projected Total Value</span>
                                     <span id="totalValueOutput" class="text-2xl font-extrabold text-white">88,117,000 PKR</span>
                                 </div>
                                 <div class="bg-brand-dark p-4 rounded-xl border border-brand-neon/40 shadow-neon-glow">
-                                    <span class="text-brand-muted text-xs block mb-1">Estimated Net Return (Gain)</span>
+                                    <span class="text-brand-muted text-xs block mb-1" data-cms-text="calculator.netGainLabel">Estimated Net Return (Gain)</span>
                                     <span id="netGainOutput" class="text-2xl font-extrabold text-brand-neon">+38,117,000 PKR</span>
                                 </div>
                             </div>
@@ -368,52 +576,12 @@
         <section id="advantages" class="py-20 bg-brand-dark/60 relative border-t border-white/5">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center max-w-2xl mx-auto mb-16">
-                    <span class="text-brand-neon text-xs font-bold tracking-widest uppercase">Excellence In Execution</span>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2">Why Land Pulse Marketing?</h2>
-                    <p class="text-brand-muted text-sm mt-3">We bridge the gap between discerning investors and high-yield, premium real estate opportunities with complete transparency.</p>
+                    <span class="text-brand-neon text-xs font-bold tracking-widest uppercase" data-cms-text="advantages.eyebrow">Excellence In Execution</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2" data-cms-text="advantages.title">Why Land Pulse Marketing?</h2>
+                    <p class="text-brand-muted text-sm mt-3" data-cms-text="advantages.description">We bridge the gap between discerning investors and high-yield, premium real estate opportunities with complete transparency.</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <div class="glass-card p-8 rounded-2xl text-left relative overflow-hidden group">
-                        <div class="w-14 h-14 rounded-2xl bg-brand-neon/10 border border-brand-neon/30 flex items-center justify-center text-brand-neon text-2xl mb-6 shadow-neon-glow group-hover:bg-brand-neon group-hover:text-black transition-all duration-300">
-                            <i class="fa-solid fa-chart-pie"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-3">Smart Valuation</h3>
-                        <p class="text-brand-muted text-sm leading-relaxed">
-                            Algorithmic market trend analysis ensuring optimal pricing and future growth forecast for every property.
-                        </p>
-                    </div>
-
-                    <div class="glass-card p-8 rounded-2xl text-left relative overflow-hidden group">
-                        <div class="w-14 h-14 rounded-2xl bg-brand-neon/10 border border-brand-neon/30 flex items-center justify-center text-brand-neon text-2xl mb-6 shadow-neon-glow group-hover:bg-brand-neon group-hover:text-black transition-all duration-300">
-                            <i class="fa-solid fa-briefcase"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-3">Portfolio Management</h3>
-                        <p class="text-brand-muted text-sm leading-relaxed">
-                            Dedicated wealth advisors managing buy, sell, and rental portfolios for maximum profitability.
-                        </p>
-                    </div>
-
-                    <div class="glass-card p-8 rounded-2xl text-left relative overflow-hidden group">
-                        <div class="w-14 h-14 rounded-2xl bg-brand-neon/10 border border-brand-neon/30 flex items-center justify-center text-brand-neon text-2xl mb-6 shadow-neon-glow group-hover:bg-brand-neon group-hover:text-black transition-all duration-300">
-                            <i class="fa-solid fa-shield-halved"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-3">Legal & Title Assurance</h3>
-                        <p class="text-brand-muted text-sm leading-relaxed">
-                            100% verified documentation, NOC compliance, and seamless title transfer guarantee without hassle.
-                        </p>
-                    </div>
-
-                    <div class="glass-card p-8 rounded-2xl text-left relative overflow-hidden group">
-                        <div class="w-14 h-14 rounded-2xl bg-brand-neon/10 border border-brand-neon/30 flex items-center justify-center text-brand-neon text-2xl mb-6 shadow-neon-glow group-hover:bg-brand-neon group-hover:text-black transition-all duration-300">
-                            <i class="fa-solid fa-key"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-3">Exclusive Pre-Launch</h3>
-                        <p class="text-brand-muted text-sm leading-relaxed">
-                            Get early investor rates in mega commercial towers and high-end gated communities before public release.
-                        </p>
-                    </div>
-                </div>
+                <div id="advantagesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"></div>
             </div>
         </section>
 
@@ -421,9 +589,9 @@
         <section id="team" class="py-20 bg-brand-dark/60 border-t border-white/5">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center max-w-2xl mx-auto mb-12">
-                    <span class="text-brand-neon text-xs font-bold tracking-widest uppercase">People Behind The Pulse</span>
-                    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white mt-2">The Experts Behind Your Journey</h2>
-                    <p class="text-brand-muted text-sm mt-3">Get to know the specialists guiding your property journey.</p>
+                    <span class="text-brand-neon text-xs font-bold tracking-widest uppercase" data-cms-text="teamSection.eyebrow">People Behind The Pulse</span>
+                    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white mt-2" data-cms-text="teamSection.title">The Experts Behind Your Journey</h2>
+                    <p class="text-brand-muted text-sm mt-3" data-cms-text="teamSection.description">Get to know the specialists guiding your property journey.</p>
                 </div>
                 <div id="teamContainer" class="grid grid-cols-1 md:grid-cols-3 gap-8" aria-live="polite">
                     <p class="col-span-full text-center text-brand-muted text-sm">Loading team profiles…</p>
@@ -435,16 +603,16 @@
         <section class="py-20 relative">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="relative rounded-3xl overflow-hidden border border-white/10 group h-[450px]">
-                    <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80" alt="Virtual Tour Cover" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 brightness-50">
+                    <img id="virtualTourCover" src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80" alt="Virtual Tour Cover" data-cms-alt="virtualTour.title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 brightness-50">
                     <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/40 to-transparent"></div>
                     
                     <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
                         <button onclick="openVideoLightbox()" class="w-20 h-20 rounded-full bg-brand-neon text-black flex items-center justify-center text-2xl shadow-neon-glow-lg hover:scale-110 transition-transform duration-300 mb-6 group-hover:animate-bounce">
                             <i class="fa-solid fa-play ml-1"></i>
                         </button>
-                        <span class="text-brand-neon text-xs font-bold tracking-widest uppercase mb-2">Immersive Experience</span>
-                        <h2 class="text-3xl sm:text-5xl font-extrabold text-white max-w-2xl">Experience Ultra-Modern Living In 4K Virtual Tour</h2>
-                        <p class="text-brand-muted text-sm sm:text-base mt-3 max-w-xl">Take an interactive walkthrough of our signature luxury properties from anywhere in the world.</p>
+                        <span class="text-brand-neon text-xs font-bold tracking-widest uppercase mb-2" data-cms-text="virtualTour.eyebrow">Immersive Experience</span>
+                        <h2 class="text-3xl sm:text-5xl font-extrabold text-white max-w-2xl" data-cms-text="virtualTour.title">Experience Ultra-Modern Living In 4K Virtual Tour</h2>
+                        <p class="text-brand-muted text-sm sm:text-base mt-3 max-w-xl" data-cms-text="virtualTour.description">Take an interactive walkthrough of our signature luxury properties from anywhere in the world.</p>
                     </div>
                 </div>
             </div>
@@ -454,11 +622,11 @@
         <section id="testimonials" class="py-20 bg-brand-dark/50 border-t border-white/5">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center max-w-2xl mx-auto mb-16">
-                    <span class="text-brand-neon text-xs font-bold tracking-widest uppercase">Trusted By High-Net-Worth Investors</span>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2">VIP Client Testimonials</h2>
+                    <span class="text-brand-neon text-xs font-bold tracking-widest uppercase" data-cms-text="testimonials.eyebrow">Trusted By High-Net-Worth Investors</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2" data-cms-text="testimonials.title">VIP Client Testimonials</h2>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div id="testimonialsContainer" class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div class="glass-card p-8 rounded-2xl relative">
                         <div class="flex text-brand-neon mb-4 gap-1">
                             <i class="fa-solid fa-star text-sm"></i>
@@ -526,7 +694,7 @@
 
     <!-- Quick Floating Action Buttons -->
     <div class="fixed bottom-6 right-6 z-40 flex flex-col gap-3">
-        <a href="https://wa.me/923001234567" target="_blank" class="w-14 h-14 rounded-full bg-emerald-500 text-white flex items-center justify-center text-2xl shadow-emerald-glow hover:scale-110 transition-transform duration-300 relative group">
+        <a id="floatingWhatsappLink" href="https://wa.me/923001234567" target="_blank" class="w-14 h-14 rounded-full bg-emerald-500 text-white flex items-center justify-center text-2xl shadow-emerald-glow hover:scale-110 transition-transform duration-300 relative group">
             <i class="fa-brands fa-whatsapp"></i>
             <span class="absolute right-16 top-1/2 -translate-y-1/2 glass-card px-3 py-1.5 rounded-lg text-xs font-semibold text-white whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">Chat on WhatsApp</span>
         </a>
@@ -537,18 +705,18 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
                 <div class="lg:col-span-2">
-                    <a href="#" class="flex items-center space-x-3 mb-4">
-                        <img src="images/LOGO/logo.png" alt="Land Pulse Marketing" onerror="this.onerror=null; this.src='https://placehold.co/180x50/12181b/00ff66?text=Land+Pulse';" class="brand-logo h-12 w-auto max-w-[180px] object-contain">
+                    <a href="#hero" data-cms-href="navigation.logoHref" class="brand-home-link flex items-center space-x-3 mb-4">
+                        <img src="images/LOGO/logo.png" alt="Land Pulse Marketing" data-cms-alt="navigation.logoAlt" onerror="this.onerror=null; this.src='https://placehold.co/180x50/12181b/00ff66?text=Land+Pulse';" class="brand-logo h-12 w-auto max-w-[180px] object-contain">
                     </a>
-                    <p class="text-brand-muted text-sm leading-relaxed max-w-sm mb-6">
+                    <p class="text-brand-muted text-sm leading-relaxed max-w-sm mb-6" data-cms-text="footer.description">
                         Pakistan’s premiere real estate marketing agency specializing in high-yielding plots, luxury villas, commercial towers, and global property investments.
                     </p>
                     <div id="footerSocialLinks" class="flex space-x-4" aria-label="Social media links"></div>
                 </div>
 
                 <div>
-                    <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4">Quick Links</h4>
-                    <ul class="space-y-2.5 text-sm text-brand-muted">
+                    <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4" data-cms-text="footer.quickLinksTitle">Quick Links</h4>
+                    <ul id="footerQuickLinks" class="space-y-2.5 text-sm text-brand-muted">
                         <li><a href="#hero" class="hover:text-brand-neon transition-colors">Home Page</a></li>
                         <li><a href="#premium-projects" class="hover:text-brand-neon transition-colors">Our Premium Projects</a></li>
                         <li><a href="#properties" class="hover:text-brand-neon transition-colors">Featured VIP Properties</a></li>
@@ -559,8 +727,8 @@
                 </div>
 
                 <div>
-                    <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4">Hot Locations</h4>
-                    <ul class="space-y-2.5 text-sm text-brand-muted">
+                    <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4" data-cms-text="footer.locationsTitle">Hot Locations</h4>
+                    <ul id="footerLocations" class="space-y-2.5 text-sm text-brand-muted">
                         <li><a href="#" class="hover:text-brand-neon transition-colors">DHA Lahore Phase 6-9</a></li>
                         <li><a href="#" class="hover:text-brand-neon transition-colors">Gulberg Executive Towers</a></li>
                         <li><a href="#" class="hover:text-brand-neon transition-colors">Bahria Town Islamabad</a></li>
@@ -570,19 +738,19 @@
                 </div>
 
                 <div>
-                    <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4">VIP Insider Club</h4>
-                    <p class="text-brand-muted text-xs mb-4">Receive confidential off-market pre-launch price lists directly in your inbox.</p>
+                    <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4" data-cms-text="footer.newsletterTitle">VIP Insider Club</h4>
+                    <p class="text-brand-muted text-xs mb-4" data-cms-text="footer.newsletterDescription">Receive confidential off-market pre-launch price lists directly in your inbox.</p>
                     <form onsubmit="handleNewsletter(event)" class="space-y-2">
-                        <input type="email" id="newsletterEmail" required placeholder="Enter your email" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:border-brand-neon focus:outline-none">
-                        <button type="submit" class="w-full bg-brand-neon text-black font-bold py-2.5 rounded-xl text-xs hover:shadow-neon-glow transition-all">Subscribe Now</button>
+                        <input type="email" id="newsletterEmail" required placeholder="Enter your email" data-cms-placeholder="footer.newsletterPlaceholder" class="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:border-brand-neon focus:outline-none">
+                        <button type="submit" data-cms-text="footer.newsletterButton" class="w-full bg-brand-neon text-black font-bold py-2.5 rounded-xl text-xs hover:shadow-neon-glow transition-all">Subscribe Now</button>
                     </form>
-                    <div id="newsletterSuccess" class="hidden text-brand-neon text-xs mt-2">✓ Successfully Subscribed to VIP List</div>
+                    <div id="newsletterSuccess" class="hidden text-brand-neon text-xs mt-2" data-cms-text="footer.newsletterSuccess">✓ Successfully Subscribed to VIP List</div>
                 </div>
             </div>
 
             <div class="border-t border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-brand-muted gap-4">
-                <p>&copy; 2026 Land Pulse Marketing. All Rights Reserved. Developed by Ashal.</p>
-                <div class="flex space-x-6">
+                <p data-cms-text="footer.copyright">&copy; 2026 Land Pulse Marketing. All Rights Reserved. Developed by Ashal.</p>
+                <div id="footerLegalLinks" class="flex space-x-6">
                     <a href="#" class="hover:text-white">Privacy Policy</a>
                     <a href="#" class="hover:text-white">Terms of Service</a>
                     <a href="#" class="hover:text-white">NOC Disclaimers</a>
@@ -603,7 +771,7 @@
                     <img id="modalImage" src="" alt="Property detail" class="w-full h-full object-cover">
                     <span id="modalTag" class="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-extrabold bg-brand-neon text-black uppercase"></span>
                     <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white font-bold text-sm">
-                        <i class="fa-solid fa-images text-brand-neon"></i> Click to launch full slideshow
+                        <i class="fa-solid fa-images text-brand-neon"></i> <span data-cms-text="propertyModal.galleryPrompt">Click to launch full slideshow</span>
                     </div>
                 </div>
                 <div id="modalGallery" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
@@ -614,7 +782,7 @@
                         <p id="modalLocation" class="text-brand-muted text-sm mt-1"><i class="fa-solid fa-location-dot text-brand-neon me-1"></i> </p>
                     </div>
                     <div class="text-left sm:text-right">
-                        <span class="text-xs text-brand-muted block">Asking Price</span>
+                        <span class="text-xs text-brand-muted block" data-cms-text="propertyModal.priceLabel">Asking Price</span>
                         <span id="modalPrice" class="text-2xl font-extrabold text-brand-neon"></span>
                     </div>
                 </div>
@@ -635,16 +803,16 @@
                 </div>
 
                 <div>
-                    <h4 class="text-white font-bold text-sm mb-2">Property Highlights & Features</h4>
+                    <h4 class="text-white font-bold text-sm mb-2" data-cms-text="propertyModal.highlightsTitle">Property Highlights & Features</h4>
                     <p id="modalDescription" class="text-brand-muted text-sm leading-relaxed"></p>
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-4 pt-2">
                     <a href="#team" onclick="closeModal()" class="flex-1 text-center py-3.5 bg-brand-neon text-black font-extrabold rounded-xl shadow-neon-glow hover:brightness-110 transition-all">
-                        Meet Our Team
+                        <span data-cms-text="propertyModal.teamButton">Meet Our Team</span>
                     </a>
                     <a id="modalWhatsapp" href="#" target="_blank" class="flex-1 text-center py-3.5 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-500 transition-all flex items-center justify-center gap-2">
-                        <i class="fa-brands fa-whatsapp text-lg"></i> Direct WhatsApp Inquiry
+                        <i class="fa-brands fa-whatsapp text-lg"></i> <span data-cms-text="propertyModal.whatsappButton">Direct WhatsApp Inquiry</span>
                     </a>
                 </div>
             </div>
@@ -703,11 +871,14 @@
             <button onclick="closeVideoModal()" class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-brand-dark/80 text-white hover:text-brand-neon flex items-center justify-center border border-white/10">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
-            <div class="w-full h-full flex flex-col items-center justify-center p-8 text-center bg-brand-card">
-                <i class="fa-solid fa-circle-play text-brand-neon text-6xl mb-4 animate-pulse"></i>
-                <h3 class="text-2xl font-bold text-white mb-2">4K Virtual Walkthrough Preview</h3>
-                <p class="text-brand-muted text-sm max-w-md">Contact our VIP desk to access full private drone walkthrough footage and interactive 3D blueprint plans.</p>
-                <a href="#team" onclick="closeVideoModal()" class="mt-6 px-6 py-3 bg-brand-neon text-black font-bold rounded-xl shadow-neon-glow">Meet Our Team</a>
+            <div id="virtualTourVideoContainer" class="w-full h-full bg-black">
+                <video id="virtualTourVideo" class="hidden w-full h-full object-contain" controls playsinline></video>
+                <div id="virtualTourVideoFallback" class="w-full h-full flex flex-col items-center justify-center p-8 text-center bg-brand-card">
+                    <i class="fa-solid fa-circle-play text-brand-neon text-6xl mb-4 animate-pulse"></i>
+                    <h3 class="text-2xl font-bold text-white mb-2" data-cms-text="virtualTour.videoFallbackTitle">4K Virtual Walkthrough Preview</h3>
+                    <p class="text-brand-muted text-sm max-w-md" data-cms-text="virtualTour.videoFallbackDescription">Contact our VIP desk to access full private drone walkthrough footage and interactive 3D blueprint plans.</p>
+                    <a href="#team" onclick="closeVideoModal()" class="mt-6 px-6 py-3 bg-brand-neon text-black font-bold rounded-xl shadow-neon-glow" data-cms-text="virtualTour.videoFallbackButton">Meet Our Team</a>
+                </div>
             </div>
         </div>
     </div>
@@ -716,6 +887,7 @@
     <script>
         const propertiesData = [];
         const premiumProjectsData = [];
+        let siteContent = null;
         let activeListingType = "all";
         let activePropertyCategory = "all";
         let currentPropertyItems = [];
@@ -759,13 +931,6 @@
             }
         ];
 
-        const socialPlatforms = {
-            youtube: { label: "YouTube", icon: "fa-youtube" },
-            instagram: { label: "Instagram", icon: "fa-instagram" },
-            tiktok: { label: "TikTok", icon: "fa-tiktok" },
-            facebook: { label: "Facebook", icon: "fa-facebook-f" }
-        };
-
         function escapeHTML(value) {
             return String(value ?? "").replace(/[&<>"']/g, character => ({
                 "&": "&amp;",
@@ -782,6 +947,249 @@
                 throw new Error(`Request for ${path} failed (${response.status})`);
             }
             return response.json();
+        }
+
+        function getContentValue(path) {
+            return path.split(".").reduce((value, key) => value && value[key], siteContent);
+        }
+
+        async function loadSiteContent() {
+            try {
+                siteContent = await fetchJSON("content/site.json");
+                document.title = siteContent.pageTitle || document.title;
+                document.querySelectorAll("[data-cms-text]").forEach(element => {
+                    const value = getContentValue(element.dataset.cmsText);
+                    if (typeof value === "string" || typeof value === "number") {
+                        element.textContent = String(value);
+                    }
+                });
+                document.querySelectorAll("[data-cms-href]").forEach(element => {
+                    const value = getContentValue(element.dataset.cmsHref);
+                    if (typeof value === "string" && value.trim()) {
+                        element.setAttribute("href", value);
+                    }
+                });
+                document.querySelectorAll("[data-cms-alt]").forEach(element => {
+                    const value = getContentValue(element.dataset.cmsAlt);
+                    if (typeof value === "string" && value.trim()) {
+                        element.setAttribute("alt", value);
+                    }
+                });
+                document.querySelectorAll("[data-cms-placeholder]").forEach(element => {
+                    const value = getContentValue(element.dataset.cmsPlaceholder);
+                    if (typeof value === "string") {
+                        element.setAttribute("placeholder", value);
+                    }
+                });
+                document.querySelectorAll("[data-cms-aria-label]").forEach(element => {
+                    const value = getContentValue(element.dataset.cmsAriaLabel);
+                    if (typeof value === "string" && value.trim()) {
+                        element.setAttribute("aria-label", value);
+                    }
+                });
+
+                if (siteContent.logo) {
+                    document.querySelectorAll(".brand-logo").forEach(image => {
+                        image.src = siteContent.logo;
+                    });
+                }
+
+                const tourCover = document.getElementById("virtualTourCover");
+                if (siteContent.virtualTour && siteContent.virtualTour.cover) {
+                    tourCover.src = siteContent.virtualTour.cover;
+                }
+
+                const statsSection = document.getElementById("company-stats");
+                if (siteContent.companyStats && siteContent.companyStats.enabled === false) {
+                    statsSection.classList.add("hidden");
+                } else {
+                    renderCompanyStats(siteContent.companyStats);
+                }
+
+                renderAdvantages(siteContent.advantages && siteContent.advantages.cards);
+                renderTestimonials(siteContent.testimonials && siteContent.testimonials.items);
+                renderFooterLists(siteContent.footer);
+                document.getElementById("floatingWhatsappLink").href =
+                    `https://wa.me/${encodeURIComponent(siteContent.footer && siteContent.footer.whatsapp || "923001234567")}`;
+            } catch (error) {
+                console.warn("Using the page's built-in content because content/site.json could not be loaded:", error.message);
+            }
+        }
+
+        function renderCompanyStats(stats) {
+            const container = document.getElementById("companyStatsContainer");
+            if (!stats || !Array.isArray(stats.items)) {
+                return;
+            }
+
+            container.innerHTML = stats.items.map(item => {
+                const percent = Math.max(0, Math.min(100, Number(item.progress) || 0));
+                const target = Math.max(0, Number(String(item.value).replace(/,/g, "")) || 0);
+                return `
+                    <article class="stat-card" data-target="${target}" data-percent="${percent}" data-suffix="${escapeHTML(item.suffix || "")}">
+                        <div class="circle-wrapper">
+                            <svg viewBox="0 0 36 36" class="circular-chart" aria-hidden="true">
+                                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                                <path class="circle" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                            </svg>
+                            <div class="counter-text" aria-label="${escapeHTML(item.label)}">0</div>
+                        </div>
+                        <div class="stat-label">${escapeHTML(item.label)}</div>
+                    </article>`;
+            }).join("");
+
+            observeCompanyStats();
+        }
+
+        function observeCompanyStats() {
+            const masterCard = document.getElementById("mainStatsCard");
+            const statCards = masterCard.querySelectorAll(".stat-card");
+            const startAnimation = () => {
+                masterCard.classList.add("visible");
+                statCards.forEach((card, index) => {
+                    const circle = card.querySelector(".circle");
+                    const counter = card.querySelector(".counter-text");
+                    const target = Number(card.dataset.target);
+                    const percent = Math.max(0, Math.min(100, Number(card.dataset.percent) || 0));
+                    const suffix = card.dataset.suffix || "";
+
+                    if (counter.animationId) {
+                        cancelAnimationFrame(counter.animationId);
+                    }
+                    window.clearTimeout(card.timeoutId);
+
+                    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+                        circle.style.strokeDasharray = `${percent}, 100`;
+                        counter.textContent = `${target.toLocaleString()}${suffix || (target > 100 ? "+" : "")}`;
+                        return;
+                    }
+
+                    circle.style.transition = "stroke-dasharray 1.5s cubic-bezier(0.1, 0.5, 0.2, 1)";
+                    card.timeoutId = window.setTimeout(() => {
+                        circle.style.strokeDasharray = `${percent}, 100`;
+                        animateStatCount(counter, target, suffix, 1500);
+                    }, 100 + (index * 100));
+                });
+            };
+            const resetAnimation = () => {
+                masterCard.classList.remove("visible");
+                statCards.forEach(card => {
+                    const circle = card.querySelector(".circle");
+                    const counter = card.querySelector(".counter-text");
+                    window.clearTimeout(card.timeoutId);
+                    if (counter.animationId) {
+                        cancelAnimationFrame(counter.animationId);
+                    }
+                    circle.style.transition = "none";
+                    circle.style.strokeDasharray = "0, 100";
+                    counter.textContent = "0";
+                });
+            };
+
+            if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) {
+                startAnimation();
+                return;
+            }
+
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        startAnimation();
+                    } else {
+                        resetAnimation();
+                    }
+                });
+            }, { threshold: 0.25 });
+            observer.observe(masterCard);
+        }
+
+        function animateStatCount(counter, target, suffix, duration) {
+            if (!Number.isFinite(target) || target <= 0) {
+                counter.textContent = `0${suffix}`;
+                return;
+            }
+
+            const startTime = performance.now();
+            const update = now => {
+                const progress = Math.min((now - startTime) / duration, 1);
+                const easedProgress = 1 - Math.pow(1 - progress, 4);
+                const currentValue = Math.round(target * easedProgress);
+                counter.textContent = `${currentValue.toLocaleString()}${suffix || (target > 100 ? "+" : "")}`;
+                if (progress < 1) {
+                    counter.animationId = requestAnimationFrame(update);
+                }
+            };
+            counter.animationId = requestAnimationFrame(update);
+        }
+
+        function initializeWelcomeIntro() {
+            const intro = document.getElementById("welcomeIntro");
+            if (!intro) {
+                return;
+            }
+
+            window.setTimeout(() => {
+                intro.classList.add("is-leaving");
+                window.setTimeout(() => {
+                    intro.remove();
+                    document.body.classList.remove("intro-active");
+                }, 800);
+            }, 3800);
+        }
+
+        function renderAdvantages(cards) {
+            const container = document.getElementById("advantagesContainer");
+            if (!Array.isArray(cards)) {
+                return;
+            }
+
+            container.innerHTML = cards.map(card => `
+                <article class="glass-card p-8 rounded-2xl text-left relative overflow-hidden group">
+                    <div class="w-14 h-14 rounded-2xl bg-brand-neon/10 border border-brand-neon/30 flex items-center justify-center text-brand-neon text-2xl mb-6 shadow-neon-glow group-hover:bg-brand-neon group-hover:text-black transition-all duration-300">
+                        <i class="fa-solid ${escapeHTML(card.icon || "fa-star")}"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">${escapeHTML(card.title)}</h3>
+                    <p class="text-brand-muted text-sm leading-relaxed">${escapeHTML(card.description)}</p>
+                </article>
+            `).join("");
+        }
+
+        function renderTestimonials(items) {
+            const container = document.getElementById("testimonialsContainer");
+            if (!Array.isArray(items)) {
+                return;
+            }
+
+            container.innerHTML = items.map((item, index) => {
+                const rating = Math.max(1, Math.min(5, Number(item.rating) || 5));
+                const stars = Array.from({ length: rating }, () => '<i class="fa-solid fa-star text-sm"></i>').join("");
+                return `
+                    <article class="glass-card p-8 rounded-2xl relative ${index === 1 ? "border-brand-neon/30" : ""}">
+                        <div class="flex text-brand-neon mb-4 gap-1" aria-label="${rating} out of 5 stars">${stars}</div>
+                        <p class="text-brand-muted text-sm italic mb-6 leading-relaxed">"${escapeHTML(item.quote)}"</p>
+                        <div class="flex items-center gap-4">
+                            <img src="${escapeHTML(item.photo)}" class="w-12 h-12 rounded-full object-cover border border-brand-neon" alt="${escapeHTML(item.name)}">
+                            <div>
+                                <h3 class="text-white font-bold text-sm">${escapeHTML(item.name)}</h3>
+                                <span class="text-brand-muted text-xs">${escapeHTML(item.role)}</span>
+                            </div>
+                        </div>
+                    </article>`;
+            }).join("");
+        }
+
+        function renderFooterLists(footer) {
+            if (!footer) {
+                return;
+            }
+            const renderLinks = items => (Array.isArray(items) ? items : []).map(item => `
+                <li><a href="${escapeHTML(item.href || "#")}" class="hover:text-brand-neon transition-colors">${escapeHTML(item.label)}</a></li>
+            `).join("");
+            document.getElementById("footerQuickLinks").innerHTML = renderLinks(footer.quickLinks);
+            document.getElementById("footerLocations").innerHTML = renderLinks(footer.locations);
+            document.getElementById("footerLegalLinks").innerHTML = (Array.isArray(footer.legalLinks) ? footer.legalLinks : []).map(item => `
+                <a href="${escapeHTML(item.href || "#")}" class="hover:text-white">${escapeHTML(item.label)}</a>
+            `).join("");
         }
 
         /* Premium Projects Loading */
@@ -822,7 +1230,7 @@
                             <p class="text-brand-muted text-xs leading-relaxed mb-4 line-clamp-2">${escapeHTML(proj.description || '')}</p>
                         </div>
 
-                        <a href="https://wa.me/923001234567?text=${encodeURIComponent('Inquiry about Premium Project: ' + proj.title)}" target="_blank" class="w-full py-3 rounded-xl bg-brand-card hover:bg-brand-neon hover:text-black border border-white/10 text-white text-xs font-bold transition-all duration-300 flex items-center justify-center gap-2">
+                        <a href="https://wa.me/${encodeURIComponent(siteContent && siteContent.footer && siteContent.footer.whatsapp || "923001234567")}?text=${encodeURIComponent('Inquiry about Premium Project: ' + proj.title)}" target="_blank" class="w-full py-3 rounded-xl bg-brand-card hover:bg-brand-neon hover:text-black border border-white/10 text-white text-xs font-bold transition-all duration-300 flex items-center justify-center gap-2">
                             <i class="fa-solid fa-paper-plane"></i> Express Interest
                         </a>
                     </div>
@@ -837,45 +1245,52 @@
                 if (!assets || !Array.isArray(assets.teams)) {
                     throw new Error("assets-manifest.json must contain a teams array");
                 }
-                if (assets.logo) {
+                if (assets.logo && !(siteContent && siteContent.logo)) {
                     document.querySelectorAll(".brand-logo").forEach(image => {
                         image.src = assets.logo;
                     });
                 }
 
-                const teamProfiles = await Promise.all(assets.teams.map(async (member) => {
-                    let detailsData = {};
-                    if (member.details) {
-                        try {
-                            detailsData = await fetchJSON(member.details);
-                        } catch (e) {
-                            console.warn(`Could not fetch details JSON for ${member.folder}`);
+                const profileFiles = [
+                    { path: "content/team/ceo.json", folder: "CEO" },
+                    { path: "content/team/sales-executive.json", folder: "SALES" },
+                    { path: "content/team/manager.json", folder: "MANAGER" }
+                ];
+                const teamProfiles = await Promise.all(profileFiles.map(async profile => {
+                    const assetMember = assets.teams.find(member =>
+                        String(member.folder).toLowerCase() === profile.folder.toLowerCase()
+                    ) || { folder: profile.folder };
+                    let profileData = {};
+                    try {
+                        profileData = await fetchJSON(profile.path);
+                    } catch (error) {
+                        console.warn(`Could not load CMS team profile ${profile.path}:`, error.message);
+                        if (assetMember.details) {
+                            try {
+                                profileData = await fetchJSON(assetMember.details);
+                            } catch (detailsError) {
+                                console.warn(`Could not load legacy profile details for ${profile.folder}:`, detailsError.message);
+                            }
                         }
                     }
 
-                    const candidatePhotos = [
-                        member.photo,
-                        `${member.folder}/photo.jpg`,
-                        `${member.folder}/profile.jpg`,
-                        `${member.folder}/photo.png`,
-                        `${member.folder}/avatar.jpg`
-                    ].filter(Boolean);
-
-                    const candidateVideos = [
-                        member.introVideo,
-                        `${member.folder}/intro.mp4`,
-                        `${member.folder}/video.mp4`
-                    ].filter(Boolean);
+                    const candidatePhotos = Object.prototype.hasOwnProperty.call(profileData, "photo")
+                        ? [profileData.photo].filter(Boolean)
+                        : [assetMember.photo, `${profile.folder}/photo.jpg`, `${profile.folder}/profile.jpg`].filter(Boolean);
+                    const candidateVideos = Object.prototype.hasOwnProperty.call(profileData, "introVideo")
+                        ? [profileData.introVideo].filter(Boolean)
+                        : [assetMember.introVideo, `${profile.folder}/intro.mp4`, `${profile.folder}/video.mp4`].filter(Boolean);
 
                     return {
-                        ...member,
-                        ...detailsData,
-                        photosToTry: candidatePhotos,
-                        videosToTry: candidateVideos
+                        ...assetMember,
+                        ...profileData,
+                        folder: profile.folder,
+                        photosToTry: [...new Set(candidatePhotos)],
+                        videosToTry: [...new Set(candidateVideos)]
                     };
                 }));
 
-                renderTeamMembers(teamProfiles);
+                renderTeamMembers(teamProfiles.filter(profile => profile.enabled !== false));
             } catch (error) {
                 console.warn("Using fallback team structure:", error.message);
                 renderFallbackTeam();
@@ -884,6 +1299,10 @@
 
         function renderTeamMembers(profiles) {
             const container = document.getElementById("teamContainer");
+            if (!profiles.length) {
+                container.innerHTML = `<p class="col-span-full text-center text-brand-muted text-sm">${escapeHTML(getContentValue("teamSection.emptyMessage") || "Team profiles will be announced soon.")}</p>`;
+                return;
+            }
             container.innerHTML = profiles.map((member, index) => {
                 const name = escapeHTML(member.name || member.role || member.folder || 'Property Specialist');
                 const role = escapeHTML(member.role || 'Executive Consultant');
@@ -1063,12 +1482,24 @@
         /* Property Inventory Loading */
         async function loadPropertyInventory() {
             try {
-                const inventory = await fetchJSON("Towns/inventory.json");
+                let inventory;
+                try {
+                    inventory = await fetchJSON("content/properties.json");
+                } catch (error) {
+                    console.warn("Using generated property inventory because content/properties.json could not be loaded:", error.message);
+                    inventory = await fetchJSON("Towns/inventory.json");
+                }
                 if (inventory && Array.isArray(inventory.listings)) {
                     const loaded = await Promise.all(inventory.listings.map(async (listing, idx) => {
                         try {
-                            const details = await fetchJSON(listing.manifestPath);
-                            const photos = (listing.photos || []).length > 0 ? listing.photos : [
+                            const details = listing.manifestPath
+                                ? await fetchJSON(listing.manifestPath)
+                                : listing;
+                            const galleryPhotos = Array.isArray(listing.photos) ? listing.photos : [];
+                            const configuredPhotos = listing.image
+                                ? [listing.image, ...galleryPhotos.filter(photo => photo !== listing.image)]
+                                : galleryPhotos;
+                            const photos = configuredPhotos.length > 0 ? configuredPhotos : [
                                 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
                                 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80',
                                 'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80'
@@ -1083,7 +1514,7 @@
                                 area: details.size || 'N/A',
                                 category: (details.category || 'residential').toLowerCase(),
                                 type: (details.category || 'residential').toLowerCase(),
-                                projectTitle: listing.projectTitle || 'DHA Lahore',
+                                projectTitle: listing.projectTitle || details.location || 'DHA Lahore',
                                 listingType: listing.listingType || 'sale',
                                 tag: listing.listingType === 'rent' ? 'For Rent' : 'For Sale',
                                 tagBg: listing.listingType === 'rent' ? 'bg-brand-emerald text-white' : 'bg-brand-neon text-black',
@@ -1196,7 +1627,8 @@
         function populateLocationFilter() {
             const select = document.getElementById("searchLocation");
             const projects = [...new Set(propertiesData.map(p => p.projectTitle).filter(Boolean))];
-            select.innerHTML = `<option value="all">All Locations</option>${projects.map(proj =>
+            const allLocationsLabel = escapeHTML(getContentValue("hero.locationAll") || "All Locations");
+            select.innerHTML = `<option value="all">${allLocationsLabel}</option>${projects.map(proj =>
                 `<option value="${escapeHTML(proj)}">${escapeHTML(proj)}</option>`
             ).join("")}`;
         }
@@ -1211,7 +1643,7 @@
                 container.innerHTML = `
                     <div class="col-span-full text-center py-12 glass-card rounded-2xl">
                         <i class="fa-solid fa-building-circle-xmark text-brand-muted text-4xl mb-3"></i>
-                        <p class="text-white font-bold">No properties matched your search filter.</p>
+                        <p class="text-white font-bold">${escapeHTML(getContentValue("propertyModal.noProperties") || "No properties matched your search filter.")}</p>
                         <button onclick="resetPropertyFilters()" class="mt-4 px-4 py-2 bg-brand-neon text-black font-bold rounded-xl text-xs">Reset Filters</button>
                     </div>`;
                 pagination.classList.add("hidden");
@@ -1482,7 +1914,8 @@
             }
 
             const msg = encodeURIComponent(`Hello Land Pulse Team, I am interested in property details for "${item.title}" priced at ${item.price}.`);
-            document.getElementById('modalWhatsapp').href = `https://wa.me/923001234567?text=${msg}`;
+            const whatsapp = siteContent && siteContent.footer && siteContent.footer.whatsapp || "923001234567";
+            document.getElementById('modalWhatsapp').href = `https://wa.me/${encodeURIComponent(whatsapp)}?text=${msg}`;
 
             document.getElementById('propertyModal').classList.remove('hidden');
         }
@@ -1493,10 +1926,26 @@
 
         function openVideoLightbox() {
             document.getElementById('videoModal').classList.remove('hidden');
+            const video = document.getElementById("virtualTourVideo");
+            const videoUrl = siteContent && siteContent.virtualTour && siteContent.virtualTour.video;
+            const fallback = document.getElementById("virtualTourVideoFallback");
+            if (videoUrl) {
+                video.src = videoUrl;
+                video.classList.remove("hidden");
+                fallback.classList.add("hidden");
+                video.play().catch(error => console.warn("Virtual tour playback could not start:", error.message));
+            } else {
+                video.pause();
+                video.removeAttribute("src");
+                video.classList.add("hidden");
+                fallback.classList.remove("hidden");
+            }
         }
 
         function closeVideoModal() {
             document.getElementById('videoModal').classList.add('hidden');
+            const video = document.getElementById("virtualTourVideo");
+            video.pause();
         }
 
         /* Calculator Logic */
@@ -1532,24 +1981,66 @@
             setTimeout(() => document.getElementById('newsletterSuccess').classList.add('hidden'), 5000);
         }
 
+        initializeWelcomeIntro();
+
         async function loadFooterSocialLinks() {
             const container = document.getElementById("footerSocialLinks");
             try {
-                const links = await fetchJSON("manifest.json");
-                container.innerHTML = Object.entries(socialPlatforms)
-                    .filter(([platform]) => typeof links[platform] === "string")
-                    .map(([platform, details]) => `
-                        <a href="${escapeHTML(links[platform])}" target="_blank" class="w-10 h-10 rounded-xl bg-brand-dark border border-white/10 flex items-center justify-center text-brand-muted hover:text-brand-neon hover:border-brand-neon transition-all">
-                            <i class="fa-brands ${details.icon}"></i>
-                        </a>`).join("");
-            } catch (e) {}
+                let links;
+                try {
+                    const content = await fetchJSON("content/social-links.json");
+                    if (!content || !Array.isArray(content.links)) {
+                        throw new Error("content/social-links.json must contain a links array");
+                    }
+                    links = content.links;
+                } catch (error) {
+                    console.warn("Using legacy manifest social links:", error.message);
+                    const legacyLinks = await fetchJSON("manifest.json");
+                    const legacyIcons = {
+                        youtube: "fa-youtube",
+                        instagram: "fa-instagram",
+                        tiktok: "fa-tiktok",
+                        facebook: "fa-facebook-f"
+                    };
+                    links = Object.entries(legacyIcons).map(([platform, icon]) => ({
+                        enabled: true,
+                        platform,
+                        label: platform,
+                        url: legacyLinks[platform],
+                        icon
+                    }));
+                }
+
+                container.innerHTML = links.filter(link => link && link.enabled !== false).map(link => {
+                    let url;
+                    try {
+                        url = new URL(link.url);
+                    } catch (error) {
+                        console.warn(`Skipping social link with an invalid URL (${link.platform || "unknown"}):`, error.message);
+                        return "";
+                    }
+                    if (!["http:", "https:"].includes(url.protocol)) {
+                        console.warn(`Skipping social link with unsupported protocol (${link.platform || "unknown"}): ${url.protocol}`);
+                        return "";
+                    }
+                    return `
+                        <a href="${escapeHTML(url.href)}" target="_blank" rel="noopener noreferrer" aria-label="${escapeHTML(link.label || link.platform || "Social media")}" class="w-10 h-10 rounded-xl bg-brand-dark border border-white/10 flex items-center justify-center text-brand-muted hover:text-brand-neon hover:border-brand-neon transition-all">
+                            <i class="fa-brands ${escapeHTML(link.icon || "")}" aria-hidden="true"></i>
+                        </a>`;
+                }).join("");
+            } catch (error) {
+                console.error("Could not load footer social links:", error.message);
+            }
         }
 
-        window.addEventListener('load', () => {
-            loadPremiumProjects();
-            loadSiteAssets();
-            loadPropertyInventory();
-            loadFooterSocialLinks();
+        window.addEventListener('load', async () => {
+            await loadSiteContent();
+            await Promise.all([
+                loadPremiumProjects(),
+                loadSiteAssets(),
+                loadPropertyInventory(),
+                loadFooterSocialLinks()
+            ]);
             updateROI();
         });
     </script>

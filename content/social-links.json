@@ -1,0 +1,32 @@
+{
+  "links": [
+    {
+      "enabled": true,
+      "platform": "YouTube",
+      "label": "YouTube",
+      "url": "https://www.youtube.com/@yourprofile",
+      "icon": "fa-youtube"
+    },
+    {
+      "enabled": true,
+      "platform": "Instagram",
+      "label": "Instagram",
+      "url": "https://www.instagram.com/yourprofile",
+      "icon": "fa-instagram"
+    },
+    {
+      "enabled": true,
+      "platform": "TikTok",
+      "label": "TikTok",
+      "url": "https://www.tiktok.com/@yourprofile",
+      "icon": "fa-tiktok"
+    },
+    {
+      "enabled": true,
+      "platform": "Facebook",
+      "label": "Facebook",
+      "url": "https://www.facebook.com/yourprofile",
+      "icon": "fa-facebook-f"
+    }
+  ]
+}

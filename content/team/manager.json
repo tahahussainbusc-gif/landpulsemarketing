@@ -1,0 +1,15 @@
+{
+  "enabled": true,
+  "name": "Manager",
+  "role": "Manager",
+  "initials": "MAN",
+  "bio": "Introduce the manager, their responsibilities, and experience serving property clients.",
+  "phone": "+923001234569",
+  "whatsapp": "923001234569",
+  "email": "manager@landpulsemarketing.com",
+  "photo": "",
+  "introVideo": "",
+  "instagram": "https://instagram.com",
+  "facebook": "https://facebook.com",
+  "linkedin": "https://linkedin.com"
+}

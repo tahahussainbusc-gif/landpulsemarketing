@@ -2,33 +2,339 @@ backend:
   name: git-gateway
   branch: main
 
-site_url: https://landpulsemarketing.netlify.app
-display_url: https://landpulsemarketing.netlify.app
-logo_url: https://landpulsemarketing.netlify.app/favicon.ico
+publish_mode: editorial_workflow
 
-media_folder: "assets/images"
-public_folder: "/assets/images"
+media_folder: images/uploads
+public_folder: /images/uploads
 
 collections:
-  - name: "properties"
-    label: "Properties"
-    folder: "content/properties"
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Publish Date", name: "date", widget: "datetime" }
-      - { label: "Price", name: "price", widget: "string" }
-      - { label: "Location / Sector", name: "location", widget: "string" }
-      - { label: "Featured Image", name: "image", widget: "image" }
-      - { label: "Description", name: "body", widget: "markdown" }
-
-  - name: "pages"
-    label: "Pages"
+  - name: site-content
+    label: Site Content
     files:
-      - label: "Home Page"
-        name: "home"
-        file: "content/pages/home.json"
+      - name: website
+        label: Website Sections
+        file: content/site.json
         fields:
-          - { label: "Hero Title", name: "hero_title", widget: "string" }
-          - { label: "Hero Subtitle", name: "hero_subtitle", widget: "string" }
+          - { label: Browser title, name: pageTitle, widget: string }
+          - { label: Logo, name: logo, widget: image, required: false }
+          - label: Welcome intro
+            name: welcomeIntro
+            widget: object
+            fields:
+              - { label: Welcome text, name: welcome, widget: string }
+              - { label: Connector text, name: to, widget: string }
+              - { label: Brand text, name: brand, widget: string }
+              - { label: Accessible welcome label, name: ariaLabel, widget: string }
+          - label: Header and navigation
+            name: navigation
+            widget: object
+            fields:
+              - { label: Logo alternative text, name: logoAlt, widget: string }
+              - { label: Logo link, name: logoHref, widget: string }
+              - { label: Home label, name: home, widget: string }
+              - { label: Home destination, name: homeHref, widget: string }
+              - { label: Premium projects label, name: premiumProjects, widget: string }
+              - { label: Premium projects destination, name: premiumProjectsHref, widget: string }
+              - { label: Properties label, name: properties, widget: string }
+              - { label: Properties destination, name: propertiesHref, widget: string }
+              - { label: ROI calculator label, name: calculator, widget: string }
+              - { label: ROI calculator destination, name: calculatorHref, widget: string }
+              - { label: Why choose us label, name: advantages, widget: string }
+              - { label: Why choose us destination, name: advantagesHref, widget: string }
+              - { label: Our team label, name: team, widget: string }
+              - { label: Our team destination, name: teamHref, widget: string }
+              - { label: Consultation button, name: consultation, widget: string }
+              - { label: Consultation destination, name: consultationHref, widget: string }
+          - label: Hero
+            name: hero
+            widget: object
+            fields:
+              - { label: Eyebrow, name: badge, widget: string }
+              - { label: Headline before highlight, name: titleStart, widget: string }
+              - { label: Highlighted headline, name: titleHighlight, widget: string }
+              - { label: Headline after highlight, name: titleEnd, widget: string }
+              - { label: Intro text, name: description, widget: text }
+              - { label: Location filter label, name: locationLabel, widget: string }
+              - { label: All locations option, name: locationAll, widget: string }
+              - { label: Property type filter label, name: typeLabel, widget: string }
+              - { label: All property types option, name: typeAll, widget: string }
+              - { label: Residential option, name: typeResidential, widget: string }
+              - { label: Commercial option, name: typeCommercial, widget: string }
+              - { label: Plots option, name: typePlots, widget: string }
+              - { label: Villas option, name: typeVillas, widget: string }
+              - { label: Budget filter label, name: budgetLabel, widget: string }
+              - { label: Any budget option, name: budgetAll, widget: string }
+              - { label: Low budget option, name: budgetLow, widget: string }
+              - { label: Mid budget option, name: budgetMid, widget: string }
+              - { label: High budget option, name: budgetHigh, widget: string }
+              - { label: Search button, name: searchButton, widget: string }
+          - label: Premium Projects section
+            name: projectsSection
+            widget: object
+            fields:
+              - { label: Eyebrow, name: eyebrow, widget: string }
+              - { label: Heading, name: title, widget: string }
+              - { label: Description, name: description, widget: text }
+          - label: Properties section
+            name: propertiesSection
+            widget: object
+            fields:
+              - { label: Eyebrow, name: eyebrow, widget: string }
+              - { label: Heading, name: title, widget: string }
+              - { label: All listings filter, name: listingAll, widget: string }
+              - { label: For sale filter, name: listingSale, widget: string }
+              - { label: For rent filter, name: listingRent, widget: string }
+              - { label: All categories filter, name: categoryAll, widget: string }
+              - { label: Residential category, name: categoryResidential, widget: string }
+              - { label: Commercial category, name: categoryCommercial, widget: string }
+              - { label: Plots category, name: categoryPlots, widget: string }
+              - { label: Villas category, name: categoryVillas, widget: string }
+          - label: ROI calculator
+            name: calculator
+            widget: object
+            fields:
+              - { label: Eyebrow, name: eyebrow, widget: string }
+              - { label: Heading, name: title, widget: string }
+              - { label: Description, name: description, widget: text }
+              - { label: Appreciation heading, name: appreciationTitle, widget: string }
+              - { label: Appreciation description, name: appreciationDescription, widget: string }
+              - { label: Rental income heading, name: rentalTitle, widget: string }
+              - { label: Rental income description, name: rentalDescription, widget: string }
+              - { label: Initial value label, name: valueLabel, widget: string }
+              - { label: Holding period label, name: yearsLabel, widget: string }
+              - { label: Growth rate label, name: growthLabel, widget: string }
+              - { label: Projected total value label, name: totalValueLabel, widget: string }
+              - { label: Net return label, name: netGainLabel, widget: string }
+          - label: Advantages section
+            name: advantages
+            widget: object
+            fields:
+              - { label: Eyebrow, name: eyebrow, widget: string }
+              - { label: Heading, name: title, widget: string }
+              - { label: Description, name: description, widget: text }
+              - label: Advantage cards
+                name: cards
+                widget: list
+                summary: "{{fields.title}}"
+                fields:
+                  - { label: Icon (Font Awesome class), name: icon, widget: string }
+                  - { label: Heading, name: title, widget: string }
+                  - { label: Description, name: description, widget: text }
+          - label: Company Stats
+            name: companyStats
+            widget: object
+            fields:
+              - { label: Show section, name: enabled, widget: boolean, default: true }
+              - { label: Eyebrow, name: eyebrow, widget: string }
+              - { label: Heading, name: title, widget: string }
+              - { label: Description, name: description, widget: text }
+              - label: Circular stats
+                name: items
+                widget: list
+                summary: "{{fields.label}}: {{fields.value}}{{fields.suffix}}"
+                fields:
+                  - { label: Label, name: label, widget: string }
+                  - { label: Count target, name: value, widget: number, value_type: int, min: 0 }
+                  - { label: Suffix, name: suffix, widget: string, required: false }
+                  - { label: Circle animation amount (0-100), name: progress, widget: number, value_type: int, min: 0, max: 100 }
+          - label: Team section heading
+            name: teamSection
+            widget: object
+            fields:
+              - { label: Eyebrow, name: eyebrow, widget: string }
+              - { label: Heading, name: title, widget: string }
+              - { label: Description, name: description, widget: text }
+              - { label: Empty team message, name: emptyMessage, widget: string }
+          - label: Virtual tour
+            name: virtualTour
+            widget: object
+            fields:
+              - { label: Cover photo, name: cover, widget: image }
+              - { label: Video, name: video, widget: file, required: false }
+              - { label: Eyebrow, name: eyebrow, widget: string }
+              - { label: Heading, name: title, widget: string }
+              - { label: Description, name: description, widget: text }
+              - { label: Video modal heading, name: videoFallbackTitle, widget: string }
+              - { label: Video modal description, name: videoFallbackDescription, widget: text }
+              - { label: Video modal button, name: videoFallbackButton, widget: string }
+          - label: Testimonials
+            name: testimonials
+            widget: object
+            fields:
+              - { label: Eyebrow, name: eyebrow, widget: string }
+              - { label: Heading, name: title, widget: string }
+              - label: Client reviews
+                name: items
+                widget: list
+                summary: "{{fields.name}} — {{fields.role}}"
+                fields:
+                  - { label: Client name, name: name, widget: string }
+                  - { label: Role / location, name: role, widget: string }
+                  - { label: Review, name: quote, widget: text }
+                  - { label: Client photo, name: photo, widget: image }
+                  - { label: Star rating, name: rating, widget: number, value_type: int, min: 1, max: 5 }
+          - label: Footer
+            name: footer
+            widget: object
+            fields:
+              - { label: Company description, name: description, widget: text }
+              - { label: Quick links heading, name: quickLinksTitle, widget: string }
+              - label: Quick links
+                name: quickLinks
+                widget: list
+                summary: "{{fields.label}}"
+                fields:
+                  - { label: Label, name: label, widget: string }
+                  - { label: Destination, name: href, widget: string }
+              - { label: Hot locations heading, name: locationsTitle, widget: string }
+              - label: Hot locations
+                name: locations
+                widget: list
+                summary: "{{fields.label}}"
+                fields:
+                  - { label: Label, name: label, widget: string }
+                  - { label: Destination, name: href, widget: string, required: false }
+              - { label: Newsletter heading, name: newsletterTitle, widget: string }
+              - { label: Newsletter description, name: newsletterDescription, widget: text }
+              - { label: Newsletter email placeholder, name: newsletterPlaceholder, widget: string }
+              - { label: Newsletter button, name: newsletterButton, widget: string }
+              - { label: Newsletter success message, name: newsletterSuccess, widget: string }
+              - { label: Copyright text, name: copyright, widget: string }
+              - label: Legal links
+                name: legalLinks
+                widget: list
+                summary: "{{fields.label}}"
+                fields:
+                  - { label: Label, name: label, widget: string }
+                  - { label: Destination, name: href, widget: string }
+              - { label: WhatsApp number, name: whatsapp, widget: string }
+          - label: Property details modal
+            name: propertyModal
+            widget: object
+            fields:
+              - { label: View gallery prompt, name: galleryPrompt, widget: string }
+              - { label: Asking price label, name: priceLabel, widget: string }
+              - { label: Property highlights heading, name: highlightsTitle, widget: string }
+              - { label: Team button, name: teamButton, widget: string }
+              - { label: WhatsApp inquiry button, name: whatsappButton, widget: string }
+              - { label: Loading team profiles message, name: loadingTeam, widget: string }
+              - { label: No matching properties message, name: noProperties, widget: string }
+
+  - name: team-profiles
+    label: Team Profiles
+    files:
+      - name: ceo
+        label: CEO
+        file: content/team/ceo.json
+        fields:
+          - { label: Show profile, name: enabled, widget: boolean, default: true }
+          - { label: Name, name: name, widget: string }
+          - { label: Role, name: role, widget: string }
+          - { label: Initials, name: initials, widget: string, required: false }
+          - { label: Biography, name: bio, widget: text }
+          - { label: Phone, name: phone, widget: string }
+          - { label: WhatsApp number (digits with country code), name: whatsapp, widget: string }
+          - { label: Email, name: email, widget: string }
+          - { label: Profile photo, name: photo, widget: image, required: false }
+          - { label: Intro video, name: introVideo, widget: file, required: false }
+          - { label: Instagram URL, name: instagram, widget: string, required: false }
+          - { label: Facebook URL, name: facebook, widget: string, required: false }
+          - { label: LinkedIn URL, name: linkedin, widget: string, required: false }
+      - name: sales-executive
+        label: Sales Executive
+        file: content/team/sales-executive.json
+        fields:
+          - { label: Show profile, name: enabled, widget: boolean, default: true }
+          - { label: Name, name: name, widget: string }
+          - { label: Role, name: role, widget: string }
+          - { label: Initials, name: initials, widget: string, required: false }
+          - { label: Biography, name: bio, widget: text }
+          - { label: Phone, name: phone, widget: string }
+          - { label: WhatsApp number (digits with country code), name: whatsapp, widget: string }
+          - { label: Email, name: email, widget: string }
+          - { label: Profile photo, name: photo, widget: image, required: false }
+          - { label: Intro video, name: introVideo, widget: file, required: false }
+          - { label: Instagram URL, name: instagram, widget: string, required: false }
+          - { label: Facebook URL, name: facebook, widget: string, required: false }
+          - { label: LinkedIn URL, name: linkedin, widget: string, required: false }
+      - name: manager
+        label: Manager
+        file: content/team/manager.json
+        fields:
+          - { label: Show profile, name: enabled, widget: boolean, default: true }
+          - { label: Name, name: name, widget: string }
+          - { label: Role, name: role, widget: string }
+          - { label: Initials, name: initials, widget: string, required: false }
+          - { label: Biography, name: bio, widget: text }
+          - { label: Phone, name: phone, widget: string }
+          - { label: WhatsApp number (digits with country code), name: whatsapp, widget: string }
+          - { label: Email, name: email, widget: string }
+          - { label: Profile photo, name: photo, widget: image, required: false }
+          - { label: Intro video, name: introVideo, widget: file, required: false }
+          - { label: Instagram URL, name: instagram, widget: string, required: false }
+          - { label: Facebook URL, name: facebook, widget: string, required: false }
+          - { label: LinkedIn URL, name: linkedin, widget: string, required: false }
+
+  - name: projects
+    label: Premium Projects
+    files:
+      - name: project-list
+        label: Featured projects
+        file: PremiumProjects/inventory.json
+        fields:
+          - label: Projects
+            name: projects
+            widget: list
+            summary: "{{fields.title}}"
+            fields:
+              - { label: Project name, name: title, widget: string }
+              - { label: Location, name: location, widget: string }
+              - { label: Price range, name: priceRange, widget: string }
+              - { label: Badge, name: badge, widget: string }
+              - { label: Photo, name: image, widget: image }
+              - { label: Description, name: description, widget: text }
+
+  - name: property-inventory
+    label: Properties
+    files:
+      - name: listing-list
+        label: Property listings
+        file: content/properties.json
+        fields:
+          - label: Listings
+            name: listings
+            widget: list
+            summary: "{{fields.title}} — {{fields.projectTitle}}"
+            fields:
+              - { label: Property title, name: title, widget: string }
+              - { label: Project / location, name: projectTitle, widget: string }
+              - { label: Listing type, name: listingType, widget: select, options: [sale, rent] }
+              - { label: Category, name: category, widget: select, options: [residential, commercial, plots, villas] }
+              - { label: Price, name: price, widget: string }
+              - { label: Beds, name: beds, widget: string }
+              - { label: Baths, name: baths, widget: string }
+              - { label: Area / size, name: size, widget: string }
+              - { label: Description, name: description, widget: text }
+              - { label: Main photo, name: image, widget: image }
+              - label: Additional gallery photos
+                name: photos
+                widget: list
+                field: { label: Photo, name: photo, widget: image }
+
+  - name: social-links
+    label: Social Links
+    files:
+      - name: social
+        label: Footer social buttons
+        file: content/social-links.json
+        fields:
+          - label: Social buttons
+            name: links
+            widget: list
+            summary: "{{fields.label}}"
+            fields:
+              - { label: Show button, name: enabled, widget: boolean, default: true }
+              - { label: Platform, name: platform, widget: string }
+              - { label: Accessible label, name: label, widget: string }
+              - { label: Profile URL, name: url, widget: string }
+              - { label: Font Awesome brand icon class, name: icon, widget: string }

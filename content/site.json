@@ -1,0 +1,223 @@
+{
+  "pageTitle": "Land Pulse Marketing | VIP Luxury & Smart Real Estate",
+  "logo": "",
+  "welcomeIntro": {
+    "welcome": "Welcome",
+    "to": "to",
+    "brand": "Land Pulse Marketing",
+    "ariaLabel": "Welcome to Land Pulse Marketing"
+  },
+  "navigation": {
+    "logoAlt": "Land Pulse Marketing",
+    "logoHref": "#hero",
+    "home": "Home",
+    "homeHref": "#hero",
+    "premiumProjects": "Premium Projects",
+    "premiumProjectsHref": "#premium-projects",
+    "properties": "VIP Properties",
+    "propertiesHref": "#properties",
+    "calculator": "ROI Calculator",
+    "calculatorHref": "#calculator",
+    "advantages": "Why Choose Us",
+    "advantagesHref": "#advantages",
+    "team": "Our Team",
+    "teamHref": "#team",
+    "consultation": "Book Consultation",
+    "consultationHref": "#team"
+  },
+  "hero": {
+    "badge": "Pakistan & International Prime Real Estate",
+    "titleStart": "Redefining",
+    "titleHighlight": "Luxury & Smart",
+    "titleEnd": "Real Estate Investment",
+    "description": "Exclusive access to ultra-premium residential estates, high-yield commercial projects, and trusted land portfolio management tailored for visionary investors.",
+    "locationLabel": "Project / Location",
+    "locationAll": "All Locations",
+    "typeLabel": "Property Type",
+    "typeAll": "All Types",
+    "typeResidential": "Residential Villa & Apt",
+    "typeCommercial": "Commercial Tower & Shops",
+    "typePlots": "Investment Plots",
+    "typeVillas": "Luxury VIP Mansions",
+    "budgetLabel": "Budget Range",
+    "budgetAll": "Any Budget",
+    "budgetLow": "Under 50 Million PKR",
+    "budgetMid": "50M - 150M PKR",
+    "budgetHigh": "150M+ PKR / Luxury",
+    "searchButton": "Search VIP Deals"
+  },
+  "projectsSection": {
+    "eyebrow": "Master Planned Developments",
+    "title": "Our Premium Projects",
+    "description": "Explore iconic mega developments, high-rise luxury towers, and high-yield master planned communities in prime zones."
+  },
+  "propertiesSection": {
+    "eyebrow": "Curated Portfolio",
+    "title": "Featured VIP Properties",
+    "listingAll": "All Listings",
+    "listingSale": "For Sale",
+    "listingRent": "For Rent",
+    "categoryAll": "All",
+    "categoryResidential": "Residential",
+    "categoryCommercial": "Commercial",
+    "categoryPlots": "Plots",
+    "categoryVillas": "Luxury Villas"
+  },
+  "calculator": {
+    "eyebrow": "Smart Investor Tool",
+    "title": "Calculate Your VIP Property ROI",
+    "description": "Leverage real data projections to analyze expected capital appreciation, rental yield, and long-term net income across premium real estate markets.",
+    "appreciationTitle": "Estimated Appreciation",
+    "appreciationDescription": "Based on prime zone historical growth patterns.",
+    "rentalTitle": "Passive Rental Income",
+    "rentalDescription": "Average monthly yield generated from prime tenants.",
+    "valueLabel": "Initial Property Value (PKR)",
+    "yearsLabel": "Holding Period (Years)",
+    "growthLabel": "Expected Annual Growth (%)",
+    "totalValueLabel": "Projected Total Value",
+    "netGainLabel": "Estimated Net Return (Gain)"
+  },
+  "advantages": {
+    "eyebrow": "Excellence In Execution",
+    "title": "Why Land Pulse Marketing?",
+    "description": "We bridge the gap between discerning investors and high-yield, premium real estate opportunities with complete transparency.",
+    "cards": [
+      {
+        "icon": "fa-chart-pie",
+        "title": "Smart Valuation",
+        "description": "Algorithmic market trend analysis ensuring optimal pricing and future growth forecast for every property."
+      },
+      {
+        "icon": "fa-briefcase",
+        "title": "Portfolio Management",
+        "description": "Dedicated wealth advisors managing buy, sell, and rental portfolios for maximum profitability."
+      },
+      {
+        "icon": "fa-shield-halved",
+        "title": "Legal & Title Assurance",
+        "description": "100% verified documentation, NOC compliance, and seamless title transfer guarantee without hassle."
+      },
+      {
+        "icon": "fa-key",
+        "title": "Exclusive Pre-Launch",
+        "description": "Get early investor rates in mega commercial towers and high-end gated communities before public release."
+      }
+    ]
+  },
+  "companyStats": {
+    "enabled": true,
+    "eyebrow": "Our Track Record",
+    "title": "Our Impact Overview",
+    "description": "A snapshot of the experience, trust, and results behind Land Pulse Marketing.",
+    "items": [
+      {
+        "label": "Satisfied Clients",
+        "value": 1200,
+        "suffix": "+",
+        "progress": 88
+      },
+      {
+        "label": "Property",
+        "value": 250,
+        "suffix": "+",
+        "progress": 76
+      },
+      {
+        "label": "Projects",
+        "value": 85,
+        "suffix": "+",
+        "progress": 84
+      },
+      {
+        "label": "Property Leads",
+        "value": 1500,
+        "suffix": "+",
+        "progress": 92
+      }
+    ]
+  },
+  "teamSection": {
+    "eyebrow": "People Behind The Pulse",
+    "title": "The Experts Behind Your Journey",
+    "description": "Get to know the specialists guiding your property journey.",
+    "emptyMessage": "Team profiles will be announced soon."
+  },
+  "virtualTour": {
+    "cover": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80",
+    "video": "",
+    "eyebrow": "Immersive Experience",
+    "title": "Experience Ultra-Modern Living In 4K Virtual Tour",
+    "description": "Take an interactive walkthrough of our signature luxury properties from anywhere in the world.",
+    "videoFallbackTitle": "4K Virtual Walkthrough Preview",
+    "videoFallbackDescription": "Contact our VIP desk to access full private drone walkthrough footage and interactive 3D blueprint plans.",
+    "videoFallbackButton": "Meet Our Team"
+  },
+  "testimonials": {
+    "eyebrow": "Trusted By High-Net-Worth Investors",
+    "title": "VIP Client Testimonials",
+    "items": [
+      {
+        "name": "Chaudhry Hammad",
+        "role": "Overseas Investor, UK",
+        "quote": "Land Pulse Marketing secured two prime commercial plots in DHA Phase 6 for my venture. Their ROI analysis was spot on, and title transfer took less than a week.",
+        "photo": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
+        "rating": 5
+      },
+      {
+        "name": "Sheikh Farhan Al-Maktoum",
+        "role": "Business Executive, Lahore",
+        "quote": "The team provided end-to-end guidance for my Dubai luxury apartment purchase. Transparent dealings and VIP treatment throughout the process!",
+        "photo": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80",
+        "rating": 5
+      },
+      {
+        "name": "Dr. Ayesha Malik",
+        "role": "Property Owner, Islamabad",
+        "quote": "Finding a genuine 2 Kanal luxury mansion in Islamabad was seamless with Land Pulse. Highly recommend their VIP pre-launch access!",
+        "photo": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80",
+        "rating": 5
+      }
+    ]
+  },
+  "footer": {
+    "description": "Pakistan’s premiere real estate marketing agency specializing in high-yielding plots, luxury villas, commercial towers, and global property investments.",
+    "quickLinksTitle": "Quick Links",
+    "quickLinks": [
+      { "label": "Home Page", "href": "#hero" },
+      { "label": "Our Premium Projects", "href": "#premium-projects" },
+      { "label": "Featured VIP Properties", "href": "#properties" },
+      { "label": "Investment Calculator", "href": "#calculator" },
+      { "label": "Our Advantages", "href": "#advantages" },
+      { "label": "Our Team", "href": "#team" }
+    ],
+    "locationsTitle": "Hot Locations",
+    "locations": [
+      { "label": "DHA Lahore Phase 6-9", "href": "#" },
+      { "label": "Gulberg Executive Towers", "href": "#" },
+      { "label": "Bahria Town Islamabad", "href": "#" },
+      { "label": "Emaar Oceanfront Karachi", "href": "#" },
+      { "label": "Dubai Marina Luxury Apts", "href": "#" }
+    ],
+    "newsletterTitle": "VIP Insider Club",
+    "newsletterDescription": "Receive confidential off-market pre-launch price lists directly in your inbox.",
+    "newsletterPlaceholder": "Enter your email",
+    "newsletterButton": "Subscribe Now",
+    "newsletterSuccess": "Thank you for subscribing!",
+    "copyright": "© 2026 Land Pulse Marketing. All Rights Reserved. Developed by Ashal.",
+    "legalLinks": [
+      { "label": "Privacy Policy", "href": "#" },
+      { "label": "Terms of Service", "href": "#" },
+      { "label": "NOC Disclaimers", "href": "#" }
+    ],
+    "whatsapp": "923001234567"
+  },
+  "propertyModal": {
+    "galleryPrompt": "Click to launch full slideshow",
+    "priceLabel": "Asking Price",
+    "highlightsTitle": "Property Highlights & Features",
+    "teamButton": "Meet Our Team",
+    "whatsappButton": "Direct WhatsApp Inquiry",
+    "loadingTeam": "Loading team profiles…",
+    "noProperties": "No properties match the selected filters."
+  }
+}
