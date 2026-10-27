@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Land Pulse Marketing | VIP Luxury & Smart Real Estate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -129,6 +133,10 @@
 
         .team-card.is-video-playing .team-video {
             opacity: 1;
+        }
+
+        .team-card.is-video-playing .team-photo {
+            opacity: 0;
         }
 
         #welcomeIntro {
@@ -600,10 +608,10 @@
         </section>
 
         <!-- Interactive Virtual Tour Banner -->
-        <section class="py-20 relative">
+        <section id="virtualTourSection" class="py-20 relative">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="relative rounded-3xl overflow-hidden border border-white/10 group h-[450px]">
-                    <img id="virtualTourCover" src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80" alt="Virtual Tour Cover" data-cms-alt="virtualTour.title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 brightness-50">
+                    <img id="virtualTourCover" src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80" alt="Virtual Tour Cover" data-cms-alt="virtualTour.title" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 brightness-50">
                     <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-brand-dark/40 to-transparent"></div>
                     
                     <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
@@ -639,7 +647,7 @@
                             "Land Pulse Marketing secured two prime commercial plots in DHA Phase 6 for my venture. Their ROI analysis was spot on, and title transfer took less than a week."
                         </p>
                         <div class="flex items-center gap-4">
-                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" class="w-12 h-12 rounded-full object-cover border border-brand-neon" alt="Client">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" loading="lazy" decoding="async" class="w-12 h-12 rounded-full object-cover border border-brand-neon" alt="Client">
                             <div>
                                 <h4 class="text-white font-bold text-sm">Chaudhry Hammad</h4>
                                 <span class="text-brand-muted text-xs">Overseas Investor, UK</span>
@@ -659,7 +667,7 @@
                             "The team provided end-to-end guidance for my Dubai luxury apartment purchase. Transparent dealings and VIP treatment throughout the process!"
                         </p>
                         <div class="flex items-center gap-4">
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80" class="w-12 h-12 rounded-full object-cover border border-brand-neon" alt="Client">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80" loading="lazy" decoding="async" class="w-12 h-12 rounded-full object-cover border border-brand-neon" alt="Client">
                             <div>
                                 <h4 class="text-white font-bold text-sm">Sheikh Farhan Al-Maktoum</h4>
                                 <span class="text-brand-muted text-xs">Business Executive, Lahore</span>
@@ -679,7 +687,7 @@
                             "Finding a genuine 2 Kanal luxury mansion in Islamabad was seamless with Land Pulse. Highly recommend their VIP pre-launch access!"
                         </p>
                         <div class="flex items-center gap-4">
-                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80" class="w-12 h-12 rounded-full object-cover border border-brand-neon" alt="Client">
+                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80" loading="lazy" decoding="async" class="w-12 h-12 rounded-full object-cover border border-brand-neon" alt="Client">
                             <div>
                                 <h4 class="text-white font-bold text-sm">Dr. Ayesha Malik</h4>
                                 <span class="text-brand-muted text-xs">Property Owner, Islamabad</span>
@@ -995,7 +1003,10 @@
                 }
 
                 const tourCover = document.getElementById("virtualTourCover");
-                if (siteContent.virtualTour && siteContent.virtualTour.cover) {
+                const tourSection = document.getElementById("virtualTourSection");
+                if (siteContent.virtualTour && siteContent.virtualTour.enabled === false) {
+                    tourSection.classList.add("hidden");
+                } else if (siteContent.virtualTour && siteContent.virtualTour.cover) {
                     tourCover.src = siteContent.virtualTour.cover;
                 }
 
@@ -1168,7 +1179,7 @@
                         <div class="flex text-brand-neon mb-4 gap-1" aria-label="${rating} out of 5 stars">${stars}</div>
                         <p class="text-brand-muted text-sm italic mb-6 leading-relaxed">"${escapeHTML(item.quote)}"</p>
                         <div class="flex items-center gap-4">
-                            <img src="${escapeHTML(item.photo)}" class="w-12 h-12 rounded-full object-cover border border-brand-neon" alt="${escapeHTML(item.name)}">
+                            <img src="${escapeHTML(item.photo)}" loading="lazy" decoding="async" class="w-12 h-12 rounded-full object-cover border border-brand-neon" alt="${escapeHTML(item.name)}">
                             <div>
                                 <h3 class="text-white font-bold text-sm">${escapeHTML(item.name)}</h3>
                                 <span class="text-brand-muted text-xs">${escapeHTML(item.role)}</span>
@@ -1216,7 +1227,7 @@
             container.innerHTML = projects.map(proj => `
                 <div class="glass-card rounded-2xl overflow-hidden flex flex-col group border border-white/5 hover:border-brand-neon/40">
                     <div class="relative h-64 overflow-hidden">
-                        <img src="${escapeHTML(proj.image)}" alt="${escapeHTML(proj.title)}" onerror="this.src='https://placehold.co/800x500/12181b/00ff66?text=Land+Pulse+Project';" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <img src="${escapeHTML(proj.image)}" alt="${escapeHTML(proj.title)}" loading="lazy" decoding="async" onerror="this.src='https://placehold.co/800x500/12181b/00ff66?text=Land+Pulse+Project';" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                         <span class="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-extrabold bg-brand-neon text-black shadow-md uppercase tracking-wider">${escapeHTML(proj.badge || 'VIP Project')}</span>
                         <div class="absolute bottom-3 right-3 bg-brand-dark/90 px-3 py-1 rounded-lg text-brand-neon text-xs font-extrabold border border-brand-neon/30">
                             ${escapeHTML(proj.priceRange || 'Price On Request')}
@@ -1315,7 +1326,7 @@
                 const email = member.email || 'info@landpulsemarketing.com';
                 const facebook = member.facebook || 'https://facebook.com';
                 const instagram = member.instagram || 'https://instagram.com';
-                const linkedin = member.linkedin || 'https://linkedin.com';
+                const tiktok = member.tiktok || 'https://tiktok.com';
 
                 const primaryPhoto = member.photosToTry && member.photosToTry[0] ? member.photosToTry[0] : '';
                 const primaryVideo = member.videosToTry && member.videosToTry[0] ? member.videosToTry[0] : '';
@@ -1329,14 +1340,14 @@
                                 </div>
 
                                 ${primaryPhoto ? `
-                                    <img src="${escapeHTML(primaryPhoto)}" alt="${name}" 
-                                         class="team-photo absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                                    <img src="${escapeHTML(primaryPhoto)}" alt="${name}" loading="lazy" decoding="async"
+                                         class="team-photo absolute inset-0 w-full h-full object-cover transition-[opacity,transform] duration-300 group-hover:scale-105"
                                          onerror="this.style.display='none';">
                                 ` : ''}
 
                                 ${primaryVideo ? `
                                     <video id="${videoId}" class="team-video absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-300" 
-                                           src="${escapeHTML(primaryVideo)}" muted loop playsinline preload="none"></video>
+                                           src="${escapeHTML(primaryVideo)}" ${primaryPhoto ? `poster="${escapeHTML(primaryPhoto)}"` : ""} muted loop playsinline preload="none"></video>
                                     <div class="absolute inset-x-0 bottom-0 flex items-center justify-between p-3 bg-gradient-to-t from-black/90 to-transparent z-10">
                                         <button type="button" onclick="toggleTeamPlayback(event, '${videoId}', this)" class="w-10 h-10 rounded-full bg-brand-neon text-black flex items-center justify-center shadow-neon-glow" aria-label="Play/Pause intro">
                                             <i class="fa-solid fa-play text-xs"></i>
@@ -1378,11 +1389,12 @@
                                class="w-10 h-10 rounded-xl bg-brand-card border border-white/10 text-brand-muted hover:text-blue-400 hover:border-blue-400/40 hover:bg-blue-500/10 flex items-center justify-center transition-all duration-300 text-base hover:scale-110">
                                 <i class="fa-brands fa-facebook-f"></i>
                             </a>
-                            <a href="${escapeHTML(linkedin)}" 
+                            <a href="${escapeHTML(tiktok)}"
                                target="_blank" 
-                               title="LinkedIn Profile" 
-                               class="w-10 h-10 rounded-xl bg-brand-card border border-white/10 text-brand-muted hover:text-sky-400 hover:border-sky-400/40 hover:bg-sky-500/10 flex items-center justify-center transition-all duration-300 text-base hover:scale-110">
-                                <i class="fa-brands fa-linkedin-in"></i>
+                               rel="noopener noreferrer"
+                               title="TikTok Profile"
+                               class="w-10 h-10 rounded-xl bg-brand-card border border-white/10 text-brand-muted hover:text-white hover:border-white/40 hover:bg-black/30 flex items-center justify-center transition-all duration-300 text-base hover:scale-110">
+                                <i class="fa-brands fa-tiktok"></i>
                             </a>
                             <a href="mailto:${escapeHTML(email)}" 
                                title="Send Email" 
@@ -1409,7 +1421,7 @@
                     email: "malik@landpulsemarketing.com",
                     facebook: "https://facebook.com",
                     instagram: "https://instagram.com",
-                    linkedin: "https://linkedin.com"
+                    tiktok: "https://tiktok.com"
                 },
                 { 
                     name: "Ayan Saif", 
@@ -1421,7 +1433,7 @@
                     email: "ayan@landpulsemarketing.com",
                     facebook: "https://facebook.com",
                     instagram: "https://instagram.com",
-                    linkedin: "https://linkedin.com"
+                    tiktok: "https://tiktok.com"
                 },
                 { 
                     name: "Zainab Shah", 
@@ -1433,7 +1445,7 @@
                     email: "zainab@landpulsemarketing.com",
                     facebook: "https://facebook.com",
                     instagram: "https://instagram.com",
-                    linkedin: "https://linkedin.com"
+                    tiktok: "https://tiktok.com"
                 }
             ];
             renderTeamMembers(fallbackTeam);
@@ -1666,7 +1678,7 @@
                 <div class="glass-card rounded-2xl overflow-hidden flex flex-col group border border-white/5 hover:border-brand-neon/40">
                     <!-- Clickable Image Container to Launch Gallery Modal -->
                     <div class="relative h-60 overflow-hidden cursor-pointer" onclick="openGalleryModal(${p.id})">
-                        <img src="${escapeHTML(p.image)}" alt="${escapeHTML(p.title)}" onerror="this.src='https://placehold.co/800x500/12181b/00ff66?text=VIP+Property';" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <img src="${escapeHTML(p.image)}" alt="${escapeHTML(p.title)}" loading="lazy" decoding="async" onerror="this.src='https://placehold.co/800x500/12181b/00ff66?text=VIP+Property';" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                         <span class="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-extrabold ${escapeHTML(p.tagBg)} uppercase tracking-wider shadow-md">${escapeHTML(p.tag)}</span>
                         
                         <div class="absolute top-4 right-4 bg-brand-dark/90 px-2.5 py-1 rounded-full text-white text-xs font-bold border border-white/20 flex items-center gap-1 shadow-md hover:border-brand-neon">
@@ -1764,7 +1776,7 @@
             const container = document.getElementById('galleryThumbnailsContainer');
             container.innerHTML = currentGalleryImages.map((img, idx) => `
                 <button type="button" onclick="selectGalleryImage(${idx})" class="gallery-thumb-btn w-16 h-12 rounded-lg overflow-hidden border transition-all duration-300 shrink-0">
-                    <img src="${escapeHTML(img)}" alt="Thumbnail ${idx + 1}" class="w-full h-full object-cover">
+                    <img src="${escapeHTML(img)}" alt="Thumbnail ${idx + 1}" loading="lazy" decoding="async" class="w-full h-full object-cover">
                 </button>
             `).join('');
         }
@@ -1906,7 +1918,7 @@
             if (item.images && item.images.length > 0) {
                 modalGalleryContainer.innerHTML = item.images.slice(0, 3).map((img, idx) => `
                     <div class="h-24 rounded-xl overflow-hidden cursor-pointer border border-white/10 hover:border-brand-neon" onclick="openGalleryFromModal()">
-                        <img src="${escapeHTML(img)}" alt="Property Image ${idx + 1}" class="w-full h-full object-cover">
+                        <img src="${escapeHTML(img)}" alt="Property Image ${idx + 1}" loading="lazy" decoding="async" class="w-full h-full object-cover">
                     </div>
                 `).join('');
             } else {
@@ -2033,7 +2045,7 @@
             }
         }
 
-        window.addEventListener('load', async () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             await loadSiteContent();
             await Promise.all([
                 loadPremiumProjects(),

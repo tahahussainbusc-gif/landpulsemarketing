@@ -149,7 +149,8 @@ collections:
             name: virtualTour
             widget: object
             fields:
-              - { label: Cover photo, name: cover, widget: image }
+              - { label: Show section, name: enabled, widget: boolean, default: true }
+              - { label: Cover photo, name: cover, widget: image, required: false }
               - { label: Video, name: video, widget: file, required: false }
               - { label: Eyebrow, name: eyebrow, widget: string }
               - { label: Heading, name: title, widget: string }
@@ -239,7 +240,7 @@ collections:
           - { label: Intro video, name: introVideo, widget: file, required: false }
           - { label: Instagram URL, name: instagram, widget: string, required: false }
           - { label: Facebook URL, name: facebook, widget: string, required: false }
-          - { label: LinkedIn URL, name: linkedin, widget: string, required: false }
+          - { label: TikTok URL, name: tiktok, widget: string, required: false }
       - name: sales-executive
         label: Sales Executive
         file: content/team/sales-executive.json
@@ -256,7 +257,7 @@ collections:
           - { label: Intro video, name: introVideo, widget: file, required: false }
           - { label: Instagram URL, name: instagram, widget: string, required: false }
           - { label: Facebook URL, name: facebook, widget: string, required: false }
-          - { label: LinkedIn URL, name: linkedin, widget: string, required: false }
+          - { label: TikTok URL, name: tiktok, widget: string, required: false }
       - name: manager
         label: Manager
         file: content/team/manager.json
@@ -273,7 +274,7 @@ collections:
           - { label: Intro video, name: introVideo, widget: file, required: false }
           - { label: Instagram URL, name: instagram, widget: string, required: false }
           - { label: Facebook URL, name: facebook, widget: string, required: false }
-          - { label: LinkedIn URL, name: linkedin, widget: string, required: false }
+          - { label: TikTok URL, name: tiktok, widget: string, required: false }
 
   - name: projects
     label: Premium Projects
