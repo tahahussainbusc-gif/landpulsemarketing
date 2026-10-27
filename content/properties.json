@@ -1,0 +1,56 @@
+{
+  "listings": [
+    {
+      "title": "1 Kanal Ultra Modern VIP Mansion",
+      "projectTitle": "DHA Phase 6, Lahore",
+      "price": "125,000,000 PKR",
+      "beds": "5 Beds",
+      "baths": "6 Baths",
+      "size": "1 Kanal",
+      "category": "villas",
+      "listingType": "sale",
+      "image": "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80",
+      "photos": [
+        "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80"
+      ],
+      "description": "Brand new full smart automation villa featuring imported Spanish tiles, private pool, and solar system."
+    },
+    {
+      "title": "Prime Commercial Corner Plaza Plot",
+      "projectTitle": "Gulberg III, Lahore",
+      "price": "240,000,000 PKR",
+      "beds": "Commercial",
+      "baths": "N/A",
+      "size": "8 Marla",
+      "category": "commercial",
+      "listingType": "sale",
+      "image": "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80",
+      "photos": [
+        "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80"
+      ],
+      "description": "Main Boulevard facing commercial site with high rental potential and pre-approved LDA floor plans."
+    },
+    {
+      "title": "Luxury Golf View Penthouse Suite",
+      "projectTitle": "Bahria Town, Islamabad",
+      "price": "450,000 PKR/mo",
+      "beds": "3 Beds",
+      "baths": "4 Baths",
+      "size": "3,200 Sq Ft",
+      "category": "residential",
+      "listingType": "rent",
+      "image": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
+      "photos": [
+        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80"
+      ],
+      "description": "Fully furnished designer penthouse overlooking championship golf course with dedicated concierge."
+    }
+  ]
+}
