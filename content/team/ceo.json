@@ -1,15 +1,5 @@
 {
   "enabled": true,
   "facebook": "https://facebook.com",
-  "bio": "Lead the company profile with a short introduction, experience, and areas of expertise.",
-  "name": "SHAHZAIB ALI JAFRI",
-  "phone": "+923001234567",
-  "introVideo": "/images/uploads/whatsapp-video-2026-10-05-at-6.48.41-am.mp4",
-  "initials": "CEO",
-  "whatsapp": "923001234567",
-  "photo": "",
-  "instagram": "https://instagram.com",
-  "role": "CEO",
-  "email": "info@landpulsemarketing.com",
-  "linkedin": "https://linkedin.com"
+  "tiktok": "https://tiktok.com"
 }

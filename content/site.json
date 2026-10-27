@@ -46,8 +46,9 @@
     "yearsLabel": "Holding Period (Years)"
   },
   "virtualTour": {
-    "cover": "/images/uploads/5-marla-double-story-stunning-house-for-sale-in-gulberg-city-sargodha-gulberg-city-46879-1155551971.jpeg",
-    "video": "/images/uploads/5-marla-double-story-stunning-house-for-sale-in-gulberg-city-sargodha-gulberg-city-46879-1155551971.jpeg",
+    "enabled": true,
+    "cover": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80",
+    "video": "",
     "eyebrow": "Immersive Experience",
     "title": "Experience Ultra-Modern Living In 4K Virtual Tour",
     "description": "Take an interactive walkthrough of our signature luxury properties from anywhere in the world.",
