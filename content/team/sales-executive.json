@@ -1,15 +1,5 @@
 {
   "enabled": true,
-  "name": "Sales Executive",
-  "role": "Sales Executive",
-  "initials": "SAL",
-  "bio": "Introduce the sales executive, their property expertise, and how they help clients.",
-  "phone": "+923001234568",
-  "whatsapp": "923001234568",
-  "email": "sales@landpulsemarketing.com",
-  "photo": "",
-  "introVideo": "",
-  "instagram": "https://instagram.com",
   "facebook": "https://facebook.com",
   "tiktok": "https://tiktok.com"
 }

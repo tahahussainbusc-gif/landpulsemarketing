@@ -1,15 +1,5 @@
 {
   "enabled": true,
-  "name": "Chief Executive Officer",
-  "role": "CEO",
-  "initials": "CEO",
-  "bio": "Lead the company profile with a short introduction, experience, and areas of expertise.",
-  "phone": "+923001234567",
-  "whatsapp": "923001234567",
-  "email": "info@landpulsemarketing.com",
-  "photo": "",
-  "introVideo": "",
-  "instagram": "https://instagram.com",
   "facebook": "https://facebook.com",
   "tiktok": "https://tiktok.com"
 }
