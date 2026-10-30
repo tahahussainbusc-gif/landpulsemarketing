@@ -6,7 +6,11 @@
       "priceRange": "PKR 85M - 250M",
       "badge": "Exclusive Master Plan",
       "image": "/images/uploads/whatsapp-image-2026-10-30-at-2.06.38-pm-1-.jpeg",
-      "description": "Luxury commercial towers and corporate suites located in the heart of Raya Golf & Country Club."
+      "description": "Luxury commercial towers and corporate suites located in the heart of Raya Golf & Country Club.",
+      "photos": [
+        "/images/uploads/whatsapp-image-2026-10-30-at-2.07.19-pm-1-.jpeg",
+        "/images/uploads/whatsapp-image-2026-10-30-at-2.07.14-pm-2-.jpeg"
+      ]
     },
     {
       "title": "Gulberg Executive Enclave",
@@ -21,8 +25,11 @@
       "location": "Bahria Town, Islamabad",
       "priceRange": "PKR 120M - 450M",
       "badge": "Ready Possession",
-      "image": "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80",
-      "description": "Designer smart mansions overlooking private championship golf course with 24/7 security."
+      "image": "/images/uploads/whatsapp-image-2026-10-30-at-2.06.36-pm.jpeg",
+      "description": "Designer smart mansions overlooking private championship golf course with 24/7 security.",
+      "photos": [
+        "/images/uploads/whatsapp-image-2026-10-30-at-2.06.26-pm.jpeg"
+      ]
     }
   ]
 }
