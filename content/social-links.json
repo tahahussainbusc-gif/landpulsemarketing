@@ -1,7 +1,7 @@
 {
   "links": [
     {
-      "enabled": true,
+      "enabled": false,
       "platform": "YouTube",
       "label": "YouTube",
       "url": "https://www.youtube.com/@yourprofile",
@@ -11,21 +11,21 @@
       "enabled": true,
       "platform": "Instagram",
       "label": "Instagram",
-      "url": "https://www.instagram.com/yourprofile",
+      "url": "https://www.instagram.com/landpulsemarketing",
       "icon": "fa-instagram"
     },
     {
       "enabled": true,
       "platform": "TikTok",
       "label": "TikTok",
-      "url": "https://www.tiktok.com/@yourprofile",
+      "url": "www.tiktok.com/@landpulsemarketing",
       "icon": "fa-tiktok"
     },
     {
       "enabled": true,
       "platform": "Facebook",
       "label": "Facebook",
-      "url": "https://www.facebook.com/yourprofile",
+      "url": "https://www.facebook.com/share/1Dr4duC1Uq/?mibextid=wwXIfr",
       "icon": "fa-facebook-f"
     }
   ]
