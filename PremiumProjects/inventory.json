@@ -1,34 +1,13 @@
 {
   "projects": [
     {
-      "id": "p1",
-      "title": "DHA Raya Commercial Square",
-      "location": "DHA Phase 6, Lahore",
-      "priceRange": "PKR 85M - 250M",
-      "badge": "Exclusive Master Plan",
-      "image": "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80",
+      "title": "ghfg",
+      "location": "ghdfhd",
+      "priceRange": "kkgjh",
+      "badge": "ugjhgjh",
+      "image": "/images/uploads/whatsapp-image-2026-10-30-at-2.06.38-pm.jpeg",
       "photos": [],
-      "description": "Luxury commercial towers and corporate suites located in the heart of Raya Golf & Country Club."
-    },
-    {
-      "id": "p2",
-      "title": "Gulberg Executive Enclave",
-      "location": "Main Boulevard, Gulberg Lahore",
-      "priceRange": "PKR 45M - 180M",
-      "badge": "Pre-Launch Phase",
-      "image": "https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=800&q=80",
-      "photos": [],
-      "description": "Ultra-modern high-rise residential apartments with sky gardens and infinity swimming pool."
-    },
-    {
-      "id": "p3",
-      "title": "Bahria Town VIP Golf Mansions",
-      "location": "Bahria Town, Islamabad",
-      "priceRange": "PKR 120M - 450M",
-      "badge": "Ready Possession",
-      "image": "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80",
-      "photos": [],
-      "description": "Designer smart mansions overlooking private championship golf course with 24/7 security."
+      "description": "ghfhgfghfghfgh"
     }
   ]
 }
