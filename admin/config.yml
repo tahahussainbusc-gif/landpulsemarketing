@@ -292,7 +292,14 @@ collections:
               - { label: Location, name: location, widget: string }
               - { label: Price range, name: priceRange, widget: string }
               - { label: Badge, name: badge, widget: string }
-              - { label: Photo, name: image, widget: image }
+              - { label: Main photo, name: image, widget: image, required: true }
+              - label: Additional project photos
+                name: photos
+                widget: list
+                min: 0
+                max: 59
+                field: { label: Photo, name: photo, widget: image }
+              - { label: Project video, name: video, widget: file, required: false }
               - { label: Description, name: description, widget: text }
 
   - name: property-inventory
@@ -316,11 +323,14 @@ collections:
               - { label: Baths, name: baths, widget: string }
               - { label: Area / size, name: size, widget: string }
               - { label: Description, name: description, widget: text }
-              - { label: Main photo, name: image, widget: image }
+              - { label: Main photo (required), name: image, widget: image, required: true }
               - label: Additional gallery photos
                 name: photos
                 widget: list
+                min: 0
+                max: 59
                 field: { label: Photo, name: photo, widget: image }
+              - { label: Property video, name: video, widget: file, required: false }
 
   - name: social-links
     label: Social Links

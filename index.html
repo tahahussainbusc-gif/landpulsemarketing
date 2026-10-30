@@ -949,6 +949,10 @@
             })[character]);
         }
 
+        function normalizeMediaGallery(paths) {
+            return [...new Set((Array.isArray(paths) ? paths : []).filter(path => typeof path === "string" && path.trim()))].slice(0, 60);
+        }
+
         async function fetchJSON(path) {
             const response = await fetch(new URL(path, document.baseURI));
             if (!response.ok) {
@@ -1224,10 +1228,12 @@
                 return;
             }
 
-            container.innerHTML = projects.map(proj => `
-                <div class="glass-card rounded-2xl overflow-hidden flex flex-col group border border-white/5 hover:border-brand-neon/40">
-                    <div class="relative h-64 overflow-hidden">
-                        <img src="${escapeHTML(proj.image)}" alt="${escapeHTML(proj.title)}" loading="lazy" decoding="async" onerror="this.src='https://placehold.co/800x500/12181b/00ff66?text=Land+Pulse+Project';" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+            window.premiumProjectsCache = projects;
+            container.innerHTML = projects.map((proj, index) => {
+                return `
+            <div class="glass-card rounded-2xl overflow-hidden flex flex-col group border border-white/5 hover:border-brand-neon/40">
+                <div class="relative h-64 overflow-hidden cursor-pointer" onclick="openProjectGallery(${index})">
+                    <img src="${escapeHTML(proj.image)}" alt="${escapeHTML(proj.title)}" loading="lazy" decoding="async" onerror="this.src='https://placehold.co/800x500/12181b/00ff66?text=Land+Pulse+Project';" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                         <span class="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-extrabold bg-brand-neon text-black shadow-md uppercase tracking-wider">${escapeHTML(proj.badge || 'VIP Project')}</span>
                         <div class="absolute bottom-3 right-3 bg-brand-dark/90 px-3 py-1 rounded-lg text-brand-neon text-xs font-extrabold border border-brand-neon/30">
                             ${escapeHTML(proj.priceRange || 'Price On Request')}
@@ -1241,12 +1247,14 @@
                             <p class="text-brand-muted text-xs leading-relaxed mb-4 line-clamp-2">${escapeHTML(proj.description || '')}</p>
                         </div>
 
-                        <a href="https://wa.me/${encodeURIComponent(siteContent && siteContent.footer && siteContent.footer.whatsapp || "923001234567")}?text=${encodeURIComponent('Inquiry about Premium Project: ' + proj.title)}" target="_blank" class="w-full py-3 rounded-xl bg-brand-card hover:bg-brand-neon hover:text-black border border-white/10 text-white text-xs font-bold transition-all duration-300 flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-paper-plane"></i> Express Interest
-                        </a>
+                        <div class="grid grid-cols-${proj.video ? '2' : '1'} gap-2">
+                            ${proj.video ? `<button type="button" onclick="event.stopPropagation(); openListingVideo('${escapeHTML(proj.video)}', '${escapeHTML(proj.title)}')" class="w-full py-3 rounded-xl bg-brand-card hover:bg-brand-neon hover:text-black border border-white/10 text-white text-xs font-bold transition-all flex items-center justify-center gap-2"><i class="fa-solid fa-play"></i> Watch Video</button>` : ''}
+                            <a href="https://wa.me/${encodeURIComponent(siteContent && siteContent.footer && siteContent.footer.whatsapp || "923001234567")}?text=${encodeURIComponent('Inquiry about Premium Project: ' + proj.title)}" target="_blank" class="w-full py-3 rounded-xl bg-brand-card hover:bg-brand-neon hover:text-black border border-white/10 text-white text-xs font-bold transition-all flex items-center justify-center gap-2"><i class="fa-solid fa-paper-plane"></i> Express Interest</a>
+                        </div>
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
         }
 
         /* Auto-Detection for Team Profiles */
@@ -1511,11 +1519,9 @@
                             const configuredPhotos = listing.image
                                 ? [listing.image, ...galleryPhotos.filter(photo => photo !== listing.image)]
                                 : galleryPhotos;
-                            const photos = configuredPhotos.length > 0 ? configuredPhotos : [
-                                'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
-                                'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80',
-                                'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80'
-                            ];
+                            const photos = normalizeMediaGallery(configuredPhotos.length > 0 ? configuredPhotos : [
+                                'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80'
+                            ]);
                             return {
                                 id: idx + 1,
                                 title: details.title || listing.propertyTitle,
@@ -1532,6 +1538,7 @@
                                 tagBg: listing.listingType === 'rent' ? 'bg-brand-emerald text-white' : 'bg-brand-neon text-black',
                                 image: photos[0],
                                 images: photos,
+                                video: listing.video || details.video || '',
                                 rawPrice: getNumericPrice(details.price || '0')
                             };
                         } catch (e) {
@@ -1692,6 +1699,7 @@
                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white font-bold text-xs pointer-events-none">
                             <i class="fa-solid fa-expand text-brand-neon text-base"></i> Open Photo Gallery
                         </div>
+                        ${p.video ? `<button type="button" onclick="event.stopPropagation(); openListingVideo('${escapeHTML(p.video)}', '${escapeHTML(p.title)}')" class="absolute left-4 bottom-3 z-10 px-3 py-2 rounded-lg bg-black/85 border border-brand-neon/40 text-brand-neon text-xs font-bold hover:bg-brand-neon hover:text-black"><i class="fa-solid fa-play me-1"></i> Video</button>` : ''}
                     </div>
                     
                     <div class="p-6 flex-1 flex flex-col justify-between">
@@ -1936,6 +1944,33 @@
             document.getElementById('propertyModal').classList.add('hidden');
         }
 
+        function openProjectGallery(projectIndex) {
+            const project = window.premiumProjectsCache && window.premiumProjectsCache[projectIndex];
+            if (!project) return;
+            currentActivePropertyId = null;
+            currentGalleryImages = normalizeMediaGallery([project.image, ...(Array.isArray(project.photos) ? project.photos : [])]);
+            currentGalleryIndex = 0;
+            document.getElementById('galleryTitle').innerText = project.title;
+            document.getElementById('gallerySubtitle').innerText = `${project.location || ''} • ${project.priceRange || ''}`;
+            renderGalleryMainSlide();
+            renderGalleryThumbnails();
+            document.getElementById('galleryModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function openListingVideo(videoUrl, title) {
+            if (!videoUrl) return;
+            const modal = document.getElementById('videoModal');
+            const video = document.getElementById('virtualTourVideo');
+            const fallback = document.getElementById('virtualTourVideoFallback');
+            video.src = videoUrl;
+            video.classList.remove('hidden');
+            fallback.classList.add('hidden');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            video.play().catch(() => {});
+        }
+
         function openVideoLightbox() {
             document.getElementById('videoModal').classList.remove('hidden');
             const video = document.getElementById("virtualTourVideo");
@@ -1958,6 +1993,9 @@
             document.getElementById('videoModal').classList.add('hidden');
             const video = document.getElementById("virtualTourVideo");
             video.pause();
+            video.removeAttribute('src');
+            video.load();
+            document.body.style.overflow = '';
         }
 
         /* Calculator Logic */
