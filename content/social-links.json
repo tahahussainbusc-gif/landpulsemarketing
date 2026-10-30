@@ -1,7 +1,7 @@
 {
   "links": [
     {
-      "enabled": false,
+      "enabled": true,
       "platform": "YouTube",
       "label": "YouTube",
       "url": "https://www.youtube.com/@yourprofile",
