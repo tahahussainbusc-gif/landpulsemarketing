@@ -1,7 +1,7 @@
 {
   "links": [
     {
-      "enabled": true,
+      "enabled": false,
       "platform": "YouTube",
       "label": "YouTube",
       "url": "https://www.youtube.com/@yourprofile",
@@ -15,7 +15,7 @@
       "icon": "fa-instagram"
     },
     {
-      "enabled": false,
+      "enabled": true,
       "platform": "TikTok",
       "label": "TikTok",
       "url": "www.tiktok.com/@landpulsemarketing",
