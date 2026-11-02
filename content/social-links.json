@@ -15,11 +15,11 @@
       "icon": "fa-instagram"
     },
     {
-      "enabled": true,
+      "enabled": false,
       "platform": "TikTok",
       "label": "TikTok",
       "url": "www.tiktok.com/@landpulsemarketing",
-      "icon": "fa-tiktok-t"
+      "icon": "fa-tiktok"
     },
     {
       "enabled": true,
