@@ -3,21 +3,338 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Content Manager</title>
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <title>Land Pulse Admin</title>
+    <style>
+      :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #0a0d0f; color: #f8fafc; }
+      * { box-sizing: border-box; }
+      body { margin: 0; min-height: 100vh; padding: 32px 16px; }
+      main { width: min(920px, 100%); margin: 0 auto; }
+      .card { padding: 24px; border: 1px solid #263238; border-radius: 16px; background: #12181b; }
+      h1, h2 { margin-top: 0; }
+      p { color: #cbd5e1; line-height: 1.55; }
+      label { display: block; margin: 16px 0 6px; font-weight: 650; }
+      input, select, textarea, button { width: 100%; padding: 12px; border: 1px solid #475569; border-radius: 8px; background: #0a0d0f; color: #f8fafc; font: inherit; }
+      textarea { min-height: 420px; resize: vertical; font: 13px/1.5 Consolas, monospace; }
+      button { width: auto; border: 0; background: #00ff66; color: #07110a; font-weight: 750; cursor: pointer; }
+      button:disabled { cursor: wait; opacity: .6; }
+      .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+      .secondary { background: #263238; color: #f8fafc; }
+      .hidden { display: none !important; }
+      #status { min-height: 24px; margin: 12px 0; }
+      #status[data-kind="error"] { color: #fca5a5; }
+      #status[data-kind="success"] { color: #86efac; }
+      .media-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: end; }
+      .help { font-size: .9rem; }
+      @media (max-width: 600px) {
+        .card { padding: 18px; }
+        .media-row { grid-template-columns: 1fr; }
+      }
+    </style>
   </head>
   <body>
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-    <script>
-      if (window.netlifyIdentity) {
-        window.netlifyIdentity.on("init", user => {
-          if (!user) {
-            window.netlifyIdentity.on("login", () => {
-              document.location.href = "/admin/";
-            });
-          }
-        });
+    <main>
+      <section id="loginPanel" class="card">
+        <h1>Land Pulse Admin</h1>
+        <p>Firebase account se sign in karein. Sirf approved admin accounts ko access milega.</p>
+        <form id="loginForm">
+          <label for="email">Email</label>
+          <input id="email" type="email" autocomplete="username" required>
+          <label for="password">Password</label>
+          <input id="password" type="password" autocomplete="current-password" required>
+          <div class="actions"><button id="loginButton" type="submit">Sign in</button></div>
+        </form>
+        <p id="status" role="status" aria-live="polite"></p>
+      </section>
+
+      <section id="adminPanel" class="card hidden">
+        <div class="actions" style="justify-content:space-between;align-items:center;margin-top:0">
+          <h1 style="margin:0">Content Manager</h1>
+          <button id="logoutButton" class="secondary" type="button">Sign out</button>
+        </div>
+        <p id="signedInUser"></p>
+        <p class="help">Public website content sirf Firestore se padhti hai. Pehli baar existing JSON content import karein; uske baad edits Firestore mein save honge.</p>
+
+        <label for="documentSelect">Content document</label>
+        <select id="documentSelect">
+          <option value="site">Homepage content</option>
+          <option value="properties">Property listings</option>
+          <option value="premium-projects">Premium projects</option>
+          <option value="social-links">Social links</option>
+          <option value="team-ceo">CEO profile</option>
+          <option value="team-manager">Manager profile</option>
+          <option value="team-sales-executive">Sales executive profile</option>
+        </select>
+        <div class="actions">
+          <button id="importButton" class="secondary" type="button">Import missing JSON documents</button>
+          <button id="loadButton" class="secondary" type="button">Reload</button>
+          <button id="saveButton" type="button">Save content</button>
+        </div>
+        <label for="contentEditor">JSON content</label>
+        <textarea id="contentEditor" spellcheck="false" aria-label="JSON content"></textarea>
+
+        <h2 style="margin:24px 0 0">Upload media</h2>
+        <p class="help">Image/video Firebase Storage par upload hoga. Download URL copy karke JSON ke relevant image, photo, ya video field mein paste karein. Maximum 50 MB.</p>
+        <div class="media-row">
+          <div>
+            <label for="mediaFile">Image or video</label>
+            <input id="mediaFile" type="file" accept="image/*,video/*">
+          </div>
+          <button id="uploadButton" type="button">Upload media</button>
+        </div>
+        <label for="mediaUrl">Uploaded media URL</label>
+        <input id="mediaUrl" type="url" readonly>
+        <div class="actions"><button id="copyUrlButton" class="secondary" type="button">Copy URL</button></div>
+        <p id="adminStatus" role="status" aria-live="polite"></p>
+      </section>
+    </main>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+        signInWithEmailAndPassword,
+        signOut
+      } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
+      import {
+        doc,
+        getDoc,
+        getFirestore,
+        serverTimestamp,
+        setDoc,
+        writeBatch
+      } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+      import {
+        getDownloadURL,
+        getStorage,
+        ref,
+        uploadBytes
+      } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-storage.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyCPTwupO7Ki8Eiri2hheP9UpNW9UVsASKQ",
+        authDomain: "landpulsemarketing-a7bce.firebaseapp.com",
+        projectId: "landpulsemarketing-a7bce",
+        storageBucket: "landpulsemarketing-a7bce.firebasestorage.app",
+        messagingSenderId: "519156346442",
+        appId: "1:519156346442:web:503c99c66fc21c56ed80b3",
+        measurementId: "G-NNKPV7L5KB"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+      const storage = getStorage(app);
+      const documents = {
+        site: "/content/site.json",
+        properties: "/content/properties.json",
+        "premium-projects": "/PremiumProjects/inventory.json",
+        "social-links": "/content/social-links.json",
+        "team-ceo": "/content/team/ceo.json",
+        "team-manager": "/content/team/manager.json",
+        "team-sales-executive": "/content/team/sales-executive.json"
+      };
+      const loginPanel = document.getElementById("loginPanel");
+      const adminPanel = document.getElementById("adminPanel");
+      const loginStatus = document.getElementById("status");
+      const adminStatus = document.getElementById("adminStatus");
+      const editor = document.getElementById("contentEditor");
+      let accessDenied = false;
+
+      function setStatus(element, message, kind) {
+        element.textContent = message;
+        element.dataset.kind = kind || "info";
       }
+
+      function setAuthenticatedView(user) {
+        loginPanel.classList.toggle("hidden", Boolean(user));
+        adminPanel.classList.toggle("hidden", !user);
+        if (user) {
+          document.getElementById("signedInUser").textContent = `Signed in as ${user.email || user.uid}`;
+        }
+      }
+
+      async function loadContent() {
+        const documentId = document.getElementById("documentSelect").value;
+        setStatus(adminStatus, "Loading content...", "info");
+        try {
+          const snapshot = await getDoc(doc(db, "siteContent", documentId));
+          if (snapshot.exists()) {
+            editor.value = JSON.stringify(snapshot.data().content, null, 2);
+            setStatus(adminStatus, "Firestore content loaded.", "success");
+            return;
+          }
+
+          const response = await fetch(documents[documentId], { cache: "no-store" });
+          if (!response.ok) {
+            throw new Error(`Could not load default JSON (${response.status}).`);
+          }
+          editor.value = JSON.stringify(await response.json(), null, 2);
+          setStatus(adminStatus, "Local JSON migration source loaded. Save it to Firestore.", "info");
+        } catch (error) {
+          setStatus(adminStatus, error.message || "Could not load content.", "error");
+        }
+      }
+
+      document.getElementById("importButton").addEventListener("click", async () => {
+        if (!window.confirm("Existing JSON files ko Firestore mein import karein? Pehle se maujood Firestore documents overwrite nahi honge.")) {
+          return;
+        }
+
+        const button = document.getElementById("importButton");
+        button.disabled = true;
+        setStatus(adminStatus, "Missing content documents import ho rahe hain...", "info");
+        try {
+          const batch = writeBatch(db);
+          const results = await Promise.all(Object.entries(documents).map(async ([documentId, path]) => {
+            const reference = doc(db, "siteContent", documentId);
+            const existing = await getDoc(reference);
+            if (existing.exists()) {
+              return { reference, imported: false };
+            }
+
+            const response = await fetch(path, { cache: "no-store" });
+            if (!response.ok) {
+              throw new Error(`Could not load ${path} for migration (${response.status}).`);
+            }
+            const content = await response.json();
+            if (!content || typeof content !== "object") {
+              throw new Error(`${path} must contain a JSON object or array.`);
+            }
+            return { reference, content, imported: true };
+          }));
+          const missing = results.filter(result => result.imported);
+          missing.forEach(result => batch.set(result.reference, {
+            content: result.content,
+            updatedAt: serverTimestamp()
+          }));
+          if (missing.length) {
+            await batch.commit();
+          }
+          setStatus(adminStatus, `Migration complete. ${missing.length} document(s) imported; existing Firestore documents were preserved.`, "success");
+        } catch (error) {
+          setStatus(adminStatus, error.message || "JSON migration failed.", "error");
+        } finally {
+          button.disabled = false;
+        }
+      });
+
+      document.getElementById("loginForm").addEventListener("submit", async event => {
+        event.preventDefault();
+        const button = document.getElementById("loginButton");
+        button.disabled = true;
+        setStatus(loginStatus, "Signing in...", "info");
+        try {
+          await signInWithEmailAndPassword(
+            auth,
+            document.getElementById("email").value.trim(),
+            document.getElementById("password").value
+          );
+        } catch (error) {
+          setStatus(loginStatus, error.message || "Sign-in failed.", "error");
+        } finally {
+          button.disabled = false;
+        }
+      });
+
+      document.getElementById("logoutButton").addEventListener("click", async () => {
+        try {
+          await signOut(auth);
+        } catch (error) {
+          setStatus(adminStatus, error.message || "Could not sign out.", "error");
+        }
+      });
+
+      document.getElementById("documentSelect").addEventListener("change", loadContent);
+      document.getElementById("loadButton").addEventListener("click", loadContent);
+      document.getElementById("saveButton").addEventListener("click", async () => {
+        const button = document.getElementById("saveButton");
+        button.disabled = true;
+        try {
+          const content = JSON.parse(editor.value);
+          if (!content || typeof content !== "object") {
+            throw new Error("Content JSON ka top-level object ya array hona chahiye.");
+          }
+          await setDoc(doc(db, "siteContent", document.getElementById("documentSelect").value), {
+            content,
+            updatedAt: serverTimestamp()
+          });
+          setStatus(adminStatus, "Saved to Firestore. Website par content ab update ho gaya hai.", "success");
+        } catch (error) {
+          setStatus(adminStatus, error.message || "Could not save content.", "error");
+        } finally {
+          button.disabled = false;
+        }
+      });
+
+      document.getElementById("uploadButton").addEventListener("click", async () => {
+        const fileInput = document.getElementById("mediaFile");
+        const file = fileInput.files && fileInput.files[0];
+        const button = document.getElementById("uploadButton");
+        if (!file) {
+          setStatus(adminStatus, "Pehle upload ke liye file select karein.", "error");
+          return;
+        }
+        if (!/^image\/|^video\//.test(file.type) || file.size >= 50 * 1024 * 1024) {
+          setStatus(adminStatus, "Sirf image/video file 50 MB se chhoti upload karein.", "error");
+          return;
+        }
+
+        button.disabled = true;
+        setStatus(adminStatus, "Uploading media...", "info");
+        try {
+          const safeName = file.name.replace(/[^a-zA-Z0-9._-]+/g, "-");
+          const fileRef = ref(storage, `uploads/${Date.now()}-${safeName}`);
+          await uploadBytes(fileRef, file, { contentType: file.type });
+          document.getElementById("mediaUrl").value = await getDownloadURL(fileRef);
+          setStatus(adminStatus, "Upload complete. URL JSON mein paste karke content save karein.", "success");
+        } catch (error) {
+          setStatus(adminStatus, error.message || "Media upload failed.", "error");
+        } finally {
+          button.disabled = false;
+        }
+      });
+
+      document.getElementById("copyUrlButton").addEventListener("click", async () => {
+        const url = document.getElementById("mediaUrl").value;
+        if (!url) {
+          setStatus(adminStatus, "Copy karne ke liye pehle media upload karein.", "error");
+          return;
+        }
+        try {
+          await navigator.clipboard.writeText(url);
+          setStatus(adminStatus, "Media URL copied.", "success");
+        } catch (error) {
+          setStatus(adminStatus, "Browser clipboard access nahi de raha; URL field se manually copy karein.", "error");
+        }
+      });
+
+      onAuthStateChanged(auth, async user => {
+        if (!user) {
+          setAuthenticatedView(null);
+          if (!accessDenied) {
+            setStatus(loginStatus, "", "info");
+          }
+          return;
+        }
+
+        try {
+          const adminDocument = await getDoc(doc(db, "admins", user.uid));
+          if (!adminDocument.exists()) {
+            accessDenied = true;
+            await signOut(auth);
+            setStatus(loginStatus, "Login hua, lekin is account ko admin access nahi diya gaya. Firebase Console mein admins/{UID} document add karwayein.", "error");
+            return;
+          }
+          accessDenied = false;
+          setAuthenticatedView(user);
+          await loadContent();
+        } catch (error) {
+          accessDenied = true;
+          await signOut(auth);
+          setStatus(loginStatus, error.message || "Admin access verify nahi ho saka.", "error");
+        }
+      });
     </script>
   </body>
 </html>

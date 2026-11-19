@@ -1,22 +1,21 @@
 # land-pulse-marketing
 A real estate portal website for Sargodha offering property listings, search filters, and ROI calculators.
 
-## Decap CMS
+## Netlify deployment
 
-The site is deployed from the repository root so `/admin/config.yml` is included in the Netlify publish output. After deploying, verify that `https://landpulsemarketing.netlify.app/admin/config.yml` returns the CMS YAML rather than a 404.
+`netlify.toml` publishes the repository root, which includes the static site, `/admin/`, and the Netlify Function. Connect this repository to Netlify and deploy from the `main` branch. The deployment itself must be started in the Netlify account; it cannot be completed from this local project alone.
 
-For CMS sign-in and Git Gateway writes, enable Netlify Identity and Git Gateway in the Netlify site settings, then invite the CMS users through Identity. The CMS uses the `git-gateway` backend configured for the `main` branch.
+## Firebase Admin
 
-The CMS edits the homepage copy, welcome intro, header links, and animated circular Company Stats in
-`content/site.json`; the CEO, Sales Executive, and Manager profiles individually under `content/team/`;
-featured projects in `PremiumProjects/inventory.json`; property listings in `content/properties.json`;
-and individually addable, editable, hideable, or removable footer social buttons in
-`content/social-links.json`. Profile visibility is controlled separately for each team member. Admins
-can update each profile photo, intro video, and TikTok URL; profile videos play on hover when a photo
-is visible first. The virtual tour cover, video, and section visibility are CMS-managed. Testimonials,
-advantages, footer links, and logo are also CMS-managed. Uploaded photos and videos are stored in
-`images/uploads/`. The page loads these files directly, so CMS edits are reflected after publishing.
-Set the sample Company Stats counts to verified company figures before publishing. The homepage also
-displays a welcome intro screen that fades out after 3.8 seconds.
+The custom admin page is available at `/admin/`. It uses Firebase Email/Password Authentication, Firestore for content, and Firebase Storage for uploaded media.
 
-Property listings, premium projects, testimonials, advantages, footer links, and social buttons use CMS list controls, which allow admins to add, edit, reorder, and remove entries. Individual team profile files remain separate for the CEO, Sales Executive, and Manager; toggle **Show profile** to hide or restore a profile without deleting its contact details.
+Before using it:
+
+1. In Firebase Authentication, enable Email/Password and create the admin user's account. Add the deployed Netlify domain to Firebase Authentication's authorized domains.
+2. Create a Firestore database and Firebase Storage bucket. From the project root, deploy the checked-in rules with `firebase deploy --project landpulsemarketing-a7bce --only firestore:rules,storage`.
+3. Copy the admin user's Authentication UID. In Firestore, create `admins/{UID}` (for example, add an `enabled: true` field). Only this manually provisioned UID can edit content; users cannot grant themselves admin access.
+4. Sign in at `/admin/` and use **Import missing JSON documents** once to migrate the existing content. This only creates Firestore documents that do not already exist. The website then reads editable content exclusively from Firestore; the content JSON files are kept only as migration sources. `assets-manifest.json` remains static metadata for image and video paths.
+
+The available documents are homepage content, property listings, premium projects, social links, and the CEO, Manager, and Sales Executive profiles. Select a document in the admin page to edit its JSON and save it to Firestore. Uploaded images and videos are stored in Firebase Storage; copy the returned URL into the relevant JSON field and save the document. Uploads are limited to 50 MB.
+
+The site also has a Netlify Function for AI-generated copy. It still uses Netlify Identity and is not connected to the Firebase admin login. Company Stats should contain verified figures before publishing. Premium projects whose title or location contains "Town" remain visible, but their price is intentionally hidden. The homepage welcome intro fades out after 3.8 seconds.
