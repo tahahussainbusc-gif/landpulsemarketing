@@ -924,7 +924,19 @@
         }
 
         async function fetchJSON(path) {
-            const response = await fetch(new URL(path, document.baseURI));
+            if (!window.firebaseContentStore) {
+                throw new Error("Firebase content service is not initialized");
+            }
+
+            const cloudContent = await window.firebaseContentStore.read(path);
+            if (cloudContent === null) {
+                throw new Error(`Firestore content for ${path} has not been migrated`);
+            }
+            return cloudContent;
+        }
+
+        async function fetchStaticJSON(path) {
+            const response = await fetch(new URL(path, document.baseURI), { cache: "no-store" });
             if (!response.ok) {
                 throw new Error(`Request for ${path} failed (${response.status})`);
             }
@@ -1177,12 +1189,23 @@
             `).join("");
         }
 
+        function getPremiumProjectPrice(project) {
+            const priceRange = String(project.priceRange || "").trim();
+            const isTownProject = /\btown\b/i.test(`${project.title || ""} ${project.location || ""}`);
+            if (isTownProject || !priceRange ||
+                !/\d/.test(priceRange) ||
+                /^(n\/a|none|null|price\s*(on\s*request)?|contact\s*for\s*price)$/i.test(priceRange)) {
+                return "";
+            }
+            return priceRange;
+        }
+
         /* Premium Projects Loading */
         async function loadPremiumProjects() {
             try {
                 const projectsData = await fetchJSON("PremiumProjects/inventory.json");
                 if (projectsData && Array.isArray(projectsData.projects) && projectsData.projects.length > 0) {
-                    renderPremiumProjects(projectsData.projects);
+                    renderPremiumProjects(projectsData.projects.filter(Boolean));
                     return;
                 }
             } catch (error) {
@@ -1200,14 +1223,15 @@
 
             window.premiumProjectsCache = projects;
             container.innerHTML = projects.map((proj, index) => {
+                const priceRange = getPremiumProjectPrice(proj);
                 return `
             <div class="glass-card rounded-2xl overflow-hidden flex flex-col group border border-white/5 hover:border-brand-neon/40">
                 <div class="relative h-64 overflow-hidden cursor-pointer" onclick="openProjectGallery(${index})">
                     <img src="${escapeHTML(proj.image)}" alt="${escapeHTML(proj.title)}" loading="lazy" decoding="async" onerror="this.src='https://placehold.co/800x500/12181b/00ff66?text=Land+Pulse+Project';" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                         <span class="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-extrabold bg-brand-neon text-black shadow-md uppercase tracking-wider">${escapeHTML(proj.badge || 'VIP Project')}</span>
-                        <div class="absolute bottom-3 right-3 bg-brand-dark/90 px-3 py-1 rounded-lg text-brand-neon text-xs font-extrabold border border-brand-neon/30">
-                            ${escapeHTML(proj.priceRange || 'Price On Request')}
-                        </div>
+                        ${priceRange ? `<div class="absolute bottom-3 right-3 bg-brand-dark/90 px-3 py-1 rounded-lg text-brand-neon text-xs font-extrabold border border-brand-neon/30">
+                            ${escapeHTML(priceRange)}
+                        </div>` : ''}
                     </div>
                     
                     <div class="p-6 flex-1 flex flex-col justify-between">
@@ -1230,7 +1254,7 @@
         /* Auto-Detection for Team Profiles */
         async function loadSiteAssets() {
             try {
-                const assets = await fetchJSON("assets-manifest.json");
+                const assets = await fetchStaticJSON("assets-manifest.json");
                 if (!assets || !Array.isArray(assets.teams)) {
                     throw new Error("assets-manifest.json must contain a teams array");
                 }
@@ -1253,14 +1277,7 @@
                     try {
                         profileData = await fetchJSON(profile.path);
                     } catch (error) {
-                        console.warn(`Could not load CMS team profile ${profile.path}:`, error.message);
-                        if (assetMember.details) {
-                            try {
-                                profileData = await fetchJSON(assetMember.details);
-                            } catch (detailsError) {
-                                console.warn(`Could not load legacy profile details for ${profile.folder}:`, detailsError.message);
-                            }
-                        }
+                        console.warn(`Could not load Firestore team profile ${profile.path}:`, error.message);
                     }
 
                     const candidatePhotos = Object.prototype.hasOwnProperty.call(profileData, "photo")
@@ -1471,20 +1488,13 @@
 
         /* Property Inventory Loading */
         async function loadPropertyInventory() {
+            propertiesData.length = 0;
             try {
-                let inventory;
-                try {
-                    inventory = await fetchJSON("content/properties.json");
-                } catch (error) {
-                    console.warn("Using generated property inventory because content/properties.json could not be loaded:", error.message);
-                    inventory = await fetchJSON("Towns/inventory.json");
-                }
+                const inventory = await fetchJSON("content/properties.json");
                 if (inventory && Array.isArray(inventory.listings)) {
                     const loaded = await Promise.all(inventory.listings.map(async (listing, idx) => {
                         try {
-                            const details = listing.manifestPath
-                                ? await fetchJSON(listing.manifestPath)
-                                : listing;
+                            const details = listing;
                             const galleryPhotos = Array.isArray(listing.photos) ? listing.photos : [];
                             const configuredPhotos = listing.image
                                 ? [listing.image, ...galleryPhotos.filter(photo => photo !== listing.image)]
@@ -1511,7 +1521,8 @@
                                 video: listing.video || details.video || '',
                                 rawPrice: getNumericPrice(details.price || '0')
                             };
-                        } catch (e) {
+                        } catch (error) {
+                            console.warn(`Could not load property listing ${listing.title || idx + 1}:`, error.message);
                             return null;
                         }
                     }));
@@ -1519,97 +1530,26 @@
                     const valid = loaded.filter(Boolean);
                     if (valid.length > 0) {
                         propertiesData.push(...valid);
-                        populateLocationFilter();
-                        renderProperties(propertiesData);
-                        return;
                     }
                 }
             } catch (error) {
-                console.warn("Using sample property inventory:", error.message);
+                console.error("Could not load property inventory from Firestore:", error.message);
             }
-
-            // Fallback Properties Sample Data with Multi-Photo Arrays
-            propertiesData.push(
-                {
-                    id: 1,
-                    title: "1 Kanal Ultra Modern VIP Mansion",
-                    projectTitle: "DHA Phase 6, Lahore",
-                    price: "125,000,000 PKR",
-                    rawPrice: 125000000,
-                    category: "villas",
-                    type: "villas",
-                    listingType: "sale",
-                    tag: "For Sale",
-                    tagBg: "bg-brand-neon text-black",
-                    beds: "5 Beds",
-                    baths: "6 Baths",
-                    area: "1 Kanal",
-                    image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80",
-                    images: [
-                        "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80",
-                        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-                        "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80",
-                        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80"
-                    ],
-                    description: "Brand new full smart automation villa featuring imported Spanish tiles, private pool, and solar system."
-                },
-                {
-                    id: 2,
-                    title: "Prime Commercial Corner Plaza Plot",
-                    projectTitle: "Gulberg III, Lahore",
-                    price: "240,000,000 PKR",
-                    rawPrice: 240000000,
-                    category: "commercial",
-                    type: "commercial",
-                    listingType: "sale",
-                    tag: "For Sale",
-                    tagBg: "bg-brand-neon text-black",
-                    beds: "Commercial",
-                    baths: "N/A",
-                    area: "8 Marla",
-                    image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80",
-                    images: [
-                        "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80",
-                        "https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=800&q=80",
-                        "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80"
-                    ],
-                    description: "Main Boulevard facing commercial site with high rental potential and pre-approved LDA floor plans."
-                },
-                {
-                    id: 3,
-                    title: "Luxury Golf View Penthouse Suite",
-                    projectTitle: "Bahria Town, Islamabad",
-                    price: "450,000 PKR/mo",
-                    rawPrice: 450000,
-                    category: "residential",
-                    type: "residential",
-                    listingType: "rent",
-                    tag: "For Rent",
-                    tagBg: "bg-brand-emerald text-white",
-                    beds: "3 Beds",
-                    baths: "4 Baths",
-                    area: "3,200 Sq Ft",
-                    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
-                    images: [
-                        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
-                        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-                        "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80"
-                    ],
-                    description: "Fully furnished designer penthouse overlooking championship golf course with dedicated concierge."
-                }
-            );
 
             populateLocationFilter();
             renderProperties(propertiesData);
         }
 
         function getNumericPrice(price) {
-            const match = String(price).match(/[\d,.]+/);
+            const text = String(price || "").trim();
+            const match = text.match(/[\d,.]+/);
             if (!match) return 0;
             const amount = Number(match[0].replace(/,/g, ""));
             if (!Number.isFinite(amount)) return 0;
-            if (/\b(crore|cr)\b/i.test(price)) return amount * 10000000;
-            if (/\b(lakh|lac)\b/i.test(price)) return amount * 100000;
+            if (/\b(crore|crore(s)?|cr)\b/i.test(text)) return amount * 10000000;
+            if (/\b(lakh|lac|lacs)\b/i.test(text)) return amount * 100000;
+            if (/\b(billion|bn)\b/i.test(text)) return amount * 1000000000;
+            if (/\b(million|m)\b/i.test(text)) return amount * 1000000;
             return amount;
         }
 
@@ -1921,7 +1861,8 @@
             currentGalleryImages = normalizeMediaGallery([project.image, ...(Array.isArray(project.photos) ? project.photos : [])]);
             currentGalleryIndex = 0;
             document.getElementById('galleryTitle').innerText = project.title;
-            document.getElementById('gallerySubtitle').innerText = `${project.location || ''} • ${project.priceRange || ''}`;
+            const galleryParts = [project.location, getPremiumProjectPrice(project)].filter(Boolean);
+            document.getElementById('gallerySubtitle').innerText = galleryParts.join(' • ');
             renderGalleryMainSlide();
             renderGalleryThumbnails();
             document.getElementById('galleryModal').classList.remove('hidden');
@@ -2006,30 +1947,11 @@
         async function loadFooterSocialLinks() {
             const container = document.getElementById("footerSocialLinks");
             try {
-                let links;
-                try {
-                    const content = await fetchJSON("content/social-links.json");
-                    if (!content || !Array.isArray(content.links)) {
-                        throw new Error("content/social-links.json must contain a links array");
-                    }
-                    links = content.links;
-                } catch (error) {
-                    console.warn("Using legacy manifest social links:", error.message);
-                    const legacyLinks = await fetchJSON("manifest.json");
-                    const legacyIcons = {
-                        youtube: "fa-youtube",
-                        instagram: "fa-instagram",
-                        tiktok: "fa-tiktok",
-                        facebook: "fa-facebook-f"
-                    };
-                    links = Object.entries(legacyIcons).map(([platform, icon]) => ({
-                        enabled: true,
-                        platform,
-                        label: platform,
-                        url: legacyLinks[platform],
-                        icon
-                    }));
+                const content = await fetchJSON("content/social-links.json");
+                if (!content || !Array.isArray(content.links)) {
+                    throw new Error("Firestore social-links content must contain a links array");
                 }
+                const links = content.links;
 
                 container.innerHTML = links.filter(link => link && link.enabled !== false).map(link => {
                     let url;
@@ -2063,6 +1985,45 @@
             ]);
             updateROI();
         });
+    </script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-analytics.js";
+        import { doc, getDoc, getFirestore } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCPTwupO7Ki8Eiri2hheP9UpNW9UVsASKQ",
+            authDomain: "landpulsemarketing-a7bce.firebaseapp.com",
+            projectId: "landpulsemarketing-a7bce",
+            storageBucket: "landpulsemarketing-a7bce.firebasestorage.app",
+            messagingSenderId: "519156346442",
+            appId: "1:519156346442:web:503c99c66fc21c56ed80b3",
+            measurementId: "G-NNKPV7L5KB"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        getAnalytics(app);
+        const db = getFirestore(app);
+        const contentDocuments = {
+            "content/site.json": "site",
+            "content/properties.json": "properties",
+            "content/social-links.json": "social-links",
+            "PremiumProjects/inventory.json": "premium-projects",
+            "content/team/ceo.json": "team-ceo",
+            "content/team/manager.json": "team-manager",
+            "content/team/sales-executive.json": "team-sales-executive"
+        };
+
+        window.firebaseContentStore = {
+            async read(path) {
+                const documentId = contentDocuments[path];
+                if (!documentId) {
+                    return null;
+                }
+                const snapshot = await getDoc(doc(db, "siteContent", documentId));
+                return snapshot.exists() ? snapshot.data().content : null;
+            }
+        };
     </script>
 </body>
 </html>
