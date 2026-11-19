@@ -33,7 +33,11 @@
   </head>
   <body>
     <main>
-      <section id="loginPanel" class="card">
+      <section id="authLoading" class="card" role="status" aria-live="polite">
+        <p>Checking Firebase Authentication...</p>
+      </section>
+
+      <section id="loginPanel" class="card hidden">
         <h1>Land Pulse Admin</h1>
         <p>Firebase account se sign in karein. Sirf approved admin accounts ko access milega.</p>
         <form id="loginForm">
@@ -136,10 +140,12 @@
       };
       const loginPanel = document.getElementById("loginPanel");
       const adminPanel = document.getElementById("adminPanel");
+      const authLoading = document.getElementById("authLoading");
       const loginStatus = document.getElementById("status");
       const adminStatus = document.getElementById("adminStatus");
       const editor = document.getElementById("contentEditor");
       let accessDenied = false;
+      let authCheckId = 0;
 
       function setStatus(element, message, kind) {
         element.textContent = message;
@@ -147,10 +153,22 @@
       }
 
       function setAuthenticatedView(user) {
+        authLoading.classList.add("hidden");
         loginPanel.classList.toggle("hidden", Boolean(user));
         adminPanel.classList.toggle("hidden", !user);
         if (user) {
           document.getElementById("signedInUser").textContent = `Signed in as ${user.email || user.uid}`;
+        }
+      }
+
+      async function denyAdminAccess(message) {
+        accessDenied = true;
+        setStatus(loginStatus, message, "error");
+        try {
+          await signOut(auth);
+        } catch (error) {
+          setAuthenticatedView(null);
+          setStatus(loginStatus, `${message} Sign-out failed: ${error.message || "Unknown error."}`, "error");
         }
       }
 
@@ -310,6 +328,7 @@
       });
 
       onAuthStateChanged(auth, async user => {
+        const checkId = ++authCheckId;
         if (!user) {
           setAuthenticatedView(null);
           if (!accessDenied) {
@@ -318,21 +337,25 @@
           return;
         }
 
+        authLoading.classList.remove("hidden");
+        loginPanel.classList.add("hidden");
+        adminPanel.classList.add("hidden");
         try {
           const adminDocument = await getDoc(doc(db, "admins", user.uid));
-          if (!adminDocument.exists()) {
-            accessDenied = true;
-            await signOut(auth);
-            setStatus(loginStatus, "Login hua, lekin is account ko admin access nahi diya gaya. Firebase Console mein admins/{UID} document add karwayein.", "error");
+          if (checkId !== authCheckId) {
+            return;
+          }
+          if (!adminDocument.exists() || adminDocument.data().role !== "admin") {
+            await denyAdminAccess("Login hua, lekin is account ko admin access nahi diya gaya. Firebase Console mein admins/{UID} document par role: \"admin\" set karein.");
             return;
           }
           accessDenied = false;
           setAuthenticatedView(user);
           await loadContent();
         } catch (error) {
-          accessDenied = true;
-          await signOut(auth);
-          setStatus(loginStatus, error.message || "Admin access verify nahi ho saka.", "error");
+          if (checkId === authCheckId) {
+            await denyAdminAccess(error.message || "Admin access verify nahi ho saka.");
+          }
         }
       });
     </script>
