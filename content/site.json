@@ -89,7 +89,6 @@
     "description": "Get to know the specialists guiding your property journey.",
     "emptyMessage": "Team profiles will be announced soon."
   },
-  "pageTitle": "Land Pulse Marketing | VIP Luxury & Smart Real Estate",
   "welcomeIntro": {
     "welcome": "Welcome",
     "to": "to",
@@ -118,7 +117,7 @@
     "calculator": "ROI Calculator",
     "advantages": "Why Choose Us",
     "teamHref": "#team",
-    "consultation": "Book Consultation",
+    "consultation": "Chat with AI",
     "homeHref": "#hero",
     "calculatorHref": "#calculator",
     "premiumProjects": "Premium Projects",

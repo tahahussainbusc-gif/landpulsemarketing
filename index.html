@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Land Pulse Marketing | VIP Luxury & Smart Real Estate</title>
+    <meta name="description" content="Pakistan's premium real estate marketing agency for luxury villas, commercial plots and high-yield property investments.">
+    <meta property="og:title" content="Land Pulse Marketing | VIP Luxury & Smart Real Estate">
+    <meta property="og:description" content="Explore premium properties and smart real-estate investment opportunities with Land Pulse Marketing.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
@@ -102,6 +105,64 @@
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+
+        #lpAiPanel {
+            position: fixed;
+            right: 6rem;
+            bottom: 1.5rem;
+            z-index: 60;
+            width: min(23rem, calc(100vw - 2rem));
+            height: min(36rem, calc(100vh - 9rem));
+            transform: translateY(12px) scale(.96);
+            opacity: 0;
+            pointer-events: none;
+            transition: .22s ease;
+        }
+
+        #lpAiPanel.is-open {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #lpAiMessages {
+            scrollbar-width: thin;
+            scrollbar-color: #00ff66 #12181b;
+        }
+
+        .lp-ai-message {
+            max-width: 88%;
+            border-radius: 1rem;
+            padding: .75rem .875rem;
+            font-size: .8125rem;
+            line-height: 1.55;
+            white-space: pre-line;
+        }
+
+        .lp-ai-message.bot {
+            margin-right: auto;
+            background: rgba(255, 255, 255, .07);
+            border: 1px solid rgba(255, 255, 255, .08);
+            color: #e2e8f0;
+            border-bottom-left-radius: .35rem;
+        }
+
+        .lp-ai-message.user {
+            margin-left: auto;
+            background: #00ff66;
+            color: #07110b;
+            font-weight: 700;
+            border-bottom-right-radius: .35rem;
+        }
+
+        @media (max-width: 640px) {
+            #lpAiPanel {
+                right: 1rem;
+                bottom: 5.25rem;
+                width: calc(100vw - 2rem);
+                height: min(32rem, calc(100vh - 7.5rem));
+            }
         }
 
         /* Range Slider Styling */
@@ -354,12 +415,12 @@
 
             <!-- Call To Action -->
             <div class="hidden md:flex items-center space-x-4">
-                <a href="#team" data-cms-href="navigation.consultationHref" class="relative group px-6 py-2.5 rounded-xl font-bold text-sm overflow-hidden border border-brand-neon/40 text-brand-neon hover:text-black transition-all duration-300 shadow-neon-glow hover:shadow-neon-glow-lg">
+                <button type="button" onclick="toggleLandPulseAI()" class="relative group px-6 py-2.5 rounded-xl font-bold text-sm overflow-hidden border border-brand-neon/40 text-brand-neon hover:text-black transition-all duration-300 shadow-neon-glow hover:shadow-neon-glow-lg">
                     <span class="absolute inset-0 w-full h-full bg-brand-neon transition-all duration-300 transform -translate-x-full group-hover:translate-x-0 ease-out"></span>
                     <span class="relative flex items-center gap-2">
-                        <i class="fa-solid fa-crown text-xs"></i> <span data-cms-text="navigation.consultation">Book Consultation</span>
+                        <i class="fa-solid fa-sparkles text-xs"></i> <span data-cms-text="navigation.consultation">Chat with AI</span>
                     </span>
-                </a>
+                </button>
             </div>
 
             <!-- Mobile Menu Toggle -->
@@ -376,7 +437,9 @@
             <a href="#calculator" data-cms-href="navigation.calculatorHref" data-cms-text="navigation.calculator" class="mobile-link block text-base font-medium text-brand-muted hover:text-brand-neon">ROI Calculator</a>
             <a href="#advantages" data-cms-href="navigation.advantagesHref" data-cms-text="navigation.advantages" class="mobile-link block text-base font-medium text-brand-muted hover:text-brand-neon">Why Choose Us</a>
             <a href="#team" data-cms-href="navigation.teamHref" data-cms-text="navigation.team" class="mobile-link block text-base font-medium text-brand-muted hover:text-brand-neon">Our Team</a>
-            <a href="#team" data-cms-href="navigation.consultationHref" data-cms-text="navigation.consultation" class="mobile-link inline-block w-full text-center py-3 bg-brand-neon text-black font-bold rounded-xl shadow-neon-glow">Book Consultation</a>
+            <button type="button" onclick="toggleLandPulseAI(); document.getElementById('mobileMenu').classList.add('hidden')" class="mobile-link w-full text-center py-3 bg-brand-neon text-black font-bold rounded-xl shadow-neon-glow">
+                <i class="fa-solid fa-sparkles me-2"></i><span data-cms-text="navigation.consultation">Chat with AI</span>
+            </button>
         </div>
     </header>
 
@@ -702,11 +765,46 @@
 
     <!-- Quick Floating Action Buttons -->
     <div class="fixed bottom-6 right-6 z-40 flex flex-col gap-3">
+        <button id="lpAiToggle" type="button" onclick="toggleLandPulseAI()" aria-label="Open AI Chat" aria-expanded="false" class="w-14 h-14 rounded-full bg-brand-neon text-black flex items-center justify-center shadow-neon-glow hover:scale-110 transition-transform duration-300 relative group border-2 border-white/20">
+            <span class="text-base font-extrabold tracking-wider">AI</span>
+            <span class="absolute right-16 top-1/2 -translate-y-1/2 glass-card px-3 py-1.5 rounded-lg text-xs font-semibold text-white whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">Ask Land Pulse AI</span>
+        </button>
         <a id="floatingWhatsappLink" href="https://wa.me/923001234567" target="_blank" class="w-14 h-14 rounded-full bg-emerald-500 text-white flex items-center justify-center text-2xl shadow-emerald-glow hover:scale-110 transition-transform duration-300 relative group">
             <i class="fa-brands fa-whatsapp"></i>
             <span class="absolute right-16 top-1/2 -translate-y-1/2 glass-card px-3 py-1.5 rounded-lg text-xs font-semibold text-white whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">Chat on WhatsApp</span>
         </a>
     </div>
+
+    <section id="lpAiPanel" class="glass-panel rounded-3xl border border-brand-neon/25 overflow-hidden flex flex-col shadow-neon-glow-lg" aria-label="Land Pulse AI chat">
+        <header class="flex items-center gap-3 px-4 py-3 border-b border-white/10 bg-brand-card/95">
+            <div class="h-10 w-10 rounded-xl bg-brand-neon text-black flex items-center justify-center text-lg">
+                <i class="fa-solid fa-robot"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+                <h2 class="text-sm font-extrabold text-white">Land Pulse AI</h2>
+                <p class="text-[11px] text-brand-neon">Aapka VIP property assistant</p>
+            </div>
+            <button type="button" onclick="toggleLandPulseAI()" class="w-9 h-9 rounded-full border border-white/10 text-brand-muted hover:text-white hover:border-brand-neon" aria-label="Close chat">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </header>
+
+        <div id="lpAiMessages" class="flex-1 overflow-y-auto p-4 space-y-3" aria-live="polite">
+            <div class="lp-ai-message bot">Assalam-o-Alaikum! Main Land Pulse AI hoon. Aap property, location, budget, rent ya investment ke baare mein pooch sakte hain. 😊</div>
+            <div class="flex flex-wrap gap-2">
+                <button type="button" onclick="sendLpQuickReply('Aaj ki properties')" class="px-3 py-1.5 rounded-full border border-brand-neon/30 text-brand-neon text-xs hover:bg-brand-neon hover:text-black">Aaj ki properties</button>
+                <button type="button" onclick="sendLpQuickReply('Budget options')" class="px-3 py-1.5 rounded-full border border-brand-neon/30 text-brand-neon text-xs hover:bg-brand-neon hover:text-black">Budget options</button>
+                <button type="button" onclick="sendLpQuickReply('Rental property')" class="px-3 py-1.5 rounded-full border border-brand-neon/30 text-brand-neon text-xs hover:bg-brand-neon hover:text-black">Rental property</button>
+            </div>
+        </div>
+
+        <form id="lpAiForm" class="p-3 border-t border-white/10 bg-brand-card/95 flex gap-2" onsubmit="sendLpMessage(event)">
+            <input id="lpAiInput" type="text" autocomplete="off" maxlength="240" placeholder="Property, location ya budget likhein..." class="min-w-0 flex-1 rounded-xl bg-brand-dark border border-white/10 px-3 py-2.5 text-sm text-white placeholder:text-brand-muted focus:border-brand-neon focus:outline-none">
+            <button type="submit" aria-label="Send message" class="w-11 h-11 shrink-0 rounded-xl bg-brand-neon text-black flex items-center justify-center hover:brightness-110">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </form>
+    </section>
 
     <!-- Responsive Footer -->
     <footer class="bg-brand-card border-t border-white/10 pt-16 pb-8">
@@ -1487,6 +1585,133 @@
         }
 
         /* Property Inventory Loading */
+        function toggleLandPulseAI() {
+            const panel = document.getElementById("lpAiPanel");
+            const toggle = document.getElementById("lpAiToggle");
+            const open = !panel.classList.contains("is-open");
+            panel.classList.toggle("is-open", open);
+            toggle.setAttribute("aria-expanded", String(open));
+            if (open) document.getElementById("lpAiInput").focus();
+        }
+
+        function addLpMessage(text, sender = "bot") {
+            const messages = document.getElementById("lpAiMessages");
+            const bubble = document.createElement("div");
+            bubble.className = `lp-ai-message ${sender}`;
+            bubble.textContent = text;
+            messages.appendChild(bubble);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function sendLpQuickReply(text) {
+            document.getElementById("lpAiInput").value = text;
+            sendLpMessage({ preventDefault() {} });
+        }
+
+        async function sendLpMessage(event) {
+            event.preventDefault();
+            const input = document.getElementById("lpAiInput");
+            const text = input.value.trim();
+            if (!text) return;
+            addLpMessage(text, "user");
+            input.value = "";
+            const typing = document.createElement("div");
+            typing.className = "lp-ai-message bot";
+            typing.textContent = "AI jawab soch raha hai...";
+            const messages = document.getElementById("lpAiMessages");
+            messages.appendChild(typing);
+            messages.scrollTop = messages.scrollHeight;
+
+            try {
+                const response = await fetch("/.netlify/functions/ai-chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        message: text,
+                        properties: propertiesData.map(item => ({
+                            title: item.title,
+                            price: item.price,
+                            location: item.projectTitle,
+                            category: item.category,
+                            listingType: item.listingType,
+                            area: item.area,
+                            beds: item.beds,
+                            baths: item.baths,
+                            description: item.description
+                        })),
+                        projects: (window.premiumProjectsCache || []).map(item => ({
+                            title: item.title,
+                            location: item.location,
+                            priceRange: item.priceRange,
+                            badge: item.badge,
+                            description: item.description
+                        }))
+                    })
+                });
+                const payload = await response.json();
+                typing.remove();
+                if (!response.ok) throw new Error(payload.error || "AI jawab generate nahi ho saka.");
+                addLpMessage(payload.content, "bot");
+            } catch (error) {
+                typing.remove();
+                addLpMessage(getLpReply(text), "bot");
+                console.warn("Live AI chat unavailable:", error.message);
+            }
+        }
+
+        function getLpReply(message) {
+            const query = message.toLowerCase();
+
+            if (/\b(hello|hi|salam|assalam|hey)\b/.test(query)) {
+                return "Assalam-o-Alaikum! 😊 Koi property, budget, location ya rent ke baare mein bata dein. Main isi website ki current listings aur rates ke mutabiq guide kar doon ga.";
+            }
+
+            if (/rate|price|prize|cost|kitna|budget/.test(query)) {
+                const priced = propertiesData.filter(item => item.price && !/request/i.test(item.price));
+                const premiumProjects = (window.premiumProjectsCache || []).filter(item => item.priceRange && !/request|n\/a/i.test(item.priceRange));
+                if (priced.length) {
+                    const lines = priced.slice(0, 4).map(item => `• ${item.title} — ${item.price}`);
+                    if (premiumProjects.length) {
+                        lines.push(...premiumProjects.slice(0, 3).map(item => `• ${item.title} — ${item.priceRange}`));
+                    }
+                    return `VIP rate options:\n${lines.join("\n")}\n\nExact availability aur latest pre-launch discount ke liye listing par WhatsApp par pooch sakte hain.`;
+                }
+                return "Budget batayein—50 million se kam, 50–150 million, ya 150 million se zyada—main matching investment options dikha doon ga.";
+            }
+
+            if (/rent|rental|monthly|kiraye/.test(query)) {
+                const rentals = propertiesData.filter(item => item.listingType === "rent");
+                if (rentals.length) {
+                    return `Rental options:\n${rentals.slice(0, 4).map(item => `• ${item.title} — ${item.price} — ${item.projectTitle}`).join("\n")}`;
+                }
+                return "Rental inventory filhal sirf select listings tak available hai. Area aur monthly budget batayen to matching option shortlist kar sakte hain.";
+            }
+
+            if (/property|properties|listing|available|deal|investment|project/.test(query)) {
+                if (propertiesData.length) {
+                    return `Best current options:\n${propertiesData.slice(0, 5).map(item => `• ${item.title} — ${item.price} — ${item.projectTitle}`).join("\n")}\n\nKis location, budget ya property type mein interest hai?`;
+                }
+                return "Abhi listings load ho rahi hain ya inventory update mein hai. Thori dair baad dobara pooch lein.";
+            }
+
+            const matches = propertiesData.filter(item =>
+                `${item.title} ${item.projectTitle} ${item.category} ${item.description}`.toLowerCase().includes(query.replace(/[?!.]/g, "").trim())
+            ).slice(0, 4);
+
+            if (matches.length) {
+                return `Ye matching option mil gayi:\n${matches.map(item => `• ${item.title} — ${item.price} — ${item.projectTitle}`).join("\n")}`;
+            }
+
+            if (/location|area|where|kahan|lahore|islamabad|karachi|dubai/.test(query)) {
+                const locations = [...new Set(propertiesData.map(item => item.projectTitle).filter(Boolean))];
+                return locations.length
+                    ? `Available locations: ${locations.join(", ")}.\nBata dein kis area mein deal dekhni hai.`
+                    : "Aap preferred city ya area bata dein—main available inventory check kar ke dobata hoon.";
+            }
+
+            return "Bilkul! 😊 Main aap ko Land Pulse ki property listings, locations, prices aur investment options mein help kar sakta hoon. Property type, area aur budget likh dein.";
+        }
+
         async function loadPropertyInventory() {
             propertiesData.length = 0;
             try {
