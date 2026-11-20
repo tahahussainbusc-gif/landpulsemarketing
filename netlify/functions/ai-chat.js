@@ -16,8 +16,8 @@ exports.handler = async event => {
     return respond(405, { error: "Use POST to chat." });
   }
 
-  if (!process.env.GROQ_API_KEY && !process.env.OPENAI_API_KEY) {
-    return respond(503, { error: "AI chat is not configured. Netlify mein GROQ_API_KEY ya OPENAI_API_KEY set karein." });
+  if (!process.env.GEMINI_API_KEY && !process.env.GROQ_API_KEY && !process.env.OPENAI_API_KEY) {
+    return respond(503, { error: "AI chat is not configured. Netlify mein GEMINI_API_KEY set karein." });
   }
 
   let request;
@@ -51,6 +51,14 @@ exports.handler = async event => {
   ].join(" ");
 
   const providers = [];
+  if (process.env.GEMINI_API_KEY) {
+    providers.push({
+      name: "Gemini",
+      url: `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(process.env.GEMINI_MODEL || "gemini-2.5-flash")}:generateContent`,
+      key: process.env.GEMINI_API_KEY,
+      type: "gemini"
+    });
+  }
   if (process.env.GROQ_API_KEY) {
     providers.push({
       name: "Groq",
@@ -74,10 +82,16 @@ exports.handler = async event => {
       const response = await fetch(provider.url, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${provider.key}`,
+          ...(provider.type === "gemini"
+            ? { "x-goog-api-key": provider.key }
+            : { Authorization: `Bearer ${provider.key}` }),
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
+        body: JSON.stringify(provider.type === "gemini" ? {
+          systemInstruction: { parts: [{ text: systemPrompt }] },
+          contents: [{ role: "user", parts: [{ text: message }] }],
+          generationConfig: { temperature: 0.5, maxOutputTokens: 350 }
+        } : {
           model: provider.model,
           temperature: 0.5,
           max_tokens: 350,
@@ -103,7 +117,9 @@ exports.handler = async event => {
         continue;
       }
 
-      const content = result.choices?.[0]?.message?.content;
+      const content = provider.type === "gemini"
+        ? result.candidates?.[0]?.content?.parts?.map(part => part.text || "").join("")
+        : result.choices?.[0]?.message?.content;
       if (typeof content === "string" && content.trim()) {
         return respond(200, { content: content.trim() });
       }

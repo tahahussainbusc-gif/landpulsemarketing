@@ -63,8 +63,8 @@ exports.handler = async event => {
     return respond(405, { error: "Use POST to generate content." });
   }
 
-  if (!process.env.GROQ_API_KEY && !process.env.OPENAI_API_KEY) {
-    return respond(503, { error: "AI generation is not configured. Add GROQ_API_KEY or OPENAI_API_KEY in Netlify environment variables." });
+  if (!process.env.GEMINI_API_KEY && !process.env.GROQ_API_KEY && !process.env.OPENAI_API_KEY) {
+    return respond(503, { error: "AI generation is not configured. Add GEMINI_API_KEY in Netlify environment variables." });
   }
 
   let authenticated;
@@ -122,18 +122,30 @@ exports.handler = async event => {
   ].filter(Boolean).join(" ");
 
   let response;
+  const geminiConfigured = Boolean(process.env.GEMINI_API_KEY);
   try {
     const groqApiKey = process.env.GROQ_API_KEY;
     const groqConfigured = Boolean(groqApiKey);
-    response = await fetch(groqConfigured
-      ? "https://api.groq.com/openai/v1/chat/completions"
-      : "https://api.openai.com/v1/chat/completions", {
+    response = await fetch(geminiConfigured
+      ? `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(process.env.GEMINI_MODEL || "gemini-2.5-flash")}:generateContent`
+      : (groqConfigured
+        ? "https://api.groq.com/openai/v1/chat/completions"
+        : "https://api.openai.com/v1/chat/completions"), {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${groqConfigured ? groqApiKey : process.env.OPENAI_API_KEY}`,
+        ...(geminiConfigured
+          ? { "x-goog-api-key": process.env.GEMINI_API_KEY }
+          : { Authorization: `Bearer ${groqConfigured ? groqApiKey : process.env.OPENAI_API_KEY}` }),
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
+      body: JSON.stringify(geminiConfigured ? {
+        systemInstruction: { parts: [{ text: systemPrompt }] },
+        contents: [{ role: "user", parts: [{ text: `${instruction}${adminInstruction}\nDetails: ${JSON.stringify(details)}` }] }],
+        generationConfig: {
+          maxOutputTokens: request.field === "title" ? 80 : 300,
+          temperature: 0.6
+        }
+      } : {
         model: groqConfigured
           ? (process.env.GROQ_MODEL || "llama-3.3-70b-versatile")
           : (process.env.OPENAI_MODEL || "gpt-4o-mini"),
@@ -162,8 +174,12 @@ exports.handler = async event => {
     console.error("AI provider returned invalid JSON:", error.message);
     return respond(502, { error: "The AI service returned an invalid response. Please retry." });
   }
-  const content = result.choices && result.choices[0] &&
-    result.choices[0].message && result.choices[0].message.content;
+  const content = geminiConfigured
+    ? result.candidates && result.candidates[0] && result.candidates[0].content &&
+      result.candidates[0].content.parts && result.candidates[0].content.parts
+        .map(part => part.text || "").join("")
+    : result.choices && result.choices[0] &&
+      result.choices[0].message && result.choices[0].message.content;
   if (typeof content !== "string" || !content.trim()) {
     return respond(502, { error: "The AI service returned no content. Please retry." });
   }
