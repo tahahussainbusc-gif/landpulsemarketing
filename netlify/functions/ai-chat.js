@@ -16,8 +16,8 @@ exports.handler = async event => {
     return respond(405, { error: "Use POST to chat." });
   }
 
-  if (!process.env.GROQ_API_KEY) {
-    return respond(503, { error: "AI chat is not configured. GROQ_API_KEY deployment mein set karein." });
+  if (!process.env.GROQ_API_KEY && !process.env.OPENAI_API_KEY) {
+    return respond(503, { error: "AI chat is not configured. Netlify mein GROQ_API_KEY ya OPENAI_API_KEY set karein." });
   }
 
   let request;
@@ -50,46 +50,69 @@ exports.handler = async event => {
     `Current projects: ${JSON.stringify(projects)}`
   ].join(" ");
 
-  let response;
-  try {
-    response = await fetch(GROQ_API_URL, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: process.env.GROQ_MODEL || "llama-3.3-70b-versatile",
-        temperature: 0.5,
-        max_tokens: 350,
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: message }
-        ]
-      })
+  const providers = [];
+  if (process.env.GROQ_API_KEY) {
+    providers.push({
+      name: "Groq",
+      url: GROQ_API_URL,
+      key: process.env.GROQ_API_KEY,
+      model: process.env.GROQ_MODEL || "llama-3.3-70b-versatile"
     });
-  } catch (error) {
-    console.error("Groq chat request failed:", error.message);
-    return respond(502, { error: "AI service abhi reachable nahi hai." });
+  }
+  if (process.env.OPENAI_API_KEY) {
+    providers.push({
+      name: "OpenAI",
+      url: "https://api.openai.com/v1/chat/completions",
+      key: process.env.OPENAI_API_KEY,
+      model: process.env.OPENAI_MODEL || "gpt-4o-mini"
+    });
   }
 
-  if (!response.ok) {
-    const providerError = await response.text();
-    console.error(`Groq chat returned ${response.status}: ${providerError}`);
-    return respond(502, { error: "AI response abhi generate nahi ho saki." });
+  let lastError;
+  for (const provider of providers) {
+    try {
+      const response = await fetch(provider.url, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${provider.key}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: provider.model,
+          temperature: 0.5,
+          max_tokens: 350,
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: message }
+          ]
+        })
+      });
+
+      if (!response.ok) {
+        const providerError = await response.text();
+        lastError = `${provider.name} returned ${response.status}`;
+        console.error(`${lastError}: ${providerError}`);
+        continue;
+      }
+
+      let result;
+      try {
+        result = await response.json();
+      } catch {
+        lastError = `${provider.name} ne invalid response bheja`;
+        continue;
+      }
+
+      const content = result.choices?.[0]?.message?.content;
+      if (typeof content === "string" && content.trim()) {
+        return respond(200, { content: content.trim() });
+      }
+      lastError = `${provider.name} ne jawab nahi diya`;
+    } catch (error) {
+      lastError = `${provider.name} service reachable nahi thi`;
+      console.error(`${provider.name} chat request failed:`, error.message);
+    }
   }
 
-  let result;
-  try {
-    result = await response.json();
-  } catch {
-    return respond(502, { error: "AI service ne invalid response bheja." });
-  }
-
-  const content = result.choices?.[0]?.message?.content;
-  if (typeof content !== "string" || !content.trim()) {
-    return respond(502, { error: "AI service ne jawab nahi diya." });
-  }
-
-  return respond(200, { content: content.trim() });
+  return respond(502, { error: lastError || "AI service abhi jawab generate nahi kar saki." });
 };

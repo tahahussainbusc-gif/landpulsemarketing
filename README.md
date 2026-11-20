@@ -5,6 +5,10 @@ A real estate portal website for Sargodha offering property listings, search fil
 
 `netlify.toml` publishes the repository root, which includes the static site, `/admin/`, and the Netlify Function. Connect this repository to Netlify and deploy from the `main` branch. The deployment itself must be started in the Netlify account; it cannot be completed from this local project alone.
 
+## Live AI chat
+
+In the Netlify site settings, add `GROQ_API_KEY` (preferred) or `OPENAI_API_KEY` under **Environment variables**, then deploy again. Optional models are `GROQ_MODEL` and `OPENAI_MODEL`. If both keys are configured, chat uses Groq first and falls back to OpenAI if Groq fails.
+
 ## Firebase Admin
 
 The custom admin page is available at `/admin/`. It uses Firebase Email/Password Authentication, Firestore for content, and Firebase Storage for uploaded media.

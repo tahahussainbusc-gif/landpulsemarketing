@@ -1649,67 +1649,17 @@
                     })
                 });
                 const payload = await response.json();
-                typing.remove();
                 if (!response.ok) throw new Error(payload.error || "AI jawab generate nahi ho saka.");
+                if (typeof payload.content !== "string" || !payload.content.trim()) {
+                    throw new Error("AI service ne jawab nahi diya.");
+                }
+                typing.remove();
                 addLpMessage(payload.content, "bot");
             } catch (error) {
                 typing.remove();
-                addLpMessage(getLpReply(text), "bot");
-                console.warn("Live AI chat unavailable:", error.message);
+                console.warn("Live AI chat unavailable:", error);
+                addLpMessage("Maazrat, live AI abhi jawab nahi de saka. Thori dair baad dobara koshish karein ya WhatsApp par rabta karein.", "bot");
             }
-        }
-
-        function getLpReply(message) {
-            const query = message.toLowerCase();
-
-            if (/\b(hello|hi|salam|assalam|hey)\b/.test(query)) {
-                return "Assalam-o-Alaikum! 😊 Koi property, budget, location ya rent ke baare mein bata dein. Main isi website ki current listings aur rates ke mutabiq guide kar doon ga.";
-            }
-
-            if (/rate|price|prize|cost|kitna|budget/.test(query)) {
-                const priced = propertiesData.filter(item => item.price && !/request/i.test(item.price));
-                const premiumProjects = (window.premiumProjectsCache || []).filter(item => item.priceRange && !/request|n\/a/i.test(item.priceRange));
-                if (priced.length) {
-                    const lines = priced.slice(0, 4).map(item => `• ${item.title} — ${item.price}`);
-                    if (premiumProjects.length) {
-                        lines.push(...premiumProjects.slice(0, 3).map(item => `• ${item.title} — ${item.priceRange}`));
-                    }
-                    return `VIP rate options:\n${lines.join("\n")}\n\nExact availability aur latest pre-launch discount ke liye listing par WhatsApp par pooch sakte hain.`;
-                }
-                return "Budget batayein—50 million se kam, 50–150 million, ya 150 million se zyada—main matching investment options dikha doon ga.";
-            }
-
-            if (/rent|rental|monthly|kiraye/.test(query)) {
-                const rentals = propertiesData.filter(item => item.listingType === "rent");
-                if (rentals.length) {
-                    return `Rental options:\n${rentals.slice(0, 4).map(item => `• ${item.title} — ${item.price} — ${item.projectTitle}`).join("\n")}`;
-                }
-                return "Rental inventory filhal sirf select listings tak available hai. Area aur monthly budget batayen to matching option shortlist kar sakte hain.";
-            }
-
-            if (/property|properties|listing|available|deal|investment|project/.test(query)) {
-                if (propertiesData.length) {
-                    return `Best current options:\n${propertiesData.slice(0, 5).map(item => `• ${item.title} — ${item.price} — ${item.projectTitle}`).join("\n")}\n\nKis location, budget ya property type mein interest hai?`;
-                }
-                return "Abhi listings load ho rahi hain ya inventory update mein hai. Thori dair baad dobara pooch lein.";
-            }
-
-            const matches = propertiesData.filter(item =>
-                `${item.title} ${item.projectTitle} ${item.category} ${item.description}`.toLowerCase().includes(query.replace(/[?!.]/g, "").trim())
-            ).slice(0, 4);
-
-            if (matches.length) {
-                return `Ye matching option mil gayi:\n${matches.map(item => `• ${item.title} — ${item.price} — ${item.projectTitle}`).join("\n")}`;
-            }
-
-            if (/location|area|where|kahan|lahore|islamabad|karachi|dubai/.test(query)) {
-                const locations = [...new Set(propertiesData.map(item => item.projectTitle).filter(Boolean))];
-                return locations.length
-                    ? `Available locations: ${locations.join(", ")}.\nBata dein kis area mein deal dekhni hai.`
-                    : "Aap preferred city ya area bata dein—main available inventory check kar ke dobata hoon.";
-            }
-
-            return "Bilkul! 😊 Main aap ko Land Pulse ki property listings, locations, prices aur investment options mein help kar sakta hoon. Property type, area aur budget likh dein.";
         }
 
         async function loadPropertyInventory() {
