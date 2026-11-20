@@ -5,6 +5,10 @@ A real estate portal website for Sargodha offering property listings, search fil
 
 `netlify.toml` publishes the repository root, which includes the static site, `/admin/`, and the Netlify Function. Connect this repository to Netlify and deploy from the `main` branch. The deployment itself must be started in the Netlify account; it cannot be completed from this local project alone.
 
+## Gemini AI
+
+In Netlify site settings, add `GEMINI_API_KEY` under **Environment variables**, then redeploy. The chat and CMS content generator use Gemini (`gemini-2.5-flash` by default); set `GEMINI_MODEL` to choose another Gemini model. Keep the API key in Netlify and do not add it to browser code. Chat can fall back to `GROQ_API_KEY` or `OPENAI_API_KEY` if Gemini is unavailable. Without a Gemini key, CMS copy generation continues to use Groq or OpenAI.
+
 ## Firebase Admin
 
 The custom admin page is available at `/admin/`. It uses Firebase Email/Password Authentication, Firestore for content, and Firebase Storage for uploaded media.
