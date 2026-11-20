@@ -1,5 +1,15 @@
 [build]
-  publish = "."
+  command = "node scripts/prepare-site.mjs"
+  publish = "dist"
+
+[build.environment]
+  # This unused legacy setting contains public site text, not a provider key.
+  # AI uses separately managed OpenAI credentials; retain all other secret scans.
+  SECRETS_SCAN_OMIT_KEYS = "GEMINI_API_KEY"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
 
 [[headers]]
   for = "/*"

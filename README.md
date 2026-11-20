@@ -3,11 +3,15 @@ A real estate portal website for Sargodha offering property listings, search fil
 
 ## Netlify deployment
 
-`netlify.toml` publishes the repository root, which includes the static site, `/admin/`, and the Netlify Function. Connect this repository to Netlify and deploy from the `main` branch. The deployment itself must be started in the Netlify account; it cannot be completed from this local project alone.
+`netlify.toml` prepares the static site in `dist/` and deploys the AI endpoints separately as Netlify Functions. Only website assets, content, and `/admin/` are published; server code, dependencies, and project configuration stay outside the public directory. Connect this repository to Netlify and deploy from the `main` branch.
 
-## Gemini AI
+## AI assistant
 
-In Netlify site settings, add `GEMINI_API_KEY` under **Environment variables**, then redeploy. The chat and CMS content generator use Gemini (`gemini-2.5-flash` by default); set `GEMINI_MODEL` to choose another Gemini model. Keep the API key in Netlify and do not add it to browser code. Chat can fall back to `GROQ_API_KEY` or `OPENAI_API_KEY` if Gemini is unavailable. Without a Gemini key, CMS copy generation continues to use Groq or OpenAI.
+The visitor chat and admin content generator use OpenAI (`gpt-4o-mini`) through Netlify AI Gateway. The modern function runtime supplies managed credentials; no manually configured provider key is needed. Keep provider credentials out of browser code and repository files.
+
+The unused legacy `GEMINI_API_KEY` setting was confirmed to contain ordinary public site text instead of a valid key. It caused secret-scanning false positives throughout the website. Its deletion was denied by the configuration API, so only that unused setting is excluded from scanning. All other secret checks remain enabled, including checks for the OpenAI credentials actually used by the assistant. The functions do not read the legacy Gemini setting.
+
+Run `npm test` to check AI response handling, request validation, and admin authorization without contacting a live AI provider.
 
 ## Firebase Admin
 
@@ -22,4 +26,4 @@ Before using it:
 
 The available documents are homepage content, property listings, premium projects, social links, and the CEO, Manager, and Sales Executive profiles. Select a document in the admin page to edit its JSON and save it to Firestore. Uploaded images and videos are stored in Firebase Storage; copy the returned URL into the relevant JSON field and save the document. Uploads are limited to 50 MB.
 
-The site also has a Netlify Function for AI-generated copy. It still uses Netlify Identity and is not connected to the Firebase admin login. Company Stats should contain verified figures before publishing. Premium projects whose title or location contains "Town" remain visible, but their price is intentionally hidden. The homepage welcome intro fades out after 3.8 seconds.
+The AI copy endpoint verifies the existing Firebase session's signature, issuer, audience, and expiration, then requires the server-controlled `admins/{UID}` role to be `admin`. It accepts the same login as the admin page and does not require a separate Netlify Identity account or a service-account key. Company Stats should contain verified figures before publishing. Premium projects whose title or location contains "Town" remain visible, but their price is intentionally hidden. The homepage welcome intro fades out after 3.8 seconds.

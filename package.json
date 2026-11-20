@@ -1,0 +1,15 @@
+{
+  "name": "landpulsemarketing",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "jose": "^6.2.18",
+    "openai": "^7.62.0"
+  }
+}
