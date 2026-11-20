@@ -3,92 +3,262 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Land Pulse Admin</title>
+    <meta name="theme-color" content="#0b1210">
+    <title>Land Pulse CMS</title>
     <style>
-      :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #0a0d0f; color: #f8fafc; }
+      :root {
+        color-scheme: dark;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #0b1210;
+        color: #edf5ef;
+        font-synthesis: none;
+        --surface: #111b17;
+        --surface-raised: #17231e;
+        --border: #293a31;
+        --muted: #9aada1;
+        --green: #64e69a;
+        --green-dark: #143b27;
+        --danger: #ff8585;
+      }
       * { box-sizing: border-box; }
-      body { margin: 0; min-height: 100vh; padding: 32px 16px; }
-      main { width: min(920px, 100%); margin: 0 auto; }
-      .card { padding: 24px; border: 1px solid #263238; border-radius: 16px; background: #12181b; }
-      h1, h2 { margin-top: 0; }
-      p { color: #cbd5e1; line-height: 1.55; }
-      label { display: block; margin: 16px 0 6px; font-weight: 650; }
-      input, select, textarea, button { width: 100%; padding: 12px; border: 1px solid #475569; border-radius: 8px; background: #0a0d0f; color: #f8fafc; font: inherit; }
-      textarea { min-height: 420px; resize: vertical; font: 13px/1.5 Consolas, monospace; }
-      button { width: auto; border: 0; background: #00ff66; color: #07110a; font-weight: 750; cursor: pointer; }
-      button:disabled { cursor: wait; opacity: .6; }
-      .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
-      .secondary { background: #263238; color: #f8fafc; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          radial-gradient(ellipse at 86% -10%, rgba(52, 126, 78, .17), transparent 38rem),
+          #0b1210;
+      }
+      button, input, select, textarea { font: inherit; }
+      button { cursor: pointer; }
+      button:disabled { cursor: wait; opacity: .7; }
       .hidden { display: none !important; }
-      #status { min-height: 24px; margin: 12px 0; }
-      #status[data-kind="error"] { color: #fca5a5; }
-      #status[data-kind="success"] { color: #86efac; }
-      .media-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: end; }
-      .help { font-size: .9rem; }
-      @media (max-width: 600px) {
-        .card { padding: 18px; }
-        .media-row { grid-template-columns: 1fr; }
+      .app-shell { width: min(1120px, calc(100% - 36px)); margin: 0 auto; padding: 38px 0 64px; }
+      .brand-row { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+      .brand-mark {
+        display: grid; width: 42px; height: 42px; place-items: center; border-radius: 14px;
+        color: #092013; background: var(--green); font-size: 19px; font-weight: 900;
+        box-shadow: 0 8px 26px rgba(100, 230, 154, .16);
+      }
+      .brand-name { margin: 0; font-size: 16px; font-weight: 800; letter-spacing: .01em; }
+      .brand-caption { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
+      .panel {
+        border: 1px solid var(--border); border-radius: 22px; background: rgba(17, 27, 23, .95);
+        box-shadow: 0 24px 80px rgba(0, 0, 0, .22);
+      }
+      .auth-panel { width: min(470px, 100%); margin: 7vh auto 0; padding: 34px; }
+      .auth-panel h1 { margin: 0; font-size: 27px; letter-spacing: -.035em; }
+      .auth-panel > p { color: var(--muted); line-height: 1.65; }
+      .topbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-bottom: 28px; }
+      .topbar h1 { margin: 0; font-size: clamp(26px, 4vw, 36px); letter-spacing: -.045em; }
+      .topbar p { margin: 8px 0 0; color: var(--muted); line-height: 1.6; }
+      .user-pill {
+        display: inline-flex; align-items: center; gap: 8px; max-width: 100%; margin-top: 15px;
+        padding: 8px 11px; border: 1px solid var(--border); border-radius: 999px;
+        color: #b6c8bc; font-size: 12px; overflow-wrap: anywhere;
+      }
+      .user-pill::before { content: ""; width: 7px; height: 7px; flex: 0 0 auto; border-radius: 50%; background: var(--green); }
+      .panel-content { padding: 25px; }
+      .toolbar {
+        display: grid; grid-template-columns: minmax(210px, 1fr) auto; gap: 18px; align-items: end;
+        padding: 19px; border: 1px solid var(--border); border-radius: 16px; background: #0e1713;
+      }
+      .toolbar label, .field-label { display: block; margin: 0 0 8px; color: #dce8df; font-size: 13px; font-weight: 700; }
+      .toolbar-actions, .button-row { display: flex; flex-wrap: wrap; gap: 9px; }
+      .toolbar-actions { justify-content: flex-end; }
+      input:not([type="checkbox"]):not([type="file"]), select, textarea {
+        display: block; width: 100%; min-width: 0; padding: 11px 12px; border: 1px solid #35483c;
+        border-radius: 10px; outline: none; background: #0b1310; color: #edf5ef; transition: border-color .18s, box-shadow .18s;
+      }
+      input:focus, select:focus, textarea:focus { border-color: #54c783 !important; box-shadow: 0 0 0 3px rgba(84, 199, 131, .13); }
+      select { min-height: 44px; }
+      textarea { min-height: 130px; resize: vertical; line-height: 1.6; }
+      .button {
+        display: inline-flex; min-height: 42px; align-items: center; justify-content: center; gap: 8px;
+        padding: 10px 14px; border: 1px solid transparent; border-radius: 10px;
+        background: var(--green); color: #092013; font-size: 13px; font-weight: 800;
+        transition: transform .18s, filter .18s, border-color .18s, background .18s;
+      }
+      .button:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.07); }
+      .button:active:not(:disabled) { transform: translateY(0); }
+      .button.secondary { border-color: #34483b; background: #1a2921; color: #e3eee6; }
+      .button.ghost { border-color: #34483b; background: transparent; color: #c3d0c7; }
+      .button.danger { border-color: rgba(255, 133, 133, .2); background: rgba(108, 38, 38, .25); color: #ffaaaa; }
+      .button.small { min-height: 34px; padding: 7px 10px; font-size: 12px; }
+      .spinner {
+        width: 14px; height: 14px; flex: 0 0 auto; border: 2px solid currentColor; border-right-color: transparent;
+        border-radius: 50%; animation: spin .7s linear infinite;
+      }
+      .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 27px 2px 13px; }
+      .section-heading h2 { margin: 0; font-size: 17px; letter-spacing: -.015em; }
+      .section-heading p { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
+      .field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
+      .field-card, .object-card, .array-card {
+        min-width: 0; padding: 16px; border: 1px solid var(--border); border-radius: 14px;
+        background: var(--surface);
+      }
+      .field-card.wide, .object-card.wide, .array-card.wide { grid-column: 1 / -1; }
+      .field-card textarea { min-height: 116px; }
+      .field-note { margin: 7px 0 0; color: #82968a; font-size: 11px; line-height: 1.5; }
+      .object-card { background: #0f1914; }
+      .object-card > .section-heading { margin: 0 0 13px; }
+      .object-card .field-grid { gap: 11px; }
+      .array-card { margin-bottom: 11px; background: #0f1914; }
+      .array-card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+      .array-card-title { margin: 0; color: #dce8df; font-size: 12px; font-weight: 750; }
+      .array-card .field-grid { gap: 11px; }
+      .empty-list { margin: 0 0 12px; padding: 18px; border: 1px dashed #34483b; border-radius: 12px; color: var(--muted); text-align: center; font-size: 12px; }
+      .toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 30px; }
+      .toggle-copy { color: #dce8df; font-size: 13px; font-weight: 700; }
+      .switch { position: relative; display: inline-flex; width: 48px; height: 27px; flex: 0 0 auto; cursor: pointer; }
+      .switch input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+      .switch-track { position: absolute; inset: 0; border-radius: 99px; background: #35433a; transition: background .2s; }
+      .switch-track::after {
+        content: ""; position: absolute; top: 4px; left: 4px; width: 19px; height: 19px;
+        border-radius: 50%; background: #dbe5dd; transition: transform .2s cubic-bezier(.2,.8,.2,1), background .2s;
+      }
+      .switch input:checked + .switch-track { background: #27894c; }
+      .switch input:checked + .switch-track::after { transform: translateX(21px); background: #fff; }
+      .switch input:focus-visible + .switch-track { outline: 3px solid rgba(100, 230, 154, .3); }
+      .media-preview {
+        display: grid; min-height: 108px; place-items: center; overflow: hidden; margin: 0 0 12px;
+        border: 1px solid #2c4034; border-radius: 11px; background: #0a110d; color: #71877a;
+      }
+      .media-preview img { display: block; width: 100%; max-height: 230px; object-fit: cover; }
+      .media-preview video { display: block; width: 100%; max-height: 260px; background: #050806; }
+      .media-empty { padding: 20px 10px; font-size: 12px; }
+      .drop-zone {
+        display: grid; min-height: 90px; place-items: center; margin: 11px 0; padding: 15px;
+        border: 1px dashed #45634e; border-radius: 11px; background: rgba(58, 112, 71, .08);
+        color: #b8c9bc; text-align: center; font-size: 12px; transition: border-color .18s, background .18s;
+      }
+      .drop-zone.drag-over { border-color: var(--green); background: rgba(58, 170, 91, .15); }
+      .drop-zone strong { display: block; margin-bottom: 5px; color: #e8f4eb; font-size: 13px; }
+      .drop-zone input { display: none; }
+      .progress-wrap { margin-top: 12px; }
+      .progress-meta { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 7px; color: #b9c9bd; font-size: 11px; font-variant-numeric: tabular-nums; }
+      .progress-track { height: 7px; overflow: hidden; border-radius: 99px; background: #26352c; }
+      .progress-fill { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #39b86a, #8af3ad); transition: width .22s ease-out; }
+      .upload-complete { margin: 10px 0 0; color: #81efa4; font-size: 12px; font-weight: 750; animation: check-pop .4s cubic-bezier(.2,.8,.2,1) both; }
+      .upload-complete .check { display: inline-grid; width: 21px; height: 21px; place-items: center; margin-right: 5px; border-radius: 50%; background: rgba(62, 194, 104, .18); }
+      .footer-actions { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 21px; padding-top: 19px; border-top: 1px solid var(--border); }
+      .footer-actions p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+      .status { min-height: 18px; margin: 12px 2px 0; color: var(--muted); font-size: 12px; }
+      .status[data-kind="error"] { color: var(--danger); }
+      .status[data-kind="success"] { color: #81efa4; }
+      #toastRegion { position: fixed; z-index: 20; top: 20px; right: 20px; display: grid; gap: 10px; width: min(360px, calc(100% - 40px)); }
+      .toast {
+        display: flex; align-items: center; gap: 11px; padding: 14px 16px; border: 1px solid #356747;
+        border-radius: 13px; background: #15291d; color: #dff8e6; box-shadow: 0 15px 40px rgba(0,0,0,.4);
+        animation: toast-in .3s cubic-bezier(.2,.8,.2,1) both;
+      }
+      .toast.error { border-color: #774141; background: #2a1717; color: #ffe2e2; }
+      .toast-icon { display: grid; width: 25px; height: 25px; flex: 0 0 auto; place-items: center; border-radius: 50%; background: rgba(100, 230, 154, .14); color: var(--green); font-weight: 900; }
+      .toast.error .toast-icon { background: rgba(255, 133, 133, .14); color: var(--danger); }
+      .skeleton { overflow: hidden; position: relative; background: #1b2921; }
+      .skeleton::after {
+        content: ""; position: absolute; inset: 0; transform: translateX(-100%);
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,.07), transparent);
+        animation: shimmer 1.45s infinite;
+      }
+      .skeleton-line { height: 15px; margin: 13px 0; border-radius: 7px; }
+      .skeleton-line.short { width: 38%; }
+      .skeleton-line.long { width: 82%; }
+      .skeleton-box { height: 96px; border-radius: 12px; }
+      .editor-enter { animation: editor-in .35s ease-out both; }
+      #adminPanel:not(.hidden), #loginPanel:not(.hidden) { animation: editor-in .35s ease-out both; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      @keyframes shimmer { to { transform: translateX(100%); } }
+      @keyframes editor-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes toast-in { from { opacity: 0; transform: translateX(18px) scale(.98); } to { opacity: 1; transform: translateX(0) scale(1); } }
+      @keyframes toast-out { to { opacity: 0; transform: translateX(14px); } }
+      @keyframes check-pop { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: scale(1); } }
+      @media (max-width: 740px) {
+        .app-shell { width: min(100% - 24px, 620px); padding-top: 22px; }
+        .panel-content { padding: 16px; }
+        .toolbar { grid-template-columns: 1fr; }
+        .toolbar-actions { justify-content: flex-start; }
+        .field-grid { grid-template-columns: 1fr; }
+        .field-card.wide, .object-card.wide, .array-card.wide { grid-column: auto; }
+      }
+      @media (max-width: 480px) {
+        .topbar { align-items: flex-start; }
+        .topbar > .button { padding: 9px 10px; }
+        .footer-actions { align-items: stretch; flex-direction: column-reverse; }
+        .footer-actions .button { width: 100%; }
+        .auth-panel { padding: 24px; }
+        .toolbar-actions .button { flex: 1; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
       }
     </style>
   </head>
   <body>
-    <main>
-      <section id="authLoading" class="card" role="status" aria-live="polite">
-        <p>Checking Firebase Authentication...</p>
+    <div id="toastRegion" aria-live="polite" aria-atomic="false"></div>
+    <main class="app-shell">
+      <div class="brand-row">
+        <div class="brand-mark" aria-hidden="true">L</div>
+        <div><p class="brand-name">LAND PULSE</p><p class="brand-caption">CONTENT STUDIO</p></div>
+      </div>
+
+      <section id="authLoading" class="panel auth-panel" role="status" aria-live="polite">
+        <div class="skeleton skeleton-line short"></div><div class="skeleton skeleton-line long"></div><div class="skeleton skeleton-box"></div>
       </section>
 
-      <section id="loginPanel" class="card hidden">
-        <h1>Land Pulse Admin</h1>
-        <p>Firebase account se sign in karein. Sirf approved admin accounts ko access milega.</p>
+      <section id="loginPanel" class="panel auth-panel hidden">
+        <h1>Welcome back</h1>
+        <p>Sign in with an approved Firebase admin account to manage your live website.</p>
         <form id="loginForm">
-          <label for="email">Email</label>
+          <label class="field-label" for="email">Email</label>
           <input id="email" type="email" autocomplete="username" required>
-          <label for="password">Password</label>
+          <label class="field-label" for="password" style="margin-top:16px">Password</label>
           <input id="password" type="password" autocomplete="current-password" required>
-          <div class="actions"><button id="loginButton" type="submit">Sign in</button></div>
+          <div class="button-row" style="margin-top:19px"><button id="loginButton" class="button" type="submit">Sign in</button></div>
         </form>
-        <p id="status" role="status" aria-live="polite"></p>
+        <p id="status" class="status" role="status" aria-live="polite"></p>
       </section>
 
-      <section id="adminPanel" class="card hidden">
-        <div class="actions" style="justify-content:space-between;align-items:center;margin-top:0">
-          <h1 style="margin:0">Content Manager</h1>
-          <button id="logoutButton" class="secondary" type="button">Sign out</button>
-        </div>
-        <p id="signedInUser"></p>
-        <p class="help">Public website content sirf Firestore se padhti hai. Pehli baar existing JSON content import karein; uske baad edits Firestore mein save honge.</p>
-
-        <label for="documentSelect">Content document</label>
-        <select id="documentSelect">
-          <option value="site">Homepage content</option>
-          <option value="properties">Property listings</option>
-          <option value="premium-projects">Premium projects</option>
-          <option value="social-links">Social links</option>
-          <option value="team-ceo">CEO profile</option>
-          <option value="team-manager">Manager profile</option>
-          <option value="team-sales-executive">Sales executive profile</option>
-        </select>
-        <div class="actions">
-          <button id="importButton" class="secondary" type="button">Import missing JSON documents</button>
-          <button id="loadButton" class="secondary" type="button">Reload</button>
-          <button id="saveButton" type="button">Save content</button>
-        </div>
-        <label for="contentEditor">JSON content</label>
-        <textarea id="contentEditor" spellcheck="false" aria-label="JSON content"></textarea>
-
-        <h2 style="margin:24px 0 0">Upload media</h2>
-        <p class="help">Image/video Firebase Storage par upload hoga. Download URL copy karke JSON ke relevant image, photo, ya video field mein paste karein. Maximum 50 MB.</p>
-        <div class="media-row">
+      <section id="adminPanel" class="hidden">
+        <header class="topbar">
           <div>
-            <label for="mediaFile">Image or video</label>
-            <input id="mediaFile" type="file" accept="image/*,video/*">
+            <h1>Content Studio</h1>
+            <p>Edit and publish the content that powers your website.</p>
+            <div id="signedInUser" class="user-pill"></div>
           </div>
-          <button id="uploadButton" type="button">Upload media</button>
+          <button id="logoutButton" class="button secondary" type="button">Sign out</button>
+        </header>
+
+        <div class="panel panel-content">
+          <div class="toolbar">
+            <div>
+              <label for="documentSelect">Choose a content document</label>
+              <select id="documentSelect">
+                <option value="site">Homepage content</option>
+                <option value="properties">Property listings</option>
+                <option value="premium-projects">Premium projects</option>
+                <option value="social-links">Social links</option>
+                <option value="team-ceo">CEO profile</option>
+                <option value="team-manager">Manager profile</option>
+                <option value="team-sales-executive">Sales executive profile</option>
+              </select>
+            </div>
+            <div class="toolbar-actions">
+              <button id="importButton" class="button secondary" type="button">Import missing JSON documents</button>
+              <button id="loadButton" class="button ghost" type="button">Reload</button>
+            </div>
+          </div>
+
+          <div class="section-heading">
+            <div><h2 id="editorTitle">Homepage content</h2><p>Changes are published to the live website when saved.</p></div>
+          </div>
+          <div id="contentEditor" aria-live="polite"></div>
+
+          <div class="footer-actions">
+            <p>Images and videos upload directly to Firebase Storage and attach to their selected field.</p>
+            <button id="saveButton" class="button" type="button">Save &amp; publish</button>
+          </div>
+          <p id="adminStatus" class="status" role="status" aria-live="polite"></p>
         </div>
-        <label for="mediaUrl">Uploaded media URL</label>
-        <input id="mediaUrl" type="url" readonly>
-        <div class="actions"><button id="copyUrlButton" class="secondary" type="button">Copy URL</button></div>
-        <p id="adminStatus" role="status" aria-live="polite"></p>
       </section>
     </main>
 
@@ -112,7 +282,7 @@
         getDownloadURL,
         getStorage,
         ref,
-        uploadBytes
+        uploadBytesResumable
       } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-storage.js";
 
       const firebaseConfig = {
@@ -138,6 +308,15 @@
         "team-manager": "/content/team/manager.json",
         "team-sales-executive": "/content/team/sales-executive.json"
       };
+      const documentTitles = {
+        site: "Homepage content",
+        properties: "Property listings",
+        "premium-projects": "Premium projects",
+        "social-links": "Social links",
+        "team-ceo": "CEO profile",
+        "team-manager": "Manager profile",
+        "team-sales-executive": "Sales executive profile"
+      };
       const loginPanel = document.getElementById("loginPanel");
       const adminPanel = document.getElementById("adminPanel");
       const authLoading = document.getElementById("authLoading");
@@ -146,10 +325,41 @@
       const editor = document.getElementById("contentEditor");
       let accessDenied = false;
       let authCheckId = 0;
+      let currentContent = null;
+      let toastTimer;
 
       function setStatus(element, message, kind) {
         element.textContent = message;
         element.dataset.kind = kind || "info";
+      }
+
+      function notify(message, kind) {
+        const toast = document.createElement("div");
+        toast.className = `toast${kind === "error" ? " error" : ""}`;
+        const icon = document.createElement("span");
+        icon.className = "toast-icon";
+        icon.textContent = kind === "error" ? "!" : "✓";
+        const text = document.createElement("span");
+        text.textContent = message;
+        toast.append(icon, text);
+        document.getElementById("toastRegion").append(toast);
+        window.setTimeout(() => {
+          toast.style.animation = "toast-out .22s ease-in both";
+          window.setTimeout(() => toast.remove(), 240);
+        }, 3800);
+      }
+
+      function setButtonLoading(button, loading, label) {
+        button.disabled = loading;
+        if (loading) {
+          button.replaceChildren();
+          const spinner = document.createElement("span");
+          spinner.className = "spinner";
+          spinner.setAttribute("aria-hidden", "true");
+          button.append(spinner, document.createTextNode(label || "Working..."));
+        } else if (label) {
+          button.textContent = label;
+        }
       }
 
       function setAuthenticatedView(user) {
@@ -172,13 +382,439 @@
         }
       }
 
+      function humanize(key) {
+        return key
+          .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+          .replace(/[_-]+/g, " ")
+          .replace(/\b\w/g, character => character.toUpperCase());
+      }
+
+      function isRecord(value) {
+        return value !== null && typeof value === "object" && !Array.isArray(value);
+      }
+
+      function isMediaField(key) {
+        return /^(photo|photos|image|images|introvideo|video)$/i.test(key);
+      }
+
+      function isVideoField(key, value) {
+        return /video/i.test(key) || /\.(mp4|webm|mov|m4v)(?:[?#].*)?$/i.test(String(value || ""));
+      }
+
+      function isLongText(key, value) {
+        return /bio|description|quote|content|message|fallback|copyright/i.test(key) ||
+          (typeof value === "string" && value.length > 110);
+      }
+
+      function makeFieldCard(key, value, setter, options) {
+        const settings = options || {};
+        const card = document.createElement("div");
+        card.className = `field-card${settings.wide || isMediaField(key) || isLongText(key, value) ? " wide" : ""}`;
+        const label = humanize(key);
+
+        if (typeof value === "boolean") {
+          const row = document.createElement("div");
+          row.className = "toggle-row";
+          const copy = document.createElement("span");
+          copy.className = "toggle-copy";
+          copy.textContent = label;
+          const switchLabel = document.createElement("label");
+          switchLabel.className = "switch";
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.checked = value;
+          checkbox.setAttribute("aria-label", label);
+          const track = document.createElement("span");
+          track.className = "switch-track";
+          checkbox.addEventListener("change", () => setter(checkbox.checked));
+          switchLabel.append(checkbox, track);
+          row.append(copy, switchLabel);
+          card.append(row);
+          return card;
+        }
+
+        const fieldLabel = document.createElement("label");
+        fieldLabel.className = "field-label";
+        fieldLabel.textContent = label;
+        card.append(fieldLabel);
+
+        if (isMediaField(key)) {
+          renderMediaField(card, key, value, setter, fieldLabel);
+          return card;
+        }
+
+        if (isLongText(key, value)) {
+          const textarea = document.createElement("textarea");
+          textarea.value = value == null ? "" : String(value);
+          textarea.setAttribute("aria-label", label);
+          textarea.addEventListener("input", () => setter(textarea.value));
+          card.append(textarea);
+          return card;
+        }
+
+        const input = document.createElement("input");
+        const initialValue = value == null ? "" : value;
+        input.type = typeof value === "number" ? "number" : /email/i.test(key) ? "email" : /phone|whatsapp/i.test(key) ? "tel" : "text";
+        input.value = String(initialValue);
+        input.setAttribute("aria-label", label);
+        if (typeof value === "number") input.step = "any";
+        input.addEventListener("input", () => {
+          setter(typeof value === "number" ? (input.value === "" ? 0 : Number(input.value)) : input.value);
+        });
+        card.append(input);
+        return card;
+      }
+
+      function renderMediaField(card, key, value, setter, fieldLabel) {
+        const preview = document.createElement("div");
+        preview.className = "media-preview";
+        const urlInput = document.createElement("input");
+        urlInput.type = "url";
+        urlInput.value = value == null ? "" : String(value);
+        urlInput.placeholder = "Paste a media URL or upload a file";
+        urlInput.setAttribute("aria-label", `${fieldLabel.textContent} URL`);
+        urlInput.addEventListener("input", () => {
+          setter(urlInput.value);
+          updatePreview();
+        });
+
+        const dropZone = document.createElement("label");
+        dropZone.className = "drop-zone";
+        const dropCopy = document.createElement("span");
+        const dropTitle = document.createElement("strong");
+        dropTitle.textContent = "Drop an image or video here";
+        const dropHint = document.createElement("span");
+        dropHint.textContent = "or click to choose a file · 50 MB max";
+        dropCopy.append(dropTitle, dropHint);
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = "image/*,video/*";
+        dropZone.append(dropCopy, fileInput);
+
+        const progressWrap = document.createElement("div");
+        progressWrap.className = "progress-wrap hidden";
+        const progressMeta = document.createElement("div");
+        progressMeta.className = "progress-meta";
+        const progressPercent = document.createElement("span");
+        progressPercent.textContent = "0%";
+        const progressBytes = document.createElement("span");
+        progressBytes.textContent = "0 MB / 0 MB";
+        progressMeta.append(progressPercent, progressBytes);
+        const progressTrack = document.createElement("div");
+        progressTrack.className = "progress-track";
+        const progressFill = document.createElement("div");
+        progressFill.className = "progress-fill";
+        progressTrack.append(progressFill);
+        progressWrap.append(progressMeta, progressTrack);
+
+        const complete = document.createElement("p");
+        complete.className = "upload-complete hidden";
+        const uploadButton = document.createElement("button");
+        uploadButton.className = "button secondary small";
+        uploadButton.type = "button";
+        uploadButton.textContent = "Upload to this field";
+        uploadButton.addEventListener("click", () => fileInput.click());
+        fileInput.addEventListener("change", () => {
+          const file = fileInput.files && fileInput.files[0];
+          if (file) uploadFile(file, uploadButton, urlInput, key, setter, progressWrap, progressPercent, progressBytes, progressFill, complete);
+        });
+        dropZone.addEventListener("dragover", event => {
+          event.preventDefault();
+          dropZone.classList.add("drag-over");
+        });
+        dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drag-over"));
+        dropZone.addEventListener("drop", event => {
+          event.preventDefault();
+          dropZone.classList.remove("drag-over");
+          const file = event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0];
+          if (file) uploadFile(file, uploadButton, urlInput, key, setter, progressWrap, progressPercent, progressBytes, progressFill, complete);
+        });
+
+        card.append(preview, urlInput, dropZone, uploadButton, progressWrap, complete);
+        function updatePreview() {
+          preview.replaceChildren();
+          if (!urlInput.value.trim()) {
+            const empty = document.createElement("span");
+            empty.className = "media-empty";
+            empty.textContent = "A live preview will appear here";
+            preview.append(empty);
+            return;
+          }
+          const media = document.createElement(isVideoField(key, urlInput.value) ? "video" : "img");
+          media.src = urlInput.value;
+          if (media instanceof HTMLVideoElement) {
+            media.controls = true;
+            media.preload = "metadata";
+          } else {
+            media.alt = `${fieldLabel.textContent} preview`;
+            media.loading = "lazy";
+          }
+          media.addEventListener("error", () => {
+            preview.replaceChildren();
+            const unavailable = document.createElement("span");
+            unavailable.className = "media-empty";
+            unavailable.textContent = "Preview unavailable — check the media URL.";
+            preview.append(unavailable);
+          }, { once: true });
+          preview.append(media);
+        }
+        updatePreview();
+      }
+
+      function formatMegabytes(bytes) {
+        return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+      }
+
+      async function uploadFile(file, button, urlInput, key, setter, progressWrap, progressPercent, progressBytes, progressFill, complete) {
+        if (!/^image\/|^video\//.test(file.type) || file.size >= 50 * 1024 * 1024) {
+          setStatus(adminStatus, "Sirf image/video file 50 MB se chhoti upload karein.", "error");
+          notify("Choose an image or video smaller than 50 MB.", "error");
+          return;
+        }
+
+        setButtonLoading(button, true, "Uploading...");
+        complete.classList.add("hidden");
+        progressWrap.classList.remove("hidden");
+        progressPercent.textContent = "0%";
+        progressBytes.textContent = `0 MB / ${formatMegabytes(file.size)}`;
+        progressFill.style.width = "0%";
+        setStatus(adminStatus, "Uploading media to this field...", "info");
+
+        try {
+          const safeName = file.name.replace(/[^a-zA-Z0-9._-]+/g, "-");
+          const fileRef = ref(storage, `uploads/${Date.now()}-${safeName}`);
+          const task = uploadBytesResumable(fileRef, file, { contentType: file.type });
+          const downloadUrl = await new Promise((resolve, reject) => {
+            task.on("state_changed", snapshot => {
+              const percent = snapshot.totalBytes ? Math.min(100, Math.round(snapshot.bytesTransferred / snapshot.totalBytes * 100)) : 0;
+              progressPercent.textContent = `${percent}%`;
+              progressBytes.textContent = `${formatMegabytes(snapshot.bytesTransferred)} / ${formatMegabytes(snapshot.totalBytes)}`;
+              progressFill.style.width = `${percent}%`;
+            }, reject, async () => {
+              try {
+                resolve(await getDownloadURL(task.snapshot.ref));
+              } catch (error) {
+                reject(error);
+              }
+            });
+          });
+          urlInput.value = downloadUrl;
+          urlInput.dispatchEvent(new Event("input", { bubbles: true }));
+          progressPercent.textContent = "100%";
+          progressBytes.textContent = `${formatMegabytes(file.size)} / ${formatMegabytes(file.size)}`;
+          progressFill.style.width = "100%";
+          complete.replaceChildren();
+          const check = document.createElement("span");
+          check.className = "check";
+          check.textContent = "✓";
+          complete.append(check, document.createTextNode("100% Uploaded · URL attached"));
+          complete.classList.remove("hidden");
+          setStatus(adminStatus, `Uploaded and attached to ${humanize(key)}. Save to publish the change.`, "success");
+        } catch (error) {
+          setStatus(adminStatus, error.message || "Media upload failed.", "error");
+          notify(error.message || "Media upload failed.", "error");
+        } finally {
+          setButtonLoading(button, false, "Upload to this field");
+        }
+      }
+
+      function blankValue(value) {
+        if (Array.isArray(value)) return [];
+        if (isRecord(value)) {
+          return Object.fromEntries(Object.entries(value).map(([key, child]) => [key, blankValue(child)]));
+        }
+        if (typeof value === "boolean") return false;
+        if (typeof value === "number") return 0;
+        return "";
+      }
+
+      function newArrayItem(key, items) {
+        if (items.length) return blankValue(items[0]);
+        if (/^(photos|images|videos)$/i.test(key)) return "";
+        return {};
+      }
+
+      function renderArray(key, items, setter) {
+        const section = document.createElement("section");
+        section.className = "object-card wide";
+        const heading = document.createElement("div");
+        heading.className = "section-heading";
+        const title = document.createElement("div");
+        const headingText = document.createElement("h2");
+        headingText.textContent = humanize(key);
+        const count = document.createElement("p");
+        count.textContent = `${items.length} item${items.length === 1 ? "" : "s"}`;
+        title.append(headingText, count);
+        const addButton = document.createElement("button");
+        addButton.className = "button secondary small";
+        addButton.type = "button";
+        addButton.textContent = "+ Add Item";
+        addButton.addEventListener("click", () => {
+          items.push(newArrayItem(key, items));
+          setter(items);
+          renderEditor();
+        });
+        heading.append(title, addButton);
+        section.append(heading);
+
+        if (!items.length) {
+          const empty = document.createElement("p");
+          empty.className = "empty-list";
+          empty.textContent = "No items yet. Add an item to get started.";
+          section.append(empty);
+        }
+
+        items.forEach((item, index) => {
+          const itemCard = document.createElement("div");
+          itemCard.className = "array-card";
+          const itemHead = document.createElement("div");
+          itemHead.className = "array-card-head";
+          const itemTitle = document.createElement("p");
+          itemTitle.className = "array-card-title";
+          itemTitle.textContent = `${humanize(key)} ${index + 1}`;
+          const deleteButton = document.createElement("button");
+          deleteButton.className = "button danger small";
+          deleteButton.type = "button";
+          deleteButton.textContent = "Delete";
+          deleteButton.addEventListener("click", () => {
+            items.splice(index, 1);
+            setter(items);
+            renderEditor();
+          });
+          itemHead.append(itemTitle, deleteButton);
+          itemCard.append(itemHead);
+          if (isRecord(item)) {
+            renderObjectFields(itemCard, item, () => {}, true);
+          } else if (Array.isArray(item)) {
+            const note = document.createElement("p");
+            note.className = "field-note";
+            note.textContent = "Nested lists are preserved when saving.";
+            itemCard.append(note);
+          } else {
+            const field = makeFieldCard(key, item, next => {
+              items[index] = next;
+              setter(items);
+            }, { wide: true });
+            field.classList.remove("wide");
+            itemCard.append(field);
+          }
+          section.append(itemCard);
+        });
+        return section;
+      }
+
+      function renderObjectFields(container, object, onChange, topLevel) {
+        if (!Object.keys(object).length) {
+          const emptyCard = document.createElement("div");
+          emptyCard.className = "field-card wide";
+          const emptyText = document.createElement("p");
+          emptyText.className = "field-note";
+          emptyText.textContent = "This item has no fields yet. Add a field to start building it.";
+          const form = document.createElement("form");
+          form.className = "button-row";
+          const fieldName = document.createElement("input");
+          fieldName.type = "text";
+          fieldName.placeholder = "New field name (for example, title)";
+          fieldName.setAttribute("aria-label", "New field name");
+          const addField = document.createElement("button");
+          addField.className = "button secondary small";
+          addField.type = "submit";
+          addField.textContent = "+ Add Field";
+          form.append(fieldName, addField);
+          form.addEventListener("submit", event => {
+            event.preventDefault();
+            const name = fieldName.value.trim();
+            if (!name) {
+              fieldName.focus();
+              return;
+            }
+            object[name] = "";
+            if (onChange) onChange();
+            renderEditor();
+          });
+          emptyCard.append(emptyText, form);
+          container.append(emptyCard);
+          return;
+        }
+        const grid = document.createElement("div");
+        grid.className = "field-grid";
+        Object.entries(object).forEach(([key, value]) => {
+          let field;
+          const setter = next => {
+            object[key] = next;
+            if (onChange) onChange();
+          };
+          if (Array.isArray(value)) {
+            field = renderArray(key, value, setter);
+          } else if (isRecord(value)) {
+            field = document.createElement("section");
+            field.className = "object-card wide";
+            const heading = document.createElement("div");
+            heading.className = "section-heading";
+            const title = document.createElement("div");
+            const name = document.createElement("h2");
+            name.textContent = humanize(key);
+            title.append(name);
+            heading.append(title);
+            field.append(heading);
+            renderObjectFields(field, value, setter, false);
+          } else {
+            field = makeFieldCard(key, value, setter);
+          }
+          grid.append(field);
+        });
+        container.append(grid);
+      }
+
+      function renderEditor() {
+        editor.replaceChildren();
+        editor.classList.remove("editor-enter");
+        void editor.offsetWidth;
+        editor.classList.add("editor-enter");
+        if (Array.isArray(currentContent)) {
+          const wrapper = document.createElement("div");
+          wrapper.className = "field-grid";
+          wrapper.append(renderArray("items", currentContent, next => { currentContent = next; }));
+          editor.append(wrapper);
+          return;
+        }
+        if (!isRecord(currentContent)) {
+          const message = document.createElement("p");
+          message.className = "empty-list";
+          message.textContent = "This document does not contain editable fields.";
+          editor.append(message);
+          return;
+        }
+        renderObjectFields(editor, currentContent, () => {}, true);
+      }
+
+      function showEditorSkeleton() {
+        editor.replaceChildren();
+        const grid = document.createElement("div");
+        grid.className = "field-grid";
+        for (let index = 0; index < 6; index += 1) {
+          const block = document.createElement("div");
+          block.className = "field-card";
+          const first = document.createElement("div");
+          first.className = "skeleton skeleton-line short";
+          const second = document.createElement("div");
+          second.className = "skeleton skeleton-box";
+          block.append(first, second);
+          grid.append(block);
+        }
+        editor.append(grid);
+      }
+
       async function loadContent() {
         const documentId = document.getElementById("documentSelect").value;
+        document.getElementById("editorTitle").textContent = documentTitles[documentId];
         setStatus(adminStatus, "Loading content...", "info");
+        showEditorSkeleton();
         try {
           const snapshot = await getDoc(doc(db, "siteContent", documentId));
           if (snapshot.exists()) {
-            editor.value = JSON.stringify(snapshot.data().content, null, 2);
+            currentContent = snapshot.data().content;
+            renderEditor();
             setStatus(adminStatus, "Firestore content loaded.", "success");
             return;
           }
@@ -187,20 +823,22 @@
           if (!response.ok) {
             throw new Error(`Could not load default JSON (${response.status}).`);
           }
-          editor.value = JSON.stringify(await response.json(), null, 2);
+          currentContent = await response.json();
+          renderEditor();
           setStatus(adminStatus, "Local JSON migration source loaded. Save it to Firestore.", "info");
         } catch (error) {
           setStatus(adminStatus, error.message || "Could not load content.", "error");
+          notify(error.message || "Could not load content.", "error");
         }
       }
 
-      document.getElementById("importButton").addEventListener("click", async () => {
+      document.getElementById("importButton").addEventListener("click", async event => {
         if (!window.confirm("Existing JSON files ko Firestore mein import karein? Pehle se maujood Firestore documents overwrite nahi honge.")) {
           return;
         }
 
-        const button = document.getElementById("importButton");
-        button.disabled = true;
+        const button = event.currentTarget;
+        setButtonLoading(button, true, "Importing...");
         setStatus(adminStatus, "Missing content documents import ho rahe hain...", "info");
         try {
           const batch = writeBatch(db);
@@ -229,18 +867,21 @@
           if (missing.length) {
             await batch.commit();
           }
-          setStatus(adminStatus, `Migration complete. ${missing.length} document(s) imported; existing Firestore documents were preserved.`, "success");
+          const message = `Migration complete. ${missing.length} document(s) imported; existing Firestore documents were preserved.`;
+          setStatus(adminStatus, message, "success");
+          notify(message);
         } catch (error) {
           setStatus(adminStatus, error.message || "JSON migration failed.", "error");
+          notify(error.message || "JSON migration failed.", "error");
         } finally {
-          button.disabled = false;
+          setButtonLoading(button, false, "Import missing JSON documents");
         }
       });
 
       document.getElementById("loginForm").addEventListener("submit", async event => {
         event.preventDefault();
         const button = document.getElementById("loginButton");
-        button.disabled = true;
+        setButtonLoading(button, true, "Signing in...");
         setStatus(loginStatus, "Signing in...", "info");
         try {
           await signInWithEmailAndPassword(
@@ -251,79 +892,43 @@
         } catch (error) {
           setStatus(loginStatus, error.message || "Sign-in failed.", "error");
         } finally {
-          button.disabled = false;
+          setButtonLoading(button, false, "Sign in");
         }
       });
 
-      document.getElementById("logoutButton").addEventListener("click", async () => {
+      document.getElementById("logoutButton").addEventListener("click", async event => {
+        const button = event.currentTarget;
+        setButtonLoading(button, true, "Signing out...");
         try {
           await signOut(auth);
         } catch (error) {
           setStatus(adminStatus, error.message || "Could not sign out.", "error");
+          notify(error.message || "Could not sign out.", "error");
+        } finally {
+          setButtonLoading(button, false, "Sign out");
         }
       });
 
       document.getElementById("documentSelect").addEventListener("change", loadContent);
       document.getElementById("loadButton").addEventListener("click", loadContent);
-      document.getElementById("saveButton").addEventListener("click", async () => {
-        const button = document.getElementById("saveButton");
-        button.disabled = true;
+      document.getElementById("saveButton").addEventListener("click", async event => {
+        const button = event.currentTarget;
+        setButtonLoading(button, true, "Publishing...");
         try {
-          const content = JSON.parse(editor.value);
-          if (!content || typeof content !== "object") {
-            throw new Error("Content JSON ka top-level object ya array hona chahiye.");
+          if (!currentContent || typeof currentContent !== "object") {
+            throw new Error("Content ka top-level object ya array hona chahiye.");
           }
           await setDoc(doc(db, "siteContent", document.getElementById("documentSelect").value), {
-            content,
+            content: currentContent,
             updatedAt: serverTimestamp()
           });
-          setStatus(adminStatus, "Saved to Firestore. Website par content ab update ho gaya hai.", "success");
+          setStatus(adminStatus, "Saved to Live Website!", "success");
+          notify("Saved to Live Website!");
         } catch (error) {
           setStatus(adminStatus, error.message || "Could not save content.", "error");
+          notify(error.message || "Could not save content.", "error");
         } finally {
-          button.disabled = false;
-        }
-      });
-
-      document.getElementById("uploadButton").addEventListener("click", async () => {
-        const fileInput = document.getElementById("mediaFile");
-        const file = fileInput.files && fileInput.files[0];
-        const button = document.getElementById("uploadButton");
-        if (!file) {
-          setStatus(adminStatus, "Pehle upload ke liye file select karein.", "error");
-          return;
-        }
-        if (!/^image\/|^video\//.test(file.type) || file.size >= 50 * 1024 * 1024) {
-          setStatus(adminStatus, "Sirf image/video file 50 MB se chhoti upload karein.", "error");
-          return;
-        }
-
-        button.disabled = true;
-        setStatus(adminStatus, "Uploading media...", "info");
-        try {
-          const safeName = file.name.replace(/[^a-zA-Z0-9._-]+/g, "-");
-          const fileRef = ref(storage, `uploads/${Date.now()}-${safeName}`);
-          await uploadBytes(fileRef, file, { contentType: file.type });
-          document.getElementById("mediaUrl").value = await getDownloadURL(fileRef);
-          setStatus(adminStatus, "Upload complete. URL JSON mein paste karke content save karein.", "success");
-        } catch (error) {
-          setStatus(adminStatus, error.message || "Media upload failed.", "error");
-        } finally {
-          button.disabled = false;
-        }
-      });
-
-      document.getElementById("copyUrlButton").addEventListener("click", async () => {
-        const url = document.getElementById("mediaUrl").value;
-        if (!url) {
-          setStatus(adminStatus, "Copy karne ke liye pehle media upload karein.", "error");
-          return;
-        }
-        try {
-          await navigator.clipboard.writeText(url);
-          setStatus(adminStatus, "Media URL copied.", "success");
-        } catch (error) {
-          setStatus(adminStatus, "Browser clipboard access nahi de raha; URL field se manually copy karein.", "error");
+          setButtonLoading(button, false, "Save & publish");
         }
       });
 
