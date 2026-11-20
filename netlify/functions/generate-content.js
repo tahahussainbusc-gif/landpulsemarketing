@@ -12,7 +12,8 @@ const allowedDataKeys = [
   "price",
   "beds",
   "baths",
-  "projectTitle"
+  "projectTitle",
+  "instruction"
 ];
 
 function respond(statusCode, payload) {
@@ -62,8 +63,8 @@ exports.handler = async event => {
     return respond(405, { error: "Use POST to generate content." });
   }
 
-  if (!process.env.OPENAI_API_KEY) {
-    return respond(503, { error: "AI generation is not configured. Add OPENAI_API_KEY in Netlify environment variables." });
+  if (!process.env.GROQ_API_KEY && !process.env.OPENAI_API_KEY) {
+    return respond(503, { error: "AI generation is not configured. Add GROQ_API_KEY or OPENAI_API_KEY in Netlify environment variables." });
   }
 
   let authenticated;
@@ -111,6 +112,7 @@ exports.handler = async event => {
   const instruction = request.field === "title"
     ? `Write one clear, appealing ${request.type} title in at most 12 words.`
     : `Write a concise, polished ${request.type} description in 2-4 sentences.`;
+  const adminInstruction = details.instruction ? ` Admin instruction: ${details.instruction}` : "";
   const systemPrompt = [
     "You write accurate real-estate listing copy.",
     "Use only facts present in the supplied JSON. Never invent amenities, approvals, returns, availability, measurements, or legal claims.",
@@ -121,17 +123,23 @@ exports.handler = async event => {
 
   let response;
   try {
-    response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const groqApiKey = process.env.GROQ_API_KEY;
+    const groqConfigured = Boolean(groqApiKey);
+    response = await fetch(groqConfigured
+      ? "https://api.groq.com/openai/v1/chat/completions"
+      : "https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        Authorization: `Bearer ${groqConfigured ? groqApiKey : process.env.OPENAI_API_KEY}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+        model: groqConfigured
+          ? (process.env.GROQ_MODEL || "llama-3.3-70b-versatile")
+          : (process.env.OPENAI_MODEL || "gpt-4o-mini"),
         messages: [
           { role: "system", content: systemPrompt },
-          { role: "user", content: `${instruction}\nDetails: ${JSON.stringify(details)}` }
+          { role: "user", content: `${instruction}${adminInstruction}\nDetails: ${JSON.stringify(details)}` }
         ],
         max_tokens: request.field === "title" ? 80 : 300,
         temperature: 0.6

@@ -65,6 +65,28 @@
       .toolbar label, .field-label { display: block; margin: 0 0 8px; color: #dce8df; font-size: 13px; font-weight: 700; }
       .toolbar-actions, .button-row { display: flex; flex-wrap: wrap; gap: 9px; }
       .toolbar-actions { justify-content: flex-end; }
+      .ai-panel {
+        margin: 18px 0 0;
+        padding: 18px;
+        border: 1px solid rgba(100, 230, 154, .22);
+        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(100, 230, 154, .07), rgba(17, 27, 23, .96));
+      }
+      .ai-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+      .ai-panel-head h2 { margin: 0; font-size: 16px; }
+      .ai-chat-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+      .ai-reply {
+        min-height: 62px;
+        margin-top: 12px;
+        padding: 12px;
+        border: 1px solid var(--border);
+        border-radius: 11px;
+        background: #0b1310;
+        color: #dce8df;
+        font-size: 13px;
+        line-height: 1.65;
+        white-space: pre-wrap;
+      }
       input:not([type="checkbox"]):not([type="file"]), select, textarea {
         display: block; width: 100%; min-width: 0; padding: 11px 12px; border: 1px solid #35483c;
         border-radius: 10px; outline: none; background: #0b1310; color: #edf5ef; transition: border-color .18s, box-shadow .18s;
@@ -248,6 +270,19 @@
             </div>
           </div>
 
+          <div class="ai-panel">
+            <div class="ai-panel-head">
+              <h2><span style="color:var(--green)">AI</span> Title &amp; Description Assistant</h2>
+            </div>
+            <label class="field-label" for="aiInstruction">Agar title ya description sahi nahi bana to AI ko bata dein</label>
+            <textarea id="aiInstruction" placeholder="Example: SEO friendly title banao jo Pakistan aur international luxury real estate mention kare."></textarea>
+            <div class="ai-chat-actions">
+              <button id="generatePageTitle" class="button small" type="button">Generate title</button>
+              <button id="generatePageDescription" class="button secondary small" type="button">Generate description</button>
+            </div>
+            <div id="aiReply" class="ai-reply">AI generated title ya description yahan nazar ayegi.</div>
+          </div>
+
           <div class="section-heading">
             <div><h2 id="editorTitle">Homepage content</h2><p>Changes are published to the live website when saved.</p></div>
           </div>
@@ -266,6 +301,7 @@
       import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
       import {
         getAuth,
+        getIdToken,
         onAuthStateChanged,
         signInWithEmailAndPassword,
         signOut
@@ -327,6 +363,52 @@
       let authCheckId = 0;
       let currentContent = null;
       let toastTimer;
+
+      async function generateAdminCopy(field) {
+        const instruction = document.getElementById("aiInstruction").value.trim();
+        const button = document.getElementById(field === "title" ? "generatePageTitle" : "generatePageDescription");
+        const reply = document.getElementById("aiReply");
+        setButtonLoading(button, true, "AI is generating...");
+        reply.textContent = "AI soch raha hai...";
+
+        try {
+          const user = auth.currentUser;
+          if (!user) throw new Error("Pehle admin account se sign in karein.");
+          const token = await getIdToken(user);
+          const response = await fetch("/.netlify/functions/generate-content", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              type: "project",
+              field,
+              data: {
+                title: String(currentContent && currentContent.pageTitle || "Land Pulse Marketing"),
+                description: instruction,
+                location: "Pakistan",
+                instruction
+              }
+            })
+          });
+          const payload = await response.json();
+          if (!response.ok) throw new Error(payload.error || "AI content generate nahi ho saka.");
+
+          if (!isRecord(currentContent)) currentContent = {};
+          const key = field === "title" ? "pageTitle" : "pageDescription";
+          currentContent[key] = payload.content;
+          reply.textContent = payload.content;
+          renderEditor();
+          setStatus(adminStatus, `${field === "title" ? "Page title" : "Page description"} AI se generate ho gayi. Save & publish karein.`, "success");
+        } catch (error) {
+          reply.textContent = error.message || "AI assistant available nahi hai.";
+          setStatus(adminStatus, error.message || "AI assistant available nahi hai.", "error");
+          notify(error.message || "AI assistant available nahi hai.", "error");
+        } finally {
+          setButtonLoading(button, false, field === "title" ? "Generate title" : "Generate description");
+        }
+      }
 
       function setStatus(element, message, kind) {
         element.textContent = message;
@@ -910,6 +992,8 @@
       });
 
       document.getElementById("documentSelect").addEventListener("change", loadContent);
+      document.getElementById("generatePageTitle").addEventListener("click", () => generateAdminCopy("title"));
+      document.getElementById("generatePageDescription").addEventListener("click", () => generateAdminCopy("description"));
       document.getElementById("loadButton").addEventListener("click", loadContent);
       document.getElementById("saveButton").addEventListener("click", async event => {
         const button = event.currentTarget;
