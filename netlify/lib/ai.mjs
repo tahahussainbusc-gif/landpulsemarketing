@@ -1,12 +1,13 @@
 import OpenAI from "openai";
 
-export async function generateText(systemPrompt, prompt) {
+export async function generateText(systemPrompt, prompt, history = []) {
   // Construct during invocation so the modern runtime's managed credentials apply.
   const ai = new OpenAI();
   const result = await ai.chat.completions.create({
     model: "gpt-4o-mini",
     messages: [
       { role: "system", content: systemPrompt },
+      ...history,
       { role: "user", content: prompt }
     ],
     temperature: 0.5,

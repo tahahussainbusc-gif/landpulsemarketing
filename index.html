@@ -782,7 +782,7 @@
             </div>
             <div class="min-w-0 flex-1">
                 <h2 class="text-sm font-extrabold text-white">Land Pulse AI</h2>
-                <p class="text-[11px] text-brand-neon">Aapka VIP property assistant</p>
+                <p class="text-[11px] text-brand-neon">Kisi bhi topic par sawal karein</p>
             </div>
             <button type="button" onclick="toggleLandPulseAI()" class="w-9 h-9 rounded-full border border-white/10 text-brand-muted hover:text-white hover:border-brand-neon" aria-label="Close chat">
                 <i class="fa-solid fa-xmark"></i>
@@ -790,7 +790,7 @@
         </header>
 
         <div id="lpAiMessages" class="flex-1 overflow-y-auto p-4 space-y-3" aria-live="polite">
-            <div class="lp-ai-message bot">Assalam-o-Alaikum! Main Land Pulse AI hoon. Aap property, location, budget, rent ya investment ke baare mein pooch sakte hain. 😊</div>
+            <div class="lp-ai-message bot">Assalam-o-Alaikum! Main Land Pulse AI hoon. Aap kisi bhi topic par baat kar sakte hain—apna sawal likhein. 😊</div>
             <div class="flex flex-wrap gap-2">
                 <button type="button" onclick="sendLpQuickReply('Aaj ki properties')" class="px-3 py-1.5 rounded-full border border-brand-neon/30 text-brand-neon text-xs hover:bg-brand-neon hover:text-black">Aaj ki properties</button>
                 <button type="button" onclick="sendLpQuickReply('Budget options')" class="px-3 py-1.5 rounded-full border border-brand-neon/30 text-brand-neon text-xs hover:bg-brand-neon hover:text-black">Budget options</button>
@@ -799,7 +799,7 @@
         </div>
 
         <form id="lpAiForm" class="p-3 border-t border-white/10 bg-brand-card/95 flex gap-2" onsubmit="sendLpMessage(event)">
-            <input id="lpAiInput" type="text" autocomplete="off" maxlength="240" placeholder="Property, location ya budget likhein..." class="min-w-0 flex-1 rounded-xl bg-brand-dark border border-white/10 px-3 py-2.5 text-sm text-white placeholder:text-brand-muted focus:border-brand-neon focus:outline-none">
+            <input id="lpAiInput" type="text" autocomplete="off" maxlength="500" placeholder="Kisi bhi topic par poochein..." class="min-w-0 flex-1 rounded-xl bg-brand-dark border border-white/10 px-3 py-2.5 text-sm text-white placeholder:text-brand-muted focus:border-brand-neon focus:outline-none">
             <button type="submit" aria-label="Send message" class="w-11 h-11 shrink-0 rounded-xl bg-brand-neon text-black flex items-center justify-center hover:brightness-110">
                 <i class="fa-solid fa-paper-plane"></i>
             </button>
@@ -994,6 +994,7 @@
         const propertiesData = [];
         const premiumProjectsData = [];
         let siteContent = null;
+        let lpAiConversation = [];
         let activeListingType = "all";
         let activePropertyCategory = "all";
         let currentPropertyItems = [];
@@ -1608,13 +1609,21 @@
             sendLpMessage({ preventDefault() {} });
         }
 
-        async function sendLpMessage(event) {
+        function sendLpMessage(event) {
             event.preventDefault();
             const input = document.getElementById("lpAiInput");
             const text = input.value.trim();
             if (!text) return;
-            addLpMessage(text, "user");
             input.value = "";
+            sendLpAiMessage(text);
+        }
+
+        async function sendLpAiMessage(text) {
+            addLpMessage(text, "user");
+            if (window.location.protocol === "file:") {
+                addLpMessage("Chat ke liye deployed website https://landpulsemarketing.netlify.app kholein. Local file se AI service connect nahi hoti.", "bot");
+                return;
+            }
             const typing = document.createElement("div");
             typing.className = "lp-ai-message bot";
             typing.textContent = "AI jawab soch raha hai...";
@@ -1645,20 +1654,32 @@
                             priceRange: item.priceRange,
                             badge: item.badge,
                             description: item.description
-                        }))
+                        })),
+                        history: lpAiConversation.slice(-10)
                     })
                 });
-                const payload = await response.json();
+                let payload;
+                try {
+                    payload = await response.json();
+                } catch {
+                    throw new Error("AI backend returned an invalid response. Check the Netlify deployment.");
+                }
                 if (!response.ok) throw new Error(payload.error || "AI jawab generate nahi ho saka.");
                 if (typeof payload.content !== "string" || !payload.content.trim()) {
                     throw new Error("AI service ne jawab nahi diya.");
                 }
                 typing.remove();
                 addLpMessage(payload.content, "bot");
+                lpAiConversation.push(
+                    { role: "user", content: text },
+                    { role: "assistant", content: payload.content }
+                );
+                lpAiConversation = lpAiConversation.slice(-10);
             } catch (error) {
                 typing.remove();
                 console.warn("Live AI chat unavailable:", error);
-                addLpMessage("Maazrat, live AI abhi jawab nahi de saka. Thori dair baad dobara koshish karein ya WhatsApp par rabta karein.", "bot");
+                const detail = error instanceof Error ? error.message : "AI service unavailable.";
+                addLpMessage(`AI jawab nahi de saka: ${detail}`, "bot");
             }
         }
 
