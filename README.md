@@ -1,13 +1,17 @@
 # land-pulse-marketing
 A real estate portal website for Sargodha offering property listings, search filters, and ROI calculators.
 
-## Netlify deployment
+## Hostinger deployment
 
-`netlify.toml` publishes the repository root, which includes the static site, `/admin/`, and the Netlify Function. Connect this repository to Netlify and deploy from the `main` branch. The deployment itself must be started in the Netlify account; it cannot be completed from this local project alone.
+Upload the repository's website files to the domain's `public_html` directory, keeping the `api/`, `admin/`, `content/`, `images/`, and `PremiumProjects/` folders in their original locations. The AI endpoints require PHP with the cURL extension enabled.
 
-## Gemini AI
+The AI key must stay on the server:
 
-In Netlify site settings, add `GEMINI_API_KEY` under **Environment variables**, then redeploy. The chat and CMS content generator use Gemini (`gemini-2.5-flash` by default); set `GEMINI_MODEL` to choose another Gemini model. Keep the API key in Netlify and do not add it to browser code. Chat can fall back to `GROQ_API_KEY` or `OPENAI_API_KEY` if Gemini is unavailable. Without a Gemini key, CMS copy generation continues to use Groq or OpenAI.
+1. In Hostinger File Manager, copy `api/config.example.php` to `api/config.php`.
+2. Replace `PASTE_GEMINI_API_KEY_HERE` in `api/config.php` with the Gemini API key. Do not commit this file or put the key in browser code.
+3. Keep `api/.htaccess` in place; it blocks direct access to the config file.
+
+The chat, speech, and CMS copy generator use the PHP endpoints in `api/`. Gemini uses `gemini-2.5-flash` by default for chat and content, with Gemini TTS for voice. Optional Groq and OpenAI fallback keys and model names can also be set in `api/config.php`.
 
 ## Firebase Admin
 
@@ -15,11 +19,11 @@ The custom admin page is available at `/admin/`. It uses Firebase Email/Password
 
 Before using it:
 
-1. In Firebase Authentication, enable Email/Password and create the admin user's account. Add the deployed Netlify domain to Firebase Authentication's authorized domains.
+1. In Firebase Authentication, enable Email/Password and create the admin user's account. Add the Hostinger website domain to Firebase Authentication's authorized domains.
 2. Create a Firestore database and Firebase Storage bucket. From the project root, deploy the checked-in rules with `firebase deploy --project landpulsemarketing-a7bce --only firestore:rules,storage`.
 3. Copy the admin user's Authentication UID. In Firestore, create `admins/{UID}` and set `role` to the exact string `admin`. Only this manually provisioned UID can edit content; users cannot grant themselves admin access.
 4. Sign in at `/admin/` and use **Import missing JSON documents** once to migrate the existing content. This only creates Firestore documents that do not already exist. The website then reads editable content exclusively from Firestore; the content JSON files are kept only as migration sources. `assets-manifest.json` remains static metadata for image and video paths.
 
 The available documents are homepage content, property listings, premium projects, social links, and the CEO, Manager, and Sales Executive profiles. Select a document in the admin page to edit its JSON and save it to Firestore. Uploaded images and videos are stored in Firebase Storage; copy the returned URL into the relevant JSON field and save the document. Uploads are limited to 50 MB.
 
-The site also has a Netlify Function for AI-generated copy. It still uses Netlify Identity and is not connected to the Firebase admin login. Company Stats should contain verified figures before publishing. Premium projects whose title or location contains "Town" remain visible, but their price is intentionally hidden. The homepage welcome intro fades out after 3.8 seconds.
+The CMS AI copy endpoint verifies the Firebase sign-in token and checks the `admins/{UID}` document before generating content. Firebase Authentication, Firestore, and Storage remain the CMS services; the website files and AI PHP endpoints are hosted on Hostinger. Company Stats should contain verified figures before publishing. Premium projects whose title or location contains "Town" remain visible, but their price is intentionally hidden. The homepage welcome intro fades out after 3.8 seconds.

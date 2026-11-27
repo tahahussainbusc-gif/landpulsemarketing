@@ -35,17 +35,25 @@ exports.handler = async event => {
     return respond(413, { error: "Message too long." });
   }
 
+  const history = Array.isArray(request.history)
+    ? request.history.slice(-10).filter(item =>
+      item &&
+      (item.role === "user" || item.role === "assistant") &&
+      typeof item.content === "string" &&
+      item.content.trim() &&
+      item.content.length <= 1500
+    ).map(item => ({ role: item.role, content: item.content.trim() }))
+    : [];
   const properties = Array.isArray(request.properties) ? request.properties.slice(0, 12) : [];
   const projects = Array.isArray(request.projects) ? request.projects.slice(0, 12) : [];
 
   const systemPrompt = [
-    "You are the friendly Land Pulse Marketing real-estate assistant.",
-    "Reply naturally in Roman Urdu or simple English according to the user's language.",
-    "Answer only for Land Pulse Marketing properties, projects, locations, budgets, rent, and real-estate services.",
-    "Use only the supplied current inventory and prices. Never invent prices, availability, approvals, or amenities.",
-    "If data is missing or a question is outside scope, politely say so and offer to help with property requirements.",
-    "Do not mention or compare any other real-estate website or company.",
-    "Keep answers short, warm, professional, and useful.",
+    "You are a friendly, helpful, general-purpose conversational AI assistant for Land Pulse Marketing.",
+    "You can discuss any topic and answer general questions; do not restrict the conversation to real estate.",
+    "Reply naturally in the user's language and script, including Roman Urdu, Urdu, or simple English.",
+    "For questions about Land Pulse Marketing properties, projects, prices, or availability, use only the supplied current inventory. Never invent property details, prices, approvals, or amenities.",
+    "Be clear when you are uncertain or do not have current information.",
+    "Keep answers warm, professional, useful, and concise for natural voice conversation. Use plain spoken sentences, avoid markdown, emoji, decorative symbols, and unnecessary numbers. Preserve important amounts and read them naturally.",
     `Current properties: ${JSON.stringify(properties)}`,
     `Current projects: ${JSON.stringify(projects)}`
   ].join(" ");
@@ -89,7 +97,13 @@ exports.handler = async event => {
         },
         body: JSON.stringify(provider.type === "gemini" ? {
           systemInstruction: { parts: [{ text: systemPrompt }] },
-          contents: [{ role: "user", parts: [{ text: message }] }],
+          contents: [
+            ...history.map(item => ({
+              role: item.role === "assistant" ? "model" : "user",
+              parts: [{ text: item.content }]
+            })),
+            { role: "user", parts: [{ text: message }] }
+          ],
           generationConfig: { temperature: 0.5, maxOutputTokens: 350 }
         } : {
           model: provider.model,
@@ -97,6 +111,7 @@ exports.handler = async event => {
           max_tokens: 350,
           messages: [
             { role: "system", content: systemPrompt },
+            ...history,
             { role: "user", content: message }
           ]
         })

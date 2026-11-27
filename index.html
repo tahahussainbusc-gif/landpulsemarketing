@@ -782,15 +782,27 @@
             </div>
             <div class="min-w-0 flex-1">
                 <h2 class="text-sm font-extrabold text-white">Land Pulse AI</h2>
-                <p class="text-[11px] text-brand-neon">Aapka VIP property assistant</p>
+                <p class="text-[11px] text-brand-neon">AI-generated female voice</p>
             </div>
+            <button id="lpAiCallButton" type="button" onclick="toggleLpAiCall()" class="px-3 py-2 rounded-xl bg-brand-neon text-black text-xs font-bold flex items-center gap-2 hover:brightness-110" aria-label="Start voice call" aria-pressed="false">
+                <i class="fa-solid fa-phone" aria-hidden="true"></i><span>Call</span>
+            </button>
             <button type="button" onclick="toggleLandPulseAI()" class="w-9 h-9 rounded-full border border-white/10 text-brand-muted hover:text-white hover:border-brand-neon" aria-label="Close chat">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </header>
 
+        <div class="px-4 py-2 border-b border-white/10 flex items-center justify-between gap-3">
+            <p id="lpAiCallStatus" class="text-[11px] text-brand-muted" aria-live="polite">Chat or call—ask me anything.</p>
+            <label for="lpAiVoiceLanguage" class="sr-only">Voice recognition language</label>
+            <select id="lpAiVoiceLanguage" class="shrink-0 rounded-lg bg-brand-dark border border-white/10 px-2 py-1 text-[11px] text-white focus:border-brand-neon focus:outline-none" aria-label="Voice recognition language">
+                <option value="ur-PK">Urdu</option>
+                <option value="en-US">English</option>
+            </select>
+        </div>
+
         <div id="lpAiMessages" class="flex-1 overflow-y-auto p-4 space-y-3" aria-live="polite">
-            <div class="lp-ai-message bot">Assalam-o-Alaikum! Main Land Pulse AI hoon. Aap property, location, budget, rent ya investment ke baare mein pooch sakte hain. 😊</div>
+            <div class="lp-ai-message bot">Assalam-o-Alaikum! Main Land Pulse AI hoon. Aap kisi bhi topic par baat kar sakte hain—call start karein ya message bhejein. 😊</div>
             <div class="flex flex-wrap gap-2">
                 <button type="button" onclick="sendLpQuickReply('Aaj ki properties')" class="px-3 py-1.5 rounded-full border border-brand-neon/30 text-brand-neon text-xs hover:bg-brand-neon hover:text-black">Aaj ki properties</button>
                 <button type="button" onclick="sendLpQuickReply('Budget options')" class="px-3 py-1.5 rounded-full border border-brand-neon/30 text-brand-neon text-xs hover:bg-brand-neon hover:text-black">Budget options</button>
@@ -799,7 +811,7 @@
         </div>
 
         <form id="lpAiForm" class="p-3 border-t border-white/10 bg-brand-card/95 flex gap-2" onsubmit="sendLpMessage(event)">
-            <input id="lpAiInput" type="text" autocomplete="off" maxlength="240" placeholder="Property, location ya budget likhein..." class="min-w-0 flex-1 rounded-xl bg-brand-dark border border-white/10 px-3 py-2.5 text-sm text-white placeholder:text-brand-muted focus:border-brand-neon focus:outline-none">
+            <input id="lpAiInput" type="text" autocomplete="off" maxlength="500" placeholder="Kisi bhi topic par poochein..." class="min-w-0 flex-1 rounded-xl bg-brand-dark border border-white/10 px-3 py-2.5 text-sm text-white placeholder:text-brand-muted focus:border-brand-neon focus:outline-none">
             <button type="submit" aria-label="Send message" class="w-11 h-11 shrink-0 rounded-xl bg-brand-neon text-black flex items-center justify-center hover:brightness-110">
                 <i class="fa-solid fa-paper-plane"></i>
             </button>
@@ -994,6 +1006,14 @@
         const propertiesData = [];
         const premiumProjectsData = [];
         let siteContent = null;
+        let lpAiConversation = [];
+        let lpAiRecognition = null;
+        let lpAiCallActive = false;
+        let lpAiRequestPending = false;
+        let lpAiIsSpeaking = false;
+        let lpAiAudioElement = null;
+        let lpAiAudioUrl = null;
+        let lpAiSpeechAbortController = null;
         let activeListingType = "all";
         let activePropertyCategory = "all";
         let currentPropertyItems = [];
@@ -1589,6 +1609,7 @@
             const panel = document.getElementById("lpAiPanel");
             const toggle = document.getElementById("lpAiToggle");
             const open = !panel.classList.contains("is-open");
+            if (!open && lpAiCallActive) stopLpAiCall();
             panel.classList.toggle("is-open", open);
             toggle.setAttribute("aria-expanded", String(open));
             if (open) document.getElementById("lpAiInput").focus();
@@ -1608,22 +1629,250 @@
             sendLpMessage({ preventDefault() {} });
         }
 
-        async function sendLpMessage(event) {
+        function setLpAiCallStatus(text) {
+            document.getElementById("lpAiCallStatus").textContent = text;
+        }
+
+        function toggleLpAiCall() {
+            if (lpAiCallActive) {
+                stopLpAiCall();
+            } else {
+                startLpAiCall();
+            }
+        }
+
+        function updateLpAiCallButton() {
+            const button = document.getElementById("lpAiCallButton");
+            const icon = button.querySelector("i");
+            const label = button.querySelector("span");
+            button.setAttribute("aria-pressed", String(lpAiCallActive));
+            button.setAttribute("aria-label", lpAiCallActive ? "End voice call" : "Start voice call");
+            button.classList.toggle("bg-red-500", lpAiCallActive);
+            button.classList.toggle("text-white", lpAiCallActive);
+            button.classList.toggle("bg-brand-neon", !lpAiCallActive);
+            button.classList.toggle("text-black", !lpAiCallActive);
+            icon.className = `fa-solid ${lpAiCallActive ? "fa-phone-slash" : "fa-phone"}`;
+            label.textContent = lpAiCallActive ? "End" : "Call";
+        }
+
+        function startLpAiCall() {
+            if (window.location.protocol === "file:") {
+                setLpAiCallStatus("Open the deployed HTTPS website to use the AI voice call.");
+                addLpMessage("Voice call yahan kaam nahi karegi: page local file se khuli hai. Apni deployed website par kholein; microphone aur AI service wahan chalti hai.", "bot");
+                return;
+            }
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                setLpAiCallStatus("Voice calls are not supported in this browser. Try Chrome.");
+                addLpMessage("Voice calling ke liye Chrome jaisa supported browser use karein. Aap chat mein message bhej sakte hain.", "bot");
+                return;
+            }
+
+            const panel = document.getElementById("lpAiPanel");
+            if (!panel.classList.contains("is-open")) {
+                panel.classList.add("is-open");
+                document.getElementById("lpAiToggle").setAttribute("aria-expanded", "true");
+            }
+
+            lpAiCallActive = true;
+            lpAiIsSpeaking = false;
+            updateLpAiCallButton();
+            setLpAiCallStatus("Connecting...");
+
+            lpAiRecognition = new SpeechRecognition();
+            lpAiRecognition.lang = document.getElementById("lpAiVoiceLanguage").value;
+            lpAiRecognition.continuous = false;
+            lpAiRecognition.interimResults = false;
+            lpAiRecognition.onstart = () => {
+                if (lpAiCallActive && !lpAiRequestPending && !lpAiIsSpeaking) {
+                    setLpAiCallStatus("Listening... Aap bol sakte hain.");
+                }
+            };
+            lpAiRecognition.onresult = event => {
+                const transcript = event.results[event.resultIndex][0].transcript.trim();
+                if (transcript && lpAiCallActive) {
+                    sendLpAiMessage(transcript, true);
+                }
+            };
+            lpAiRecognition.onerror = event => {
+                if (!lpAiCallActive || event.error === "no-speech" || event.error === "aborted") return;
+                const status = event.error === "not-allowed" || event.error === "service-not-allowed"
+                    ? "Microphone permission denied. Allow mic access and try again."
+                    : event.error === "audio-capture"
+                        ? "No microphone found. Connect a mic and try again."
+                        : "Voice call error. Please try again.";
+                stopLpAiCall(status);
+            };
+            lpAiRecognition.onend = () => {
+                if (lpAiCallActive && !lpAiRequestPending && !lpAiIsSpeaking) {
+                    window.setTimeout(startLpAiListening, 250);
+                }
+            };
+
+            const greeting = "Assalam-o-Alaikum! Main Land Pulse AI hoon. Aap kisi bhi topic par mujh se baat kar sakte hain. Aap kya discuss karna chahenge?";
+            addLpMessage(greeting, "bot");
+            speakLpAiText(greeting, () => {
+                if (lpAiCallActive) startLpAiListening();
+            });
+        }
+
+        function startLpAiListening() {
+            if (!lpAiCallActive || lpAiRequestPending || lpAiIsSpeaking || !lpAiRecognition) return;
+            try {
+                lpAiRecognition.lang = document.getElementById("lpAiVoiceLanguage").value;
+                lpAiRecognition.start();
+            } catch (error) {
+                console.warn("Could not start AI voice recognition:", error.message);
+                stopLpAiCall("Could not start the microphone. Please try again.");
+            }
+        }
+
+        function stopLpAiCall(status = "Call ended.") {
+            lpAiCallActive = false;
+            lpAiRequestPending = false;
+            lpAiIsSpeaking = false;
+            if (lpAiSpeechAbortController) {
+                lpAiSpeechAbortController.abort();
+                lpAiSpeechAbortController = null;
+            }
+            stopLpAiAudio();
+            if (lpAiRecognition) {
+                lpAiRecognition.onend = null;
+                try {
+                    lpAiRecognition.abort();
+                } catch (error) {
+                    console.warn("Could not stop AI voice recognition:", error.message);
+                }
+                lpAiRecognition = null;
+            }
+            updateLpAiCallButton();
+            setLpAiCallStatus(status);
+        }
+
+        function prepareLpAiSpeechText(text) {
+            return text
+                .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+                .replace(/https?:\/\/\S+/gi, " ")
+                .replace(/\bPKR\b/gi, "Pakistani rupees")
+                .replace(/\bRs\.?\s*/gi, "rupees ")
+                .replace(/%/g, " percent")
+                .replace(/[`*_#~|{}[\]=<>\\^]/g, " ")
+                .replace(/[:;=|]+/g, " ")
+                .replace(/[^\p{L}\p{N}\s.,!?،۔؟’'-]/gu, " ")
+                .replace(/(^|[\s.,!?،۔؟])-(?=$|[\s.,!?،۔؟])/g, "$1 ")
+                .replace(/\s+([.,!?،۔؟])/g, "$1")
+                .replace(/([.,!?،۔؟]){2,}/g, "$1")
+                .replace(/\s+/g, " ")
+                .trim();
+        }
+
+        function stopLpAiAudio() {
+            if (lpAiAudioElement) {
+                lpAiAudioElement.onended = null;
+                lpAiAudioElement.onerror = null;
+                lpAiAudioElement.pause();
+                lpAiAudioElement.removeAttribute("src");
+                lpAiAudioElement = null;
+            }
+            if (lpAiAudioUrl) {
+                URL.revokeObjectURL(lpAiAudioUrl);
+                lpAiAudioUrl = null;
+            }
+        }
+
+        function handleLpAiVoiceUnavailable(onEnd, detail) {
+            lpAiIsSpeaking = false;
+            const message = detail || "Natural AI voice unavailable. Hostinger AI endpoint check karein.";
+            setLpAiCallStatus(message);
+            addLpMessage(message, "bot");
+            if (onEnd) onEnd();
+            else if (lpAiCallActive) startLpAiListening();
+        }
+
+        async function speakLpAiText(text, onEnd) {
+            const speechText = prepareLpAiSpeechText(text);
+            if (!speechText) {
+                lpAiIsSpeaking = false;
+                if (onEnd) onEnd();
+                else if (lpAiCallActive) startLpAiListening();
+                return;
+            }
+
+            lpAiIsSpeaking = true;
+            setLpAiCallStatus("Preparing natural AI voice...");
+            const controller = new AbortController();
+            lpAiSpeechAbortController = controller;
+            try {
+                const response = await fetch("/api/ai-speech.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ text: speechText }),
+                    signal: controller.signal
+                });
+                if (!response.ok) {
+                    const message = response.status === 404
+                        ? "AI voice endpoint nahi mili. Hostinger par api folder upload karein."
+                        : response.status === 503
+                            ? "AI voice backend configured nahi hai."
+                            : `AI voice generation failed (HTTP ${response.status}).`;
+                    throw new Error(message);
+                }
+                const audioBlob = await response.blob();
+                if (!audioBlob.size) throw new Error("Natural voice service returned empty audio.");
+                if (!lpAiCallActive || controller.signal.aborted) return;
+
+                lpAiSpeechAbortController = null;
+                lpAiAudioUrl = URL.createObjectURL(audioBlob);
+                lpAiAudioElement = new Audio(lpAiAudioUrl);
+                lpAiAudioElement.onended = () => {
+                    stopLpAiAudio();
+                    lpAiIsSpeaking = false;
+                    if (onEnd) onEnd();
+                    else if (lpAiCallActive) startLpAiListening();
+                };
+                lpAiAudioElement.onerror = () => {
+                    stopLpAiAudio();
+                    if (lpAiCallActive) handleLpAiVoiceUnavailable(onEnd, "AI audio play nahi hui. Browser audio permissions check karein.");
+                };
+                setLpAiCallStatus("AI is speaking...");
+                await lpAiAudioElement.play();
+            } catch (error) {
+                if (controller.signal.aborted) return;
+                lpAiSpeechAbortController = null;
+                stopLpAiAudio();
+                console.warn("Natural AI voice unavailable:", error.message);
+                if (lpAiCallActive) handleLpAiVoiceUnavailable(onEnd, error.message);
+            }
+        }
+
+        function sendLpMessage(event) {
             event.preventDefault();
             const input = document.getElementById("lpAiInput");
             const text = input.value.trim();
             if (!text) return;
-            addLpMessage(text, "user");
             input.value = "";
+            sendLpAiMessage(text, false);
+        }
+
+        async function sendLpAiMessage(text, fromVoice) {
+            addLpMessage(text, "user");
+            if (window.location.protocol === "file:") {
+                const message = "Message send nahi hui: page local file se khuli hai. Apni deployed website par kholein ya PHP server ke saath local server chalayen.";
+                addLpMessage(message, "bot");
+                if (fromVoice) setLpAiCallStatus(message);
+                return;
+            }
+            lpAiRequestPending = true;
             const typing = document.createElement("div");
             typing.className = "lp-ai-message bot";
             typing.textContent = "AI jawab soch raha hai...";
             const messages = document.getElementById("lpAiMessages");
             messages.appendChild(typing);
             messages.scrollTop = messages.scrollHeight;
+            if (fromVoice) setLpAiCallStatus("AI is thinking...");
 
             try {
-                const response = await fetch("/.netlify/functions/ai-chat", {
+                const response = await fetch("/api/ai-chat.php", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -1645,20 +1894,37 @@
                             priceRange: item.priceRange,
                             badge: item.badge,
                             description: item.description
-                        }))
+                        })),
+                        history: lpAiConversation.slice(-10)
                     })
                 });
-                const payload = await response.json();
+                let payload;
+                try {
+                    payload = await response.json();
+                } catch {
+                    throw new Error("AI server ne valid response nahi diya. Hostinger par PHP API endpoints check karein.");
+                }
                 if (!response.ok) throw new Error(payload.error || "AI jawab generate nahi ho saka.");
                 if (typeof payload.content !== "string" || !payload.content.trim()) {
                     throw new Error("AI service ne jawab nahi diya.");
                 }
                 typing.remove();
                 addLpMessage(payload.content, "bot");
+                lpAiConversation.push(
+                    { role: "user", content: text },
+                    { role: "assistant", content: payload.content }
+                );
+                lpAiConversation = lpAiConversation.slice(-10);
+                if (lpAiCallActive) speakLpAiText(payload.content);
             } catch (error) {
                 typing.remove();
                 console.warn("Live AI chat unavailable:", error);
-                addLpMessage("Maazrat, live AI abhi jawab nahi de saka. Thori dair baad dobara koshish karein ya WhatsApp par rabta karein.", "bot");
+                const message = `AI jawab nahi de saka: ${error.message}`;
+                addLpMessage(message, "bot");
+                if (lpAiCallActive) setLpAiCallStatus(message);
+            } finally {
+                lpAiRequestPending = false;
+                if (lpAiCallActive && !lpAiIsSpeaking) startLpAiListening();
             }
         }
 
