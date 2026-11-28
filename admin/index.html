@@ -18,6 +18,7 @@
         --muted: #9aada1;
         --green: #64e69a;
         --green-dark: #143b27;
+        --gold: #d7b46a;
         --danger: #ff8585;
       }
       * { box-sizing: border-box; }
@@ -32,7 +33,7 @@
       button { cursor: pointer; }
       button:disabled { cursor: wait; opacity: .7; }
       .hidden { display: none !important; }
-      .app-shell { width: min(1120px, calc(100% - 36px)); margin: 0 auto; padding: 38px 0 64px; }
+      .app-shell { width: min(1440px, calc(100% - 40px)); margin: 0 auto; padding: 32px 0 64px; }
       .brand-row { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
       .brand-mark {
         display: grid; width: 42px; height: 42px; place-items: center; border-radius: 14px;
@@ -51,6 +52,7 @@
       .topbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-bottom: 28px; }
       .topbar h1 { margin: 0; font-size: clamp(26px, 4vw, 36px); letter-spacing: -.045em; }
       .topbar p { margin: 8px 0 0; color: var(--muted); line-height: 1.6; }
+      .topbar-actions { display: flex; align-items: center; gap: 10px; }
       .user-pill {
         display: inline-flex; align-items: center; gap: 8px; max-width: 100%; margin-top: 15px;
         padding: 8px 11px; border: 1px solid var(--border); border-radius: 999px;
@@ -58,12 +60,47 @@
       }
       .user-pill::before { content: ""; width: 7px; height: 7px; flex: 0 0 auto; border-radius: 50%; background: var(--green); }
       .panel-content { padding: 25px; }
+      .workspace { display: grid; grid-template-columns: 248px minmax(0, 1fr); align-items: start; gap: 20px; }
+      .workspace-sidebar {
+        position: sticky; top: 20px; overflow: hidden; padding: 19px;
+        background: linear-gradient(160deg, rgba(24, 39, 31, .98), rgba(13, 21, 17, .98));
+      }
+      .sidebar-heading { margin: 0 0 17px; }
+      .sidebar-eyebrow { margin: 0 0 6px; color: var(--gold); font-size: 10px; font-weight: 850; letter-spacing: .16em; text-transform: uppercase; }
+      .sidebar-heading h2 { margin: 0; font-size: 17px; letter-spacing: -.02em; }
+      .sidebar-heading p { margin: 6px 0 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
+      .workspace-nav { display: grid; gap: 8px; }
+      .workspace-link {
+        display: flex; width: 100%; align-items: center; gap: 11px; padding: 11px;
+        border: 1px solid transparent; border-radius: 12px; background: transparent;
+        color: #dce8df; text-align: left; transition: background .18s, border-color .18s, transform .18s;
+      }
+      .workspace-link:hover { transform: translateX(2px); background: rgba(255,255,255,.035); }
+      .workspace-link[aria-current="page"] {
+        border-color: rgba(215, 180, 106, .34);
+        background: linear-gradient(110deg, rgba(215, 180, 106, .12), rgba(100, 230, 154, .06));
+        box-shadow: inset 3px 0 var(--gold);
+      }
+      .workspace-icon {
+        display: grid; width: 35px; height: 35px; flex: 0 0 auto; place-items: center;
+        border: 1px solid #35483c; border-radius: 10px; background: #101914;
+        color: var(--gold); font-size: 10px; font-weight: 900; letter-spacing: .03em;
+      }
+      .workspace-link[aria-current="page"] .workspace-icon { border-color: rgba(215,180,106,.35); background: #28251c; }
+      .workspace-link-copy { min-width: 0; flex: 1; }
+      .workspace-link-copy strong { display: block; font-size: 12px; font-weight: 800; }
+      .workspace-link-copy small { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; line-height: 1.4; }
+      .workspace-link-action { color: #a9b8ad; font-size: 10px; font-weight: 750; }
+      .sidebar-divider { height: 1px; margin: 17px 0; background: var(--border); }
+      .sidebar-select-label { display: block; margin-bottom: 8px; color: #dce8df; font-size: 11px; font-weight: 750; }
+      .sidebar-note { margin: 14px 0 0; padding: 11px; border: 1px solid rgba(100,230,154,.12); border-radius: 10px; background: rgba(100,230,154,.04); color: var(--muted); font-size: 11px; line-height: 1.55; }
+      .workspace-main { min-width: 0; }
       .toolbar {
         display: grid; grid-template-columns: minmax(210px, 1fr) auto; gap: 18px; align-items: end;
         padding: 19px; border: 1px solid var(--border); border-radius: 16px; background: #0e1713;
       }
       .admin-guide {
-        margin: 18px 0 0; padding: 15px 17px; border: 1px solid rgba(100, 230, 154, .2);
+        margin: 15px 0 0; padding: 13px 15px; border: 1px solid rgba(100, 230, 154, .2);
         border-radius: 13px; background: rgba(100, 230, 154, .05); color: #c8d8cd;
         font-size: 13px; line-height: 1.7;
       }
@@ -81,6 +118,12 @@
       }
       .ai-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
       .ai-panel-head h2 { margin: 0; font-size: 16px; }
+      .ai-panel > summary { list-style: none; cursor: pointer; }
+      .ai-panel > summary::-webkit-details-marker { display: none; }
+      .persona-controls { display: grid; grid-template-columns: minmax(180px, .7fr) minmax(0, 1.3fr); gap: 12px; }
+      .persona-draft { min-height: 110px; margin-top: 12px; }
+      .persona-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-top: 10px; }
+      .persona-hint { margin: 8px 0 0; color: var(--muted); font-size: 11px; line-height: 1.55; }
       .ai-chat-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
       .ai-reply {
         min-height: 62px;
@@ -118,7 +161,7 @@
         border-radius: 50%; animation: spin .7s linear infinite;
       }
       .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 27px 2px 13px; }
-      .section-heading h2 { margin: 0; font-size: 17px; letter-spacing: -.015em; }
+      .section-heading h2 { margin: 0; color: #f0f5ef; font-size: 17px; letter-spacing: -.015em; }
       .section-heading p { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
       .field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
       .field-card, .object-card, .array-card {
@@ -202,20 +245,36 @@
       @keyframes toast-out { to { opacity: 0; transform: translateX(14px); } }
       @keyframes check-pop { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: scale(1); } }
       @media (max-width: 740px) {
-        .app-shell { width: min(100% - 24px, 620px); padding-top: 22px; }
+        .app-shell { width: min(100% - 24px, 760px); padding-top: 22px; }
+        .workspace { grid-template-columns: 1fr; gap: 14px; }
+        .workspace-sidebar { position: static; padding: 15px; }
+        .sidebar-heading { margin-bottom: 12px; }
+        .workspace-nav { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+        .workspace-link { align-items: flex-start; flex-wrap: wrap; gap: 7px; padding: 9px; }
+        .workspace-link-copy { flex-basis: calc(100% - 44px); }
+        .workspace-link-action { margin-left: 42px; }
+        .workspace-link:hover { transform: none; }
+        .sidebar-divider { margin: 13px 0; }
         .panel-content { padding: 16px; }
         .toolbar { grid-template-columns: 1fr; }
+        .persona-controls { grid-template-columns: 1fr; }
         .toolbar-actions { justify-content: flex-start; }
         .field-grid { grid-template-columns: 1fr; }
         .field-card.wide, .object-card.wide, .array-card.wide { grid-column: auto; }
       }
       @media (max-width: 480px) {
-        .topbar { align-items: flex-start; }
-        .topbar > .button { padding: 9px 10px; }
+        .app-shell { width: calc(100% - 20px); }
+        .topbar { align-items: flex-start; flex-direction: column; }
+        .topbar-actions { width: 100%; }
+        .topbar-actions .button { flex: 1; padding: 9px 10px; }
         .footer-actions { align-items: stretch; flex-direction: column-reverse; }
         .footer-actions .button { width: 100%; }
         .auth-panel { padding: 24px; }
         .toolbar-actions .button { flex: 1; }
+        .workspace-nav { grid-template-columns: 1fr; }
+        .workspace-link { align-items: center; flex-wrap: nowrap; }
+        .workspace-link-copy { flex-basis: auto; }
+        .workspace-link-action { margin-left: auto; }
       }
       @media (prefers-reduced-motion: reduce) {
         *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
@@ -254,59 +313,110 @@
             <p>Edit and publish the content that powers your website.</p>
             <div id="signedInUser" class="user-pill"></div>
           </div>
-          <button id="logoutButton" class="button secondary" type="button">Sign out</button>
+          <div class="topbar-actions">
+            <button id="askPersonaPulseButton" class="button" type="button">Ask Persona Pulse</button>
+            <button id="logoutButton" class="button secondary" type="button">Sign out</button>
+          </div>
         </header>
 
-        <div class="panel panel-content">
-          <div class="toolbar">
-            <div>
-              <label for="documentSelect">Choose a content document</label>
-              <select id="documentSelect">
-                <option value="site">Homepage content</option>
-                <option value="properties">Property listings</option>
-                <option value="premium-projects">Premium projects</option>
-                <option value="social-links">Social links</option>
-                <option value="team-ceo">CEO profile</option>
-                <option value="team-manager">Manager profile</option>
-                <option value="team-sales-executive">Sales executive profile</option>
-              </select>
+        <div class="workspace">
+          <aside class="workspace-sidebar panel" aria-label="Content navigation">
+            <div class="sidebar-heading">
+              <p class="sidebar-eyebrow">Land Pulse / CMS</p>
+              <h2>Manage content</h2>
+              <p>Choose an area to edit live website content.</p>
             </div>
-            <div class="toolbar-actions">
-              <button id="importButton" class="button secondary" type="button">Import first-time content</button>
-              <button id="loadButton" class="button ghost" type="button">Reload document</button>
-            </div>
-          </div>
-          <div class="admin-guide">
-            <strong>Admin ka asaan tareeqa:</strong>
-            document select karein, neeche fields edit karein, phir <strong>Save &amp; publish</strong> dabayein.
-            Save se pehle website par change live nahi hota. Image/video ke liye URL paste karein ya file upload karein,
-            phir save karein. <strong>Import first-time content</strong> sirf pehli setup par use karein; yeh pehle se saved content ko replace nahi karta.
-          </div>
-          <p id="documentHelp" class="document-help"></p>
+            <nav class="workspace-nav" aria-label="Main content">
+              <button class="workspace-link" type="button" data-document="site" aria-current="page">
+                <span class="workspace-icon" aria-hidden="true">CP</span>
+                <span class="workspace-link-copy"><strong>Content Page</strong><small>Homepage text &amp; sections</small></span>
+                <span class="workspace-link-action">Edit</span>
+              </button>
+              <button class="workspace-link" type="button" data-document="premium-projects">
+                <span class="workspace-icon" aria-hidden="true">VIP</span>
+                <span class="workspace-link-copy"><strong>Premium Properties</strong><small>Featured projects</small></span>
+                <span class="workspace-link-action">Edit</span>
+              </button>
+              <button class="workspace-link" type="button" data-document="properties">
+                <span class="workspace-icon" aria-hidden="true">PL</span>
+                <span class="workspace-link-copy"><strong>Property Listing</strong><small>Homes, plots &amp; rentals</small></span>
+                <span class="workspace-link-action">Edit</span>
+              </button>
+            </nav>
+            <div class="sidebar-divider"></div>
+            <label class="sidebar-select-label" for="documentSelect">More content</label>
+            <select id="documentSelect">
+              <option value="site">Content Page</option>
+              <option value="properties">Property Listing</option>
+              <option value="premium-projects">Premium Properties</option>
+              <option value="social-links">Social links</option>
+              <option value="team-ceo">CEO profile</option>
+              <option value="team-manager">Manager profile</option>
+              <option value="team-sales-executive">Sales executive profile</option>
+            </select>
+            <p class="sidebar-note">Add new properties or projects from their page. Homepage sections have their own “Add Item” controls.</p>
+          </aside>
 
-          <div class="ai-panel">
-            <div class="ai-panel-head">
-              <h2><span style="color:var(--green)">AI</span> Title &amp; Description Assistant</h2>
+          <div class="workspace-main panel panel-content">
+            <div class="toolbar">
+              <div>
+                <strong>Publishing tools</strong>
+                <p class="field-note">Import is only needed during first-time setup.</p>
+              </div>
+              <div class="toolbar-actions">
+                <button id="importButton" class="button secondary" type="button">Import first-time content</button>
+                <button id="loadButton" class="button ghost" type="button">Reload</button>
+              </div>
             </div>
-            <label class="field-label" for="aiInstruction">Agar title ya description sahi nahi bana to AI ko bata dein</label>
-            <textarea id="aiInstruction" placeholder="Example: SEO friendly title banao jo Pakistan aur international luxury real estate mention kare."></textarea>
-            <div class="ai-chat-actions">
-              <button id="generatePageTitle" class="button small" type="button">Generate title</button>
-              <button id="generatePageDescription" class="button secondary small" type="button">Generate description</button>
+            <div class="admin-guide">
+              <strong>Quick guide:</strong> Choose a section from the menu, edit its fields, then choose <strong>Save &amp; publish</strong>.
+              Changes go live only after saving. Upload photos/videos from their field; they attach automatically.
+              Import only adds missing starter content and never replaces existing saved content.
             </div>
-            <div id="aiReply" class="ai-reply">AI generated title ya description yahan nazar ayegi.</div>
-          </div>
+            <p id="documentHelp" class="document-help"></p>
 
-          <div class="section-heading">
-            <div><h2 id="editorTitle">Homepage content</h2><p>Changes are published to the live website when saved.</p></div>
-          </div>
-          <div id="contentEditor" aria-live="polite"></div>
+            <details id="personaPanel" class="ai-panel">
+              <summary class="ai-panel-head">
+                <h2><span style="color:var(--green)">AI</span> Persona Pulse content assistant</h2>
+                <span class="field-note">Create a draft</span>
+              </summary>
+              <p class="persona-hint">Page aur text field select karke draft banayein. Add to Web selected field update karke current document publish karega. Nayi property/project ke liye pehle Add listing ya Add project use karein.</p>
+              <div class="persona-controls">
+                <div>
+                  <label class="field-label" for="personaTarget">Kis content ke liye?</label>
+                  <select id="personaTarget" disabled>
+                    <option value="">Pehle content load ho raha hai...</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="field-label" for="aiInstruction">Persona Pulse ko kya batana hai?</label>
+                  <textarea id="aiInstruction" maxlength="1000" placeholder="Misal: SEO-friendly title likhein; sirf di hui maloomat use karein."></textarea>
+                </div>
+              </div>
+              <div class="persona-actions">
+                <button id="generatePersonaCopy" class="button secondary small" type="button" disabled>Generate draft</button>
+                <span class="field-note">Pehle draft banega; website par abhi koi change nahi hoga.</span>
+              </div>
+              <label class="field-label" for="personaDraft" style="margin-top:14px">Review or edit the draft</label>
+              <textarea id="personaDraft" class="persona-draft" placeholder="AI ka draft yahan ayega. Aap publish karne se pehle isay edit bhi kar sakte hain." aria-live="polite"></textarea>
+              <div class="persona-actions">
+                <button id="addPersonaToWeb" class="button small" type="button" disabled>Add to Web</button>
+                <span id="personaStatus" class="field-note" role="status" aria-live="polite">Draft generate karke review karein, phir Add to Web dabayein.</span>
+              </div>
+            </details>
 
-          <div class="footer-actions">
-            <p>Images and videos upload directly to Firebase Storage and attach to their selected field.</p>
-            <button id="saveButton" class="button" type="button">Save &amp; publish</button>
+            <div class="section-heading">
+              <div><h2 id="editorTitle">Content Page</h2><p id="editorSubtitle">Edit existing website content and sections.</p></div>
+              <button id="addDocumentItem" class="button secondary small hidden" type="button">+ Add item</button>
+            </div>
+            <div id="contentEditor" aria-live="polite"></div>
+
+            <div class="footer-actions">
+              <p>Changes are published to your live website when saved.</p>
+              <button id="saveButton" class="button" type="button">Save &amp; publish</button>
+            </div>
+            <p id="adminStatus" class="status" role="status" aria-live="polite"></p>
           </div>
-          <p id="adminStatus" class="status" role="status" aria-live="polite"></p>
         </div>
       </section>
     </main>
@@ -359,9 +469,9 @@
         "team-sales-executive": "/content/team/sales-executive.json"
       };
       const documentTitles = {
-        site: "Homepage content",
-        properties: "Property listings",
-        "premium-projects": "Premium projects",
+        site: "Content Page",
+        properties: "Property Listing",
+        "premium-projects": "Premium Properties",
         "social-links": "Social links",
         "team-ceo": "CEO profile",
         "team-manager": "Manager profile",
@@ -381,67 +491,33 @@
       let hasUnsavedChanges = false;
       let saveInProgress = false;
       let editVersion = 0;
+      let personaGenerationInProgress = false;
+      let personaGenerationId = 0;
+      let personaTargets = [];
       let toastTimer;
       const firestoreTimeoutMs = 8000;
       const saveButton = document.getElementById("saveButton");
       const documentSelect = document.getElementById("documentSelect");
+      const workspaceLinks = [...document.querySelectorAll("[data-document]")];
+      const addDocumentItemButton = document.getElementById("addDocumentItem");
+      const personaTargetSelect = document.getElementById("personaTarget");
+      const personaDraft = document.getElementById("personaDraft");
+      const generatePersonaCopyButton = document.getElementById("generatePersonaCopy");
+      const addPersonaToWebButton = document.getElementById("addPersonaToWeb");
+      const documentCollectionKeys = {
+        properties: "listings",
+        "premium-projects": "projects"
+      };
 
       const documentHelp = {
-        site: "Homepage content: hero text, navigation, stats, projects section, testimonials aur footer ki wording.",
-        properties: "Property listings: har item ek property hai. Title, price, location/project aur photos ko sahi property ke andar edit karein.",
-        "premium-projects": "Premium projects: har item ek project card hai. Title, location, description, image aur video yahan badlein.",
+        site: "Homepage content: edit existing text, navigation, stats, testimonials, and page sections.",
+        properties: "Har item ek property hai. Neeche Add listing se nayi property banayein ya existing listing edit karein.",
+        "premium-projects": "Har item ek project card hai. Neeche Add project se naya project banayein ya existing project edit karein.",
         "social-links": "Social links: platform, URL aur enabled toggle. Band karne ke liye enabled ko off karein.",
         "team-ceo": "CEO profile: naam, role, bio aur photo/video profile.",
         "team-manager": "Manager profile: naam, role, bio aur photo/video profile.",
         "team-sales-executive": "Sales executive profile: naam, role, bio aur photo/video profile."
       };
-
-      async function generateAdminCopy(field) {
-        const instruction = document.getElementById("aiInstruction").value.trim();
-        const button = document.getElementById(field === "title" ? "generatePageTitle" : "generatePageDescription");
-        const reply = document.getElementById("aiReply");
-        setButtonLoading(button, true, "AI is generating...");
-        reply.textContent = "AI soch raha hai...";
-
-        try {
-          const user = auth.currentUser;
-          if (!user) throw new Error("Pehle admin account se sign in karein.");
-          const token = await getIdToken(user);
-          const response = await fetch("/api/generate-content.php", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify({
-              type: "project",
-              field,
-              data: {
-                title: String(currentContent && currentContent.pageTitle || "Land Pulse Marketing"),
-                description: instruction,
-                location: "Pakistan",
-                instruction
-              }
-            })
-          });
-          const payload = await response.json();
-          if (!response.ok) throw new Error(payload.error || "AI content generate nahi ho saka.");
-
-          if (!isRecord(currentContent)) currentContent = {};
-          const key = field === "title" ? "pageTitle" : "pageDescription";
-          currentContent[key] = payload.content;
-          reply.textContent = payload.content;
-          markContentChanged();
-          renderEditor();
-          setStatus(adminStatus, `${field === "title" ? "Page title" : "Page description"} AI se generate ho gayi. Save & publish karein.`, "success");
-        } catch (error) {
-          reply.textContent = error.message || "AI assistant available nahi hai.";
-          setStatus(adminStatus, error.message || "AI assistant available nahi hai.", "error");
-          notify(error.message || "AI assistant available nahi hai.", "error");
-        } finally {
-          setButtonLoading(button, false, field === "title" ? "Generate title" : "Generate description");
-        }
-      }
 
       function setStatus(element, message, kind) {
         element.textContent = message;
@@ -467,6 +543,238 @@
         hasUnsavedChanges = true;
         setStatus(adminStatus, "Unsaved changes hain. Website par live karne ke liye Save & publish dabayein.", "info");
         updateSaveButton();
+      }
+
+      function isPersonaWritableField(key) {
+        return typeof key === "string" &&
+          !/^(id|name|role|email|phone|whatsapp|url|href|src|icon|image|images|photo|photos|video|videos|introvideo|price|pricerange|size|beds|baths|category|listingtype|rating|progress|value|suffix|enabled)$/i.test(key) &&
+          !/(url|href|email|phone|whatsapp)/i.test(key);
+      }
+
+      function collectPersonaTargets(value, path, breadcrumb, parent) {
+        if (Array.isArray(value)) {
+          value.forEach((item, index) => {
+            collectPersonaTargets(item, [...path, index], [...breadcrumb, `Item ${index + 1}`], parent);
+          });
+          return;
+        }
+        if (isRecord(value)) {
+          Object.entries(value).forEach(([key, child]) => {
+            collectPersonaTargets(child, [...path, key], [...breadcrumb, humanize(key)], value);
+          });
+          return;
+        }
+
+        const pathKey = path[path.length - 1];
+        const fieldKey = typeof pathKey === "number" ? path[path.length - 2] : pathKey;
+        if (typeof value !== "string" || !isPersonaWritableField(fieldKey)) return;
+
+        personaTargets.push({
+          id: JSON.stringify(path),
+          path,
+          fieldKey,
+          label: breadcrumb.join(" / "),
+          parent: isRecord(parent) ? parent : {}
+        });
+      }
+
+      function updatePersonaControls() {
+        const hasTarget = Boolean(personaTargetSelect.value);
+        generatePersonaCopyButton.disabled = !hasTarget || personaGenerationInProgress || !currentContent;
+        addPersonaToWebButton.disabled = !hasTarget || !personaDraft.value.trim() ||
+          personaGenerationInProgress || saveInProgress || !currentContent;
+      }
+
+      function refreshPersonaTargets() {
+        const selectedTarget = personaTargetSelect.value;
+        personaTargets = [];
+        if (currentContent && typeof currentContent === "object") {
+          collectPersonaTargets(currentContent, [], [], {});
+        }
+
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = personaTargets.length ? "Select a text field..." : "No editable text fields found";
+        personaTargetSelect.replaceChildren(placeholder);
+
+        personaTargets.forEach(target => {
+          const option = document.createElement("option");
+          option.value = target.id;
+          option.textContent = target.label;
+          personaTargetSelect.append(option);
+        });
+
+        personaTargetSelect.disabled = personaTargets.length === 0;
+        personaTargetSelect.value = personaTargets.some(target => target.id === selectedTarget) ? selectedTarget : "";
+        updatePersonaControls();
+      }
+
+      function clearPersonaDraft(message) {
+        personaGenerationId += 1;
+        personaDraft.value = "";
+        document.getElementById("personaStatus").textContent =
+          message || "Draft generate karke review karein, phir Add to Web dabayein.";
+        updatePersonaControls();
+      }
+
+      function getValueAtPath(root, path) {
+        return path.reduce((value, key) => value == null ? undefined : value[key], root);
+      }
+
+      function limitPersonaText(value, limit) {
+        return Array.from(String(value || "")).slice(0, limit).join("");
+      }
+
+      function setValueAtPath(root, path, value) {
+        const parent = path.slice(0, -1).reduce((current, key) => current && current[key], root);
+        const key = path[path.length - 1];
+        if (!parent || key === undefined) {
+          throw new Error("Selected content field ab available nahi hai. Field dobara select karein.");
+        }
+        parent[key] = value;
+      }
+
+      function getPersonaContext(target) {
+        const context = {};
+        Object.entries(target.parent).forEach(([key, value]) => {
+          if (isPersonaWritableField(key) && ["string", "number", "boolean"].includes(typeof value)) {
+            context[key] = value;
+          } else if (["location", "projectTitle", "category", "listingType", "size", "beds", "baths"].includes(key) &&
+              ["string", "number", "boolean"].includes(typeof value)) {
+            context[key] = value;
+          }
+        });
+        const serialized = JSON.stringify(context);
+        return serialized.length > 3000 ? Array.from(serialized).slice(0, 3000).join("") : serialized;
+      }
+
+      async function generatePersonaCopy() {
+        const target = personaTargets.find(item => item.id === personaTargetSelect.value);
+        if (!target || !currentContent) {
+          setStatus(adminStatus, "Pehle content load karke woh text field select karein jise likhwana hai.", "error");
+          return;
+        }
+
+        const instruction = document.getElementById("aiInstruction").value.trim();
+        const fieldValue = getValueAtPath(currentContent, target.path);
+        const listingType = currentDocumentId === "properties";
+        const projectType = currentDocumentId === "premium-projects";
+        const structuredField = target.fieldKey === "title" || target.fieldKey === "description";
+        const type = listingType ? "property" : projectType ? "project" : "content";
+        const field = structuredField ? target.fieldKey : "text";
+        const data = {
+          target: target.label,
+          currentValue: limitPersonaText(fieldValue, 1000),
+          context: getPersonaContext(target),
+          instruction
+        };
+        if (typeof target.parent.title === "string") data.title = limitPersonaText(target.parent.title, 1000);
+        const location = target.parent.location || target.parent.projectTitle;
+        if (typeof location === "string") data.location = limitPersonaText(location, 1000);
+        if (typeof target.parent.projectTitle === "string") data.projectTitle = limitPersonaText(target.parent.projectTitle, 1000);
+
+        const user = auth.currentUser;
+        if (!user) {
+          setStatus(adminStatus, "Persona Pulse use karne ke liye admin account se sign in karein.", "error");
+          return;
+        }
+
+        const requestId = ++personaGenerationId;
+        personaGenerationInProgress = true;
+        setButtonLoading(generatePersonaCopyButton, true, "Persona Pulse likh raha hai...");
+        document.getElementById("personaStatus").textContent = "Persona Pulse aap ke liye draft tayyar kar raha hai...";
+        updatePersonaControls();
+
+        try {
+          const token = await getIdToken(user);
+          const response = await fetch("/api/generate-content.php", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ type, field, data })
+          });
+          const payload = await response.json();
+          if (!response.ok) throw new Error(payload.error || "Persona Pulse content generate nahi kar saka.");
+          if (typeof payload.content !== "string" || !payload.content.trim()) {
+            throw new Error("Persona Pulse ne khaali draft return kiya. Dobara koshish karein.");
+          }
+          if (requestId !== personaGenerationId ||
+              currentDocumentId !== documentSelect.value ||
+              personaTargetSelect.value !== target.id) {
+            throw new Error("Content selection change ho gayi. Draft dobara generate karein.");
+          }
+
+          personaDraft.value = payload.content;
+          document.getElementById("personaStatus").textContent =
+            "Draft tayyar hai. Review/edit karein, phir Add to Web dabayein.";
+          setStatus(adminStatus, "Persona Pulse draft ready hai; review ke baad Add to Web dabayein.", "success");
+        } catch (error) {
+          document.getElementById("personaStatus").textContent = error.message || "AI assistant available nahi hai.";
+          setStatus(adminStatus, error.message || "AI assistant available nahi hai.", "error");
+          notify(error.message || "AI assistant available nahi hai.", "error");
+        } finally {
+          personaGenerationInProgress = false;
+          setButtonLoading(generatePersonaCopyButton, false, "Generate draft");
+          updatePersonaControls();
+        }
+      }
+
+      async function publishCurrentContent(button, loadingLabel, successMessage) {
+        if (saveInProgress) return false;
+        const savedVersion = editVersion;
+        saveInProgress = true;
+        updateSaveButton();
+        updatePersonaControls();
+        setButtonLoading(button, true, loadingLabel);
+        let saved = false;
+        try {
+          if (!currentContent || typeof currentContent !== "object") {
+            throw new Error("Content ka top-level object ya array hona chahiye.");
+          }
+          await withFirestoreTimeout(
+            setDoc(doc(db, "siteContent", documentSelect.value), {
+              content: currentContent,
+              updatedAt: serverTimestamp()
+            }),
+            "Save ka Firebase jawab 8 seconds mein nahi aya. Reload karke dekhein ke change save hui ya nahi."
+          );
+          saved = true;
+          hasUnsavedChanges = editVersion !== savedVersion;
+          const message = hasUnsavedChanges
+            ? "Save ho gayi, lekin is dauran ki gayi nayi tabdeeliyan abhi save nahi hui."
+            : successMessage;
+          setStatus(adminStatus, message, hasUnsavedChanges ? "info" : "success");
+          notify(message);
+        } catch (error) {
+          setStatus(adminStatus, error.message || "Could not save content.", "error");
+          notify(error.message || "Could not save content.", "error");
+        } finally {
+          setButtonLoading(button, false, button === addPersonaToWebButton ? "Add to Web" : "Save & publish");
+          saveInProgress = false;
+          updateSaveButton();
+          updatePersonaControls();
+        }
+        return saved;
+      }
+
+      function syncWorkspaceNavigation(documentId) {
+        workspaceLinks.forEach(link => {
+          const isCurrent = link.dataset.document === documentId;
+          if (isCurrent) {
+            link.setAttribute("aria-current", "page");
+          } else {
+            link.removeAttribute("aria-current");
+          }
+        });
+
+        const collectionKey = documentCollectionKeys[documentId];
+        addDocumentItemButton.classList.toggle("hidden", !collectionKey);
+        addDocumentItemButton.textContent = documentId === "premium-projects" ? "+ Add project" : "+ Add listing";
+        addDocumentItemButton.disabled = !collectionKey ||
+          !isRecord(currentContent) ||
+          !Array.isArray(currentContent[collectionKey]);
       }
 
       function notify(message, kind) {
@@ -779,6 +1087,7 @@
       function renderArray(key, items, setter) {
         const section = document.createElement("section");
         section.className = "object-card wide";
+        section.dataset.arrayKey = key;
         const heading = document.createElement("div");
         heading.className = "section-heading";
         const title = document.createElement("div");
@@ -791,6 +1100,7 @@
         addButton.className = "button secondary small";
         addButton.type = "button";
         addButton.textContent = "+ Add Item";
+        addButton.dataset.arrayAdd = key;
         addButton.addEventListener("click", () => {
           items.push(newArrayItem(key, items));
           setter(items);
@@ -918,6 +1228,7 @@
           wrapper.className = "field-grid";
           wrapper.append(renderArray("items", currentContent, next => { currentContent = next; }));
           editor.append(wrapper);
+          refreshPersonaTargets();
           return;
         }
         if (!isRecord(currentContent)) {
@@ -925,9 +1236,11 @@
           message.className = "empty-list";
           message.textContent = "This document does not contain editable fields.";
           editor.append(message);
+          refreshPersonaTargets();
           return;
         }
         renderObjectFields(editor, currentContent, () => {}, true);
+        refreshPersonaTargets();
       }
 
       function showEditorSkeleton() {
@@ -948,19 +1261,33 @@
       }
 
       async function loadContent() {
-        if (hasUnsavedChanges && !window.confirm("Aap ki tabdeeliyan abhi save nahi hui. Document reload/switch karne se yeh zaya ho jayengi. Jari rakhein?")) {
+        if (saveInProgress) {
+          documentSelect.value = currentDocumentId || documentSelect.value;
+          setStatus(adminStatus, "Publish complete hone dein, phir doosra content kholein.", "info");
+          return;
+        }
+
+        const hasPersonaDraft = Boolean(personaDraft.value.trim());
+        if ((hasUnsavedChanges || hasPersonaDraft) &&
+            !window.confirm("Aap ke unsaved changes ya Persona Pulse draft zaya ho sakte hain. Jari rakhein?")) {
           documentSelect.value = currentDocumentId || documentSelect.value;
           return;
         }
 
+        clearPersonaDraft();
+        personaTargetSelect.value = "";
         const documentId = documentSelect.value;
         const requestId = ++contentLoadId;
         currentDocumentId = documentId;
+        syncWorkspaceNavigation(documentId);
+        addDocumentItemButton.disabled = true;
         currentContent = null;
+        refreshPersonaTargets();
         hasUnsavedChanges = false;
         editVersion = 0;
         updateSaveButton();
         document.getElementById("editorTitle").textContent = documentTitles[documentId];
+        document.getElementById("editorSubtitle").textContent = documentHelp[documentId];
         document.getElementById("documentHelp").textContent = documentHelp[documentId];
         setStatus(adminStatus, "Loading content...", "info");
         showEditorSkeleton();
@@ -972,6 +1299,7 @@
           if (requestId !== contentLoadId) return;
           if (snapshot.exists()) {
             currentContent = snapshot.data().content;
+            syncWorkspaceNavigation(documentId);
             renderEditor();
             setStatus(adminStatus, "Firestore content loaded.", "success");
             return;
@@ -983,6 +1311,7 @@
           }
           currentContent = await response.json();
           if (requestId !== contentLoadId) return;
+          syncWorkspaceNavigation(documentId);
           renderEditor();
           setStatus(adminStatus, "Local copy loaded. Save & publish dabane par Firestore mein save hogi.", "info");
           hasUnsavedChanges = true;
@@ -990,6 +1319,7 @@
         } catch (error) {
           if (requestId !== contentLoadId) return;
           currentContent = null;
+          syncWorkspaceNavigation(documentId);
           editor.replaceChildren();
           updateSaveButton();
           setStatus(adminStatus, error.message || "Could not load content.", "error");
@@ -1084,41 +1414,70 @@
       });
 
       documentSelect.addEventListener("change", loadContent);
-      document.getElementById("generatePageTitle").addEventListener("click", () => generateAdminCopy("title"));
-      document.getElementById("generatePageDescription").addEventListener("click", () => generateAdminCopy("description"));
-      document.getElementById("loadButton").addEventListener("click", loadContent);
-      document.getElementById("saveButton").addEventListener("click", async event => {
-        const button = event.currentTarget;
-        const savedVersion = editVersion;
-        saveInProgress = true;
-        updateSaveButton();
-        setButtonLoading(button, true, "Publishing...");
+      document.getElementById("askPersonaPulseButton").addEventListener("click", () => {
+        const personaPanel = document.getElementById("personaPanel");
+        personaPanel.open = true;
+        personaPanel.scrollIntoView({ behavior: "smooth", block: "center" });
+        if (!personaTargetSelect.disabled) personaTargetSelect.focus();
+      });
+      personaTargetSelect.addEventListener("change", () => {
+        clearPersonaDraft("Naya field select hua. Is field ke liye naya draft banayein.");
+      });
+      personaDraft.addEventListener("input", updatePersonaControls);
+      generatePersonaCopyButton.addEventListener("click", generatePersonaCopy);
+      addPersonaToWebButton.addEventListener("click", async () => {
+        const target = personaTargets.find(item => item.id === personaTargetSelect.value);
+        const draft = personaDraft.value.trim();
+        if (!target || !draft) {
+          setStatus(adminStatus, "Pehle field select karein aur Persona Pulse ka draft review karein.", "error");
+          return;
+        }
+
         try {
-          if (!currentContent || typeof currentContent !== "object") {
-            throw new Error("Content ka top-level object ya array hona chahiye.");
-          }
-          await withFirestoreTimeout(
-            setDoc(doc(db, "siteContent", documentSelect.value), {
-              content: currentContent,
-              updatedAt: serverTimestamp()
-            }),
-            "Save ka Firebase jawab 8 seconds mein nahi aya. Reload karke dekhein ke change save hui ya nahi."
+          setValueAtPath(currentContent, target.path, draft);
+          markContentChanged();
+          renderEditor();
+          const saved = await publishCurrentContent(
+            addPersonaToWebButton,
+            "Adding to web...",
+            "Persona Pulse ka content website par publish ho gaya."
           );
-          hasUnsavedChanges = editVersion !== savedVersion;
-          const message = hasUnsavedChanges
-            ? "Save ho gayi, lekin is dauran ki gayi nayi tabdeeliyan abhi save nahi hui."
-            : "Saved to Live Website!";
-          setStatus(adminStatus, message, hasUnsavedChanges ? "info" : "success");
-          notify(message);
+          if (saved) {
+            clearPersonaDraft("Content website par add ho gaya. Naya draft banane ke liye field select karein.");
+          }
         } catch (error) {
-          setStatus(adminStatus, error.message || "Could not save content.", "error");
-          notify(error.message || "Could not save content.", "error");
-        } finally {
-          setButtonLoading(button, false, "Save & publish");
-          saveInProgress = false;
-          updateSaveButton();
+          setStatus(adminStatus, error.message || "Persona Pulse content add nahi ho saka.", "error");
+          notify(error.message || "Persona Pulse content add nahi ho saka.", "error");
         }
       });
+      workspaceLinks.forEach(link => {
+        link.addEventListener("click", () => {
+          documentSelect.value = link.dataset.document;
+          loadContent();
+        });
+      });
+      addDocumentItemButton.addEventListener("click", () => {
+        const collectionKey = documentCollectionKeys[currentDocumentId];
+        const addButton = editor.querySelector(`[data-array-add="${collectionKey}"]`);
+        if (!addButton) {
+          setStatus(adminStatus, "List abhi load nahi hui. Pehle reload karke dobara try karein.", "error");
+          return;
+        }
+        addButton.click();
+        window.requestAnimationFrame(() => {
+          const collection = editor.querySelector(`[data-array-key="${collectionKey}"]`);
+          const lastItem = collection && collection.querySelector(".array-card:last-child");
+          if (lastItem) {
+            lastItem.scrollIntoView({ behavior: "smooth", block: "center" });
+            const firstInput = lastItem.querySelector('input:not([type="file"]), textarea');
+            if (firstInput) firstInput.focus();
+          }
+        });
+      });
+      document.getElementById("loadButton").addEventListener("click", loadContent);
+      document.getElementById("saveButton").addEventListener("click", () =>
+        publishCurrentContent(saveButton, "Publishing...", "Saved to Live Website!")
+      );
 
       onAuthStateChanged(auth, async user => {
         const checkId = ++authCheckId;
