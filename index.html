@@ -1043,14 +1043,27 @@
 
         async function fetchJSON(path) {
             if (!window.firebaseContentStore) {
-                throw new Error("Firebase content service is not initialized");
+                return fetchStaticJSON(path);
             }
 
-            const cloudContent = await window.firebaseContentStore.read(path);
-            if (cloudContent === null) {
-                throw new Error(`Firestore content for ${path} has not been migrated`);
+            let timer;
+            try {
+                const cloudContent = await Promise.race([
+                    window.firebaseContentStore.read(path),
+                    new Promise((resolve, reject) => {
+                        timer = window.setTimeout(() => reject(new Error("Firestore request timed out")), 8000);
+                    })
+                ]);
+                if (cloudContent === null) {
+                    throw new Error(`Firestore content for ${path} has not been migrated`);
+                }
+                return cloudContent;
+            } catch (error) {
+                console.warn(`Using local JSON fallback for ${path}:`, error.message);
+                return fetchStaticJSON(path);
+            } finally {
+                window.clearTimeout(timer);
             }
-            return cloudContent;
         }
 
         async function fetchStaticJSON(path) {

@@ -62,6 +62,13 @@
         display: grid; grid-template-columns: minmax(210px, 1fr) auto; gap: 18px; align-items: end;
         padding: 19px; border: 1px solid var(--border); border-radius: 16px; background: #0e1713;
       }
+      .admin-guide {
+        margin: 18px 0 0; padding: 15px 17px; border: 1px solid rgba(100, 230, 154, .2);
+        border-radius: 13px; background: rgba(100, 230, 154, .05); color: #c8d8cd;
+        font-size: 13px; line-height: 1.7;
+      }
+      .admin-guide strong { color: #e8f4eb; }
+      .document-help { margin: 9px 2px 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
       .toolbar label, .field-label { display: block; margin: 0 0 8px; color: #dce8df; font-size: 13px; font-weight: 700; }
       .toolbar-actions, .button-row { display: flex; flex-wrap: wrap; gap: 9px; }
       .toolbar-actions { justify-content: flex-end; }
@@ -265,10 +272,17 @@
               </select>
             </div>
             <div class="toolbar-actions">
-              <button id="importButton" class="button secondary" type="button">Import missing JSON documents</button>
-              <button id="loadButton" class="button ghost" type="button">Reload</button>
+              <button id="importButton" class="button secondary" type="button">Import first-time content</button>
+              <button id="loadButton" class="button ghost" type="button">Reload document</button>
             </div>
           </div>
+          <div class="admin-guide">
+            <strong>Admin ka asaan tareeqa:</strong>
+            document select karein, neeche fields edit karein, phir <strong>Save &amp; publish</strong> dabayein.
+            Save se pehle website par change live nahi hota. Image/video ke liye URL paste karein ya file upload karein,
+            phir save karein. <strong>Import first-time content</strong> sirf pehli setup par use karein; yeh pehle se saved content ko replace nahi karta.
+          </div>
+          <p id="documentHelp" class="document-help"></p>
 
           <div class="ai-panel">
             <div class="ai-panel-head">
@@ -361,8 +375,26 @@
       const editor = document.getElementById("contentEditor");
       let accessDenied = false;
       let authCheckId = 0;
+      let contentLoadId = 0;
       let currentContent = null;
+      let currentDocumentId = null;
+      let hasUnsavedChanges = false;
+      let saveInProgress = false;
+      let editVersion = 0;
       let toastTimer;
+      const firestoreTimeoutMs = 8000;
+      const saveButton = document.getElementById("saveButton");
+      const documentSelect = document.getElementById("documentSelect");
+
+      const documentHelp = {
+        site: "Homepage content: hero text, navigation, stats, projects section, testimonials aur footer ki wording.",
+        properties: "Property listings: har item ek property hai. Title, price, location/project aur photos ko sahi property ke andar edit karein.",
+        "premium-projects": "Premium projects: har item ek project card hai. Title, location, description, image aur video yahan badlein.",
+        "social-links": "Social links: platform, URL aur enabled toggle. Band karne ke liye enabled ko off karein.",
+        "team-ceo": "CEO profile: naam, role, bio aur photo/video profile.",
+        "team-manager": "Manager profile: naam, role, bio aur photo/video profile.",
+        "team-sales-executive": "Sales executive profile: naam, role, bio aur photo/video profile."
+      };
 
       async function generateAdminCopy(field) {
         const instruction = document.getElementById("aiInstruction").value.trim();
@@ -399,6 +431,7 @@
           const key = field === "title" ? "pageTitle" : "pageDescription";
           currentContent[key] = payload.content;
           reply.textContent = payload.content;
+          markContentChanged();
           renderEditor();
           setStatus(adminStatus, `${field === "title" ? "Page title" : "Page description"} AI se generate ho gayi. Save & publish karein.`, "success");
         } catch (error) {
@@ -413,6 +446,27 @@
       function setStatus(element, message, kind) {
         element.textContent = message;
         element.dataset.kind = kind || "info";
+      }
+
+      function withFirestoreTimeout(operation, message) {
+        let timer;
+        return Promise.race([
+          operation,
+          new Promise((resolve, reject) => {
+            timer = window.setTimeout(() => reject(new Error(message)), firestoreTimeoutMs);
+          })
+        ]).finally(() => window.clearTimeout(timer));
+      }
+
+      function updateSaveButton() {
+        saveButton.disabled = saveInProgress || !hasUnsavedChanges;
+      }
+
+      function markContentChanged() {
+        editVersion += 1;
+        hasUnsavedChanges = true;
+        setStatus(adminStatus, "Unsaved changes hain. Website par live karne ke liye Save & publish dabayein.", "info");
+        updateSaveButton();
       }
 
       function notify(message, kind) {
@@ -470,6 +524,12 @@
           .replace(/[_-]+/g, " ")
           .replace(/\b\w/g, character => character.toUpperCase());
       }
+
+      editor.addEventListener("input", markContentChanged, true);
+      editor.addEventListener("change", markContentChanged, true);
+      editor.addEventListener("click", event => {
+        if (event.target instanceof Element && event.target.closest("button")) markContentChanged();
+      }, true);
 
       function isRecord(value) {
         return value !== null && typeof value === "object" && !Array.isArray(value);
@@ -888,12 +948,28 @@
       }
 
       async function loadContent() {
-        const documentId = document.getElementById("documentSelect").value;
+        if (hasUnsavedChanges && !window.confirm("Aap ki tabdeeliyan abhi save nahi hui. Document reload/switch karne se yeh zaya ho jayengi. Jari rakhein?")) {
+          documentSelect.value = currentDocumentId || documentSelect.value;
+          return;
+        }
+
+        const documentId = documentSelect.value;
+        const requestId = ++contentLoadId;
+        currentDocumentId = documentId;
+        currentContent = null;
+        hasUnsavedChanges = false;
+        editVersion = 0;
+        updateSaveButton();
         document.getElementById("editorTitle").textContent = documentTitles[documentId];
+        document.getElementById("documentHelp").textContent = documentHelp[documentId];
         setStatus(adminStatus, "Loading content...", "info");
         showEditorSkeleton();
         try {
-          const snapshot = await getDoc(doc(db, "siteContent", documentId));
+          const snapshot = await withFirestoreTimeout(
+            getDoc(doc(db, "siteContent", documentId)),
+            "Firestore se 8 seconds mein jawab nahi mila. Internet aur Firebase connection check karke Reload document karein."
+          );
+          if (requestId !== contentLoadId) return;
           if (snapshot.exists()) {
             currentContent = snapshot.data().content;
             renderEditor();
@@ -906,9 +982,16 @@
             throw new Error(`Could not load default JSON (${response.status}).`);
           }
           currentContent = await response.json();
+          if (requestId !== contentLoadId) return;
           renderEditor();
-          setStatus(adminStatus, "Local JSON migration source loaded. Save it to Firestore.", "info");
+          setStatus(adminStatus, "Local copy loaded. Save & publish dabane par Firestore mein save hogi.", "info");
+          hasUnsavedChanges = true;
+          updateSaveButton();
         } catch (error) {
+          if (requestId !== contentLoadId) return;
+          currentContent = null;
+          editor.replaceChildren();
+          updateSaveButton();
           setStatus(adminStatus, error.message || "Could not load content.", "error");
           notify(error.message || "Could not load content.", "error");
         }
@@ -926,7 +1009,10 @@
           const batch = writeBatch(db);
           const results = await Promise.all(Object.entries(documents).map(async ([documentId, path]) => {
             const reference = doc(db, "siteContent", documentId);
-            const existing = await getDoc(reference);
+            const existing = await withFirestoreTimeout(
+              getDoc(reference),
+              "Firebase response slow hai. Internet check karke dobara import karein."
+            );
             if (existing.exists()) {
               return { reference, imported: false };
             }
@@ -947,7 +1033,10 @@
             updatedAt: serverTimestamp()
           }));
           if (missing.length) {
-            await batch.commit();
+            await withFirestoreTimeout(
+              batch.commit(),
+              "Firebase import ka jawab 8 seconds mein nahi aya. Reload karke imported documents check karein."
+            );
           }
           const message = `Migration complete. ${missing.length} document(s) imported; existing Firestore documents were preserved.`;
           setStatus(adminStatus, message, "success");
@@ -966,10 +1055,13 @@
         setButtonLoading(button, true, "Signing in...");
         setStatus(loginStatus, "Signing in...", "info");
         try {
-          await signInWithEmailAndPassword(
-            auth,
-            document.getElementById("email").value.trim(),
-            document.getElementById("password").value
+          await withFirestoreTimeout(
+            signInWithEmailAndPassword(
+              auth,
+              document.getElementById("email").value.trim(),
+              document.getElementById("password").value
+            ),
+            "Sign-in mein 8 seconds se zyada lag gaye. Internet connection check karke dobara koshish karein."
           );
         } catch (error) {
           setStatus(loginStatus, error.message || "Sign-in failed.", "error");
@@ -991,28 +1083,40 @@
         }
       });
 
-      document.getElementById("documentSelect").addEventListener("change", loadContent);
+      documentSelect.addEventListener("change", loadContent);
       document.getElementById("generatePageTitle").addEventListener("click", () => generateAdminCopy("title"));
       document.getElementById("generatePageDescription").addEventListener("click", () => generateAdminCopy("description"));
       document.getElementById("loadButton").addEventListener("click", loadContent);
       document.getElementById("saveButton").addEventListener("click", async event => {
         const button = event.currentTarget;
+        const savedVersion = editVersion;
+        saveInProgress = true;
+        updateSaveButton();
         setButtonLoading(button, true, "Publishing...");
         try {
           if (!currentContent || typeof currentContent !== "object") {
             throw new Error("Content ka top-level object ya array hona chahiye.");
           }
-          await setDoc(doc(db, "siteContent", document.getElementById("documentSelect").value), {
-            content: currentContent,
-            updatedAt: serverTimestamp()
-          });
-          setStatus(adminStatus, "Saved to Live Website!", "success");
-          notify("Saved to Live Website!");
+          await withFirestoreTimeout(
+            setDoc(doc(db, "siteContent", documentSelect.value), {
+              content: currentContent,
+              updatedAt: serverTimestamp()
+            }),
+            "Save ka Firebase jawab 8 seconds mein nahi aya. Reload karke dekhein ke change save hui ya nahi."
+          );
+          hasUnsavedChanges = editVersion !== savedVersion;
+          const message = hasUnsavedChanges
+            ? "Save ho gayi, lekin is dauran ki gayi nayi tabdeeliyan abhi save nahi hui."
+            : "Saved to Live Website!";
+          setStatus(adminStatus, message, hasUnsavedChanges ? "info" : "success");
+          notify(message);
         } catch (error) {
           setStatus(adminStatus, error.message || "Could not save content.", "error");
           notify(error.message || "Could not save content.", "error");
         } finally {
           setButtonLoading(button, false, "Save & publish");
+          saveInProgress = false;
+          updateSaveButton();
         }
       });
 
@@ -1030,7 +1134,10 @@
         loginPanel.classList.add("hidden");
         adminPanel.classList.add("hidden");
         try {
-          const adminDocument = await getDoc(doc(db, "admins", user.uid));
+          const adminDocument = await withFirestoreTimeout(
+            getDoc(doc(db, "admins", user.uid)),
+            "Firebase se admin access check nahi ho saka. Internet aur Firebase connection check karein."
+          );
           if (checkId !== authCheckId) {
             return;
           }
